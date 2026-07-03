@@ -21,43 +21,34 @@ export default function Home() {
   return (
     <div>
       {/* Hero Section */}
-      <section style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', paddingTop: '6rem' }}>
+      <section style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: '6rem', paddingBottom: '4rem' }}>
         
         {/* Background Layer */}
         <div className="hero-overlay"></div>
         <div className="grid-bg"></div>
-        {/* Reduced blur effect from blur(3px) to blur(1px) */}
-        <img src="/light_exterior.png" alt="Background" className="hero-bg" style={{ filter: 'blur(1px) opacity(0.3)' }} />
+        {/* Enhanced background: no blur and higher opacity for a stunning look */}
+        <img src="/light_exterior.png" alt="Background" className="hero-bg" style={{ filter: 'none', opacity: 0.85 }} />
         
-        <div className="container" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '3rem', width: '100%', zIndex: 1, padding: '0 3.5rem' }}>
+        <div className="container" style={{ display: 'flex', justifyContent: 'center', width: '100%', zIndex: 1, padding: '0 1.5rem' }}>
           
-          {/* Left Content */}
-          <div style={{ flex: '1 1 400px' }}>
-            <p style={{ color: 'var(--primary-dark)', fontSize: '0.8rem', letterSpacing: '2px', fontWeight: 600, textTransform: 'uppercase', marginBottom: '1rem' }}>
+          {/* Centered Glassmorphic Content Card */}
+          <div className="glossy-glass" style={{ maxWidth: '800px', width: '100%', padding: '3.5rem 2.5rem', borderRadius: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', background: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.4)', boxShadow: '0 30px 60px rgba(0,0,0,0.1)' }}>
+            
+            <p style={{ color: 'var(--primary-dark)', fontSize: '0.85rem', letterSpacing: '2px', fontWeight: 600, textTransform: 'uppercase', marginBottom: '1rem' }}>
               Proptech Workspace
             </p>
-            <h1 style={{ fontSize: 'clamp(2.5rem, 4vw, 4rem)', color: 'var(--text-dark)', lineHeight: 1.1, fontWeight: 400, fontFamily: 'serif' }}>
+            
+            <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: 'var(--text-dark)', lineHeight: 1.15, fontWeight: 400, fontFamily: 'serif', marginBottom: '1.2rem' }}>
               Luxury Investment <br />
               <span style={{ color: 'var(--primary-color)' }}>Advisory Portal</span>
             </h1>
-            <p style={{ marginTop: '1.5rem', fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6, maxWidth: '450px' }}>
+            
+            <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', lineHeight: 1.6, maxWidth: '600px', marginBottom: '1rem' }}>
               Welcome to the Sharan Estates portal. Filter units by interactive 3D floor highlights, simulate rental yields, and select properties for comparative checkout.
             </p>
             
             <FilterWidget />
-          </div>
-
-          {/* Right Content - Framed High-Quality Mockup Image with 3D Parallax Tilt instead of ScannerCard */}
-          <div style={{ flex: '1 1 500px', display: 'flex', justifyContent: 'center' }}>
-            <Tilt tiltMaxAngleX={4} tiltMaxAngleY={4} perspective={1500} scale={1.02} style={{ width: '100%', maxWidth: '500px' }}>
-              <div className="glossy-glass" style={{ padding: '1rem', borderRadius: '24px', background: 'rgba(255,255,255,0.7)', boxShadow: '0 20px 40px rgba(0,0,0,0.05)' }}>
-                <img 
-                  src="/listing_villa.png" 
-                  alt="Exclusive Estate Preview" 
-                  style={{ width: '100%', height: 'auto', borderRadius: '16px', display: 'block', objectFit: 'cover' }} 
-                />
-              </div>
-            </Tilt>
+            
           </div>
 
         </div>

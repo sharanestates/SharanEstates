@@ -33,15 +33,9 @@ export default function AdminDashboard() {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
 
-  // State for adding a new floor
-  const [newFloor, setNewFloor] = useState({
-    id: '',
-    name: '',
-    price: '',
-    status: 'Available',
-    yield: '',
-    features: ''
-  });
+  // States for dynamic levels and flats manager
+  const [newLevel, setNewLevel] = useState({ id: '', name: '' });
+  const [flatForms, setFlatForms] = useState({}); // Stores inputs for adding flats index by Level ID
 
   const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
 
@@ -125,6 +119,8 @@ export default function AdminDashboard() {
       status: 'Available',
       floors: []
     });
+    setFlatForms({});
+    setNewLevel({ id: '', name: '' });
     setFormType('create');
     setIsFormOpen(true);
   };
@@ -144,6 +140,8 @@ export default function AdminDashboard() {
       status: prop.status || 'Available',
       floors: prop.floors || []
     });
+    setFlatForms({});
+    setNewLevel({ id: '', name: '' });
     setEditingId(prop.id);
     setFormType('edit');
     setIsFormOpen(true);
@@ -237,42 +235,110 @@ export default function AdminDashboard() {
     }
   };
 
-  // Floors Managers
-  const handleAddFloor = () => {
-    if (!newFloor.id || !newFloor.name || !newFloor.price) {
-      alert("Please fill in Level ID, Level Name, and Price.");
+  // Floors & Building Structure Manager
+  const handleAddLevel = () => {
+    if (!newLevel.id || !newLevel.name) {
+      alert("Please fill in Level ID and Level Name.");
       return;
     }
 
-    const floorObj = {
-      id: parseInt(newFloor.id),
-      name: newFloor.name,
-      price: newFloor.price,
-      status: newFloor.status,
-      yield: newFloor.yield || 'N/A',
-      features: newFloor.features || ''
+    const lvlId = parseInt(newLevel.id);
+    if ((propertyForm.floors || []).some(lvl => lvl.id === lvlId)) {
+      alert("A level with this numeric ID already exists.");
+      return;
+    }
+
+    const newLvlObj = {
+      id: lvlId,
+      name: newLevel.name,
+      flats: []
     };
 
-    // Sort floors by ID descending (top floor at the top)
-    const updatedFloors = [...(propertyForm.floors || []), floorObj].sort((a, b) => b.id - a.id);
+    // Sort levels descending (highest ID at the top)
+    const updatedFloors = [...(propertyForm.floors || []), newLvlObj].sort((a, b) => b.id - a.id);
 
     setPropertyForm({
       ...propertyForm,
       floors: updatedFloors
     });
 
-    setNewFloor({
-      id: '',
-      name: '',
-      price: '',
-      status: 'Available',
-      yield: '',
-      features: ''
+    setNewLevel({ id: '', name: '' });
+  };
+
+  const handleRemoveLevel = (levelId) => {
+    if (!window.confirm("Are you sure you want to delete this level and all its flats?")) return;
+    const updatedFloors = (propertyForm.floors || []).filter(lvl => lvl.id !== levelId);
+    setPropertyForm({
+      ...propertyForm,
+      floors: updatedFloors
     });
   };
 
-  const handleRemoveFloor = (indexToRemove) => {
-    const updatedFloors = (propertyForm.floors || []).filter((_, idx) => idx !== indexToRemove);
+  const updateFlatForm = (levelId, field, value) => {
+    setFlatForms(prev => ({
+      ...prev,
+      [levelId]: {
+        ...prev[levelId],
+        [field]: value
+      }
+    }));
+  };
+
+  const handleAddFlat = (levelId) => {
+    const form = flatForms[levelId];
+    if (!form || !form.name || !form.price) {
+      alert("Please fill in at least Flat Name and Price.");
+      return;
+    }
+
+    const newFlatObj = {
+      name: form.name,
+      price: form.price,
+      size: form.size || 'N/A',
+      beds: parseInt(form.beds) || 0,
+      baths: parseInt(form.baths) || 0,
+      status: form.status || 'Available'
+    };
+
+    const updatedFloors = (propertyForm.floors || []).map(lvl => {
+      if (lvl.id === levelId) {
+        return {
+          ...lvl,
+          flats: [...(lvl.flats || []), newFlatObj]
+        };
+      }
+      return lvl;
+    });
+
+    setPropertyForm({
+      ...propertyForm,
+      floors: updatedFloors
+    });
+
+    // Reset flat form input for this level
+    setFlatForms(prev => ({
+      ...prev,
+      [levelId]: {
+        name: '',
+        price: '',
+        size: '',
+        beds: 0,
+        baths: 0,
+        status: 'Available'
+      }
+    }));
+  };
+
+  const handleRemoveFlat = (levelId, flatIndex) => {
+    const updatedFloors = (propertyForm.floors || []).map(lvl => {
+      if (lvl.id === levelId) {
+        return {
+          ...lvl,
+          flats: (lvl.flats || []).filter((_, idx) => idx !== flatIndex)
+        };
+      }
+      return lvl;
+    });
     setPropertyForm({
       ...propertyForm,
       floors: updatedFloors
@@ -430,47 +496,61 @@ export default function AdminDashboard() {
                           <td colSpan="7" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No properties found. Add your first property!</td>
                         </tr>
                       ) : (
-                        properties.map((prop) => (
-                          <tr key={prop.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
-                            <td style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                              <img src={prop.image} alt={prop.title} style={{ width: '50px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={(e) => { e.target.src = '/listing_villa.png' }} />
-                              <div>
-                                <div style={{ fontWeight: 600, color: 'var(--text-dark)' }}>{prop.title}</div>
-                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>🛏️ {prop.beds} Beds | 🚿 {prop.baths} Baths{prop.size ? ` | 📏 ${prop.size}` : ''} | 🏢 {(prop.floors || []).length} Custom Levels</div>
-                              </div>
-                            </td>
-                            <td style={{ padding: '1rem', textTransform: 'capitalize' }}>{prop.category}</td>
-                            <td style={{ padding: '1rem', textTransform: 'capitalize' }}>{prop.type}</td>
-                            <td style={{ padding: '1rem' }}>{prop.location}</td>
-                            <td style={{ padding: '1rem', fontWeight: 600 }}>{prop.price}</td>
-                            <td style={{ padding: '1rem' }}>
-                              <span style={{
-                                padding: '0.2rem 0.6rem',
-                                borderRadius: '20px',
-                                fontSize: '0.75rem',
-                                fontWeight: 600,
-                                background: prop.status === 'Available' ? '#d1fae5' : prop.status === 'Sold' ? '#f3f4f6' : '#fef3c7',
-                                color: prop.status === 'Available' ? '#065f46' : prop.status === 'Sold' ? '#374151' : '#92400e'
-                              }}>
-                                {prop.status}
-                              </span>
-                            </td>
-                            <td style={{ padding: '1rem', textAlign: 'right' }}>
-                              <button 
-                                onClick={() => handleOpenEditForm(prop)} 
-                                style={{ marginRight: '0.5rem', background: 'transparent', border: '1px solid var(--primary-color)', color: 'var(--primary-dark)', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
-                              >
-                                Edit
-                              </button>
-                              <button 
-                                onClick={() => handlePropertyDelete(prop.id, prop.title)} 
-                                style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
-                              >
-                                Delete
-                              </button>
-                            </td>
-                          </tr>
-                        ))
+                        properties.map((prop) => {
+                          // count flats inside this property
+                          let totalFlats = 0;
+                          if (prop.floors && Array.isArray(prop.floors)) {
+                            prop.floors.forEach(lvl => {
+                              if (lvl.flats && Array.isArray(lvl.flats)) {
+                                totalFlats += lvl.flats.length;
+                              }
+                            });
+                          }
+
+                          return (
+                            <tr key={prop.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
+                              <td style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <img src={prop.image} alt={prop.title} style={{ width: '50px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={(e) => { e.target.src = '/listing_villa.png' }} />
+                                <div>
+                                  <div style={{ fontWeight: 600, color: 'var(--text-dark)' }}>{prop.title}</div>
+                                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                                    🛏️ {prop.beds} Beds | 🚿 {prop.baths} Baths{prop.size ? ` | 📏 ${prop.size}` : ''} | 🏢 {totalFlats} Total Flats
+                                  </div>
+                                </div>
+                              </td>
+                              <td style={{ padding: '1rem', textTransform: 'capitalize' }}>{prop.category}</td>
+                              <td style={{ padding: '1rem', textTransform: 'capitalize' }}>{prop.type}</td>
+                              <td style={{ padding: '1rem' }}>{prop.location}</td>
+                              <td style={{ padding: '1rem', fontWeight: 600 }}>{prop.price}</td>
+                              <td style={{ padding: '1rem' }}>
+                                <span style={{
+                                  padding: '0.2rem 0.6rem',
+                                  borderRadius: '20px',
+                                  fontSize: '0.75rem',
+                                  fontWeight: 600,
+                                  background: prop.status === 'Available' ? '#d1fae5' : prop.status === 'Sold' ? '#f3f4f6' : '#fef3c7',
+                                  color: prop.status === 'Available' ? '#065f46' : prop.status === 'Sold' ? '#374151' : '#92400e'
+                                }}>
+                                  {prop.status}
+                                </span>
+                              </td>
+                              <td style={{ padding: '1rem', textAlign: 'right' }}>
+                                <button 
+                                  onClick={() => handleOpenEditForm(prop)} 
+                                  style={{ marginRight: '0.5rem', background: 'transparent', border: '1px solid var(--primary-color)', color: 'var(--primary-dark)', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
+                                >
+                                  Edit
+                                </button>
+                                <button 
+                                  onClick={() => handlePropertyDelete(prop.id, prop.title)} 
+                                  style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
+                                >
+                                  Delete
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })
                       )}
                     </tbody>
                   </table>
@@ -585,7 +665,7 @@ export default function AdminDashboard() {
               <form onSubmit={handlePropertySubmit}>
                 
                 <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.2rem', flexWrap: 'wrap' }}>
-                  <div style={{ flex: 1, minWidth: '200px' }}>
+                  <div style={{ flex: 2, minWidth: '200px' }}>
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Title</label>
                     <input 
                       type="text" required placeholder="The Oasis Villa"
@@ -594,8 +674,8 @@ export default function AdminDashboard() {
                       style={inputStyle}
                     />
                   </div>
-                  <div style={{ flex: 1, minWidth: '200px' }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Price (Formatted Text)</label>
+                  <div style={{ flex: 1, minWidth: '120px' }}>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Price (e.g. $4.5M)</label>
                     <input 
                       type="text" required placeholder="$4,500,000"
                       value={propertyForm.price} 
@@ -708,7 +788,7 @@ export default function AdminDashboard() {
 
                 <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.2rem', flexWrap: 'wrap' }}>
                   <div style={{ flex: 1 }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Beds</label>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Overall Beds</label>
                     <input 
                       type="number" min="0" required
                       value={propertyForm.beds} 
@@ -717,7 +797,7 @@ export default function AdminDashboard() {
                     />
                   </div>
                   <div style={{ flex: 1 }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Baths</label>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Overall Baths</label>
                     <input 
                       type="number" min="0" required
                       value={propertyForm.baths} 
@@ -726,7 +806,7 @@ export default function AdminDashboard() {
                     />
                   </div>
                   <div style={{ flex: 1, minWidth: '150px' }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Size (e.g. 1,250 Sq. Ft.)</label>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Overall Size</label>
                     <input 
                       type="text" placeholder="1,250 Sq. Ft."
                       value={propertyForm.size || ''} 
@@ -770,74 +850,93 @@ export default function AdminDashboard() {
                   />
                 </div>
 
-                {/* Floors & Interactive Levels Manager */}
+                {/* Floors & Dynamic Flats schematic manager */}
                 <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem', marginBottom: '2rem' }}>
-                  <h4 style={{ fontSize: '1.1rem', fontFamily: 'serif', marginBottom: '0.5rem', color: 'var(--text-dark)' }}>Floors & Levels Schematic</h4>
+                  <h4 style={{ fontSize: '1.2rem', fontFamily: 'serif', marginBottom: '0.5rem', color: 'var(--text-dark)' }}>Building Structure Manager</h4>
                   <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1.2rem' }}>
-                    Define customized units/levels (e.g. Level 202, Rooftop, Penthouse 501) to populate on the interactive 3D floor plan.
+                    Define the levels of this building and add individual flats/units to each level with their own size, price, rooms, and availability status.
                   </p>
 
-                  {/* List of current levels */}
+                  {/* List of current levels and flats */}
                   {propertyForm.floors && propertyForm.floors.length > 0 ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>
-                      {propertyForm.floors.map((floor, index) => (
-                        <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f9f9f9', padding: '0.8rem 1rem', borderRadius: '8px', border: '1px solid #eaeaea', fontSize: '0.85rem' }}>
-                          <div>
-                            <strong>{floor.name}</strong> (ID/Num: {floor.id}) | <span style={{ color: 'var(--primary-dark)', fontWeight: 600 }}>{floor.price}</span> | <span style={{ fontWeight: 600 }}>{floor.status}</span>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>Yield: {floor.yield} | Features: {floor.features}</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', marginBottom: '1.5rem' }}>
+                      {propertyForm.floors.map((level) => (
+                        <div key={level.id} style={{ background: '#fafafa', padding: '1.2rem', borderRadius: '12px', border: '1px solid #eaeaea' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>
+                            <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-dark)' }}>
+                              🏢 {level.name} <span style={{ fontWeight: 400, fontSize: '0.8rem', color: 'var(--text-muted)' }}>(ID: {level.id})</span>
+                            </span>
+                            <button type="button" onClick={() => handleRemoveLevel(level.id)} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem' }}>
+                              Delete Level
+                            </button>
                           </div>
-                          <button type="button" onClick={() => handleRemoveFloor(index)} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}>
-                            Remove
-                          </button>
+
+                          {/* List flats in this level */}
+                          {level.flats && level.flats.length > 0 ? (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
+                              {level.flats.map((flat, fIdx) => (
+                                <div key={fIdx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#FFFFFF', padding: '0.6rem 0.8rem', borderRadius: '8px', border: '1px solid #eee', fontSize: '0.8rem' }}>
+                                  <div>
+                                    <strong>{flat.name}</strong> | <span style={{ color: 'var(--primary-dark)', fontWeight: 600 }}>{flat.price}</span> | {flat.size} | {flat.beds}b/{flat.baths}ba | <span style={{ fontWeight: 600, color: flat.status === 'Available' ? '#16a34a' : flat.status === 'Sold' ? '#dc2626' : '#d97706' }}>{flat.status}</span>
+                                  </div>
+                                  <button type="button" onClick={() => handleRemoveFlat(level.id, fIdx)} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold', padding: '0 0.2rem' }}>
+                                    &times;
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic', marginBottom: '1rem' }}>No flats added to this level yet.</p>
+                          )}
+
+                          {/* Add flat inline form */}
+                          <div style={{ background: '#ffffff', padding: '1rem', borderRadius: '8px', border: '1px solid #eaeaea' }}>
+                            <strong style={{ fontSize: '0.8rem', display: 'block', marginBottom: '0.5rem', color: 'var(--text-dark)' }}>+ Add Flat to {level.name}</strong>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                              <input type="text" placeholder="Flat Name (e.g. 101)" value={flatForms[level.id]?.name || ''} onChange={(e) => updateFlatForm(level.id, 'name', e.target.value)} style={smallInputStyle} />
+                              <input type="text" placeholder="Price (e.g. $450,000)" value={flatForms[level.id]?.price || ''} onChange={(e) => updateFlatForm(level.id, 'price', e.target.value)} style={smallInputStyle} />
+                              <input type="text" placeholder="Size (e.g. 950 Sq. Ft.)" value={flatForms[level.id]?.size || ''} onChange={(e) => updateFlatForm(level.id, 'size', e.target.value)} style={smallInputStyle} />
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', gap: '0.5rem', marginBottom: '0.8rem' }}>
+                              <input type="number" placeholder="Beds" min="0" value={flatForms[level.id]?.beds || 0} onChange={(e) => updateFlatForm(level.id, 'beds', e.target.value)} style={smallInputStyle} />
+                              <input type="number" placeholder="Baths" min="0" value={flatForms[level.id]?.baths || 0} onChange={(e) => updateFlatForm(level.id, 'baths', e.target.value)} style={smallInputStyle} />
+                              <select value={flatForms[level.id]?.status || 'Available'} onChange={(e) => updateFlatForm(level.id, 'status', e.target.value)} style={smallInputStyle}>
+                                <option value="Available">Available</option>
+                                <option value="Sold">Sold</option>
+                                <option value="Commercial">Commercial</option>
+                              </select>
+                            </div>
+                            <button type="button" onClick={() => handleAddFlat(level.id)} className="btn-solid" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', background: 'var(--primary-dark)', width: 'auto', borderRadius: '4px' }}>
+                              + Add Flat
+                            </button>
+                          </div>
+
                         </div>
                       ))}
                     </div>
                   ) : (
                     <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontStyle: 'italic', marginBottom: '1.5rem', textAlign: 'center', background: '#fafafa', padding: '1rem', borderRadius: '8px' }}>
-                      No custom levels configured. Will display realistic defaults based on category.
+                      No levels configured yet. Add levels below to build your building structure.
                     </p>
                   )}
 
                   {/* Add level helper form */}
                   <div style={{ background: '#f5f5f5', padding: '1.2rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-                    <h5 style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.8rem', color: 'var(--text-dark)' }}>Add Level / Unit</h5>
+                    <h5 style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.8rem', color: 'var(--text-dark)' }}>Add Level / Floor</h5>
                     
-                    <div style={{ display: 'flex', gap: '0.8rem', marginBottom: '0.8rem', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
                       <div style={{ flex: 1, minWidth: '100px' }}>
                         <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Level ID (Numeric Order)</label>
-                        <input type="number" placeholder="202" value={newFloor.id} onChange={e => setNewFloor({...newFloor, id: e.target.value})} style={smallInputStyle} />
+                        <input type="number" placeholder="3" value={newLevel.id} onChange={e => setNewLevel({...newLevel, id: e.target.value})} style={smallInputStyle} />
                       </div>
-                      <div style={{ flex: 1, minWidth: '120px' }}>
+                      <div style={{ flex: 2, minWidth: '150px' }}>
                         <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Level Name</label>
-                        <input type="text" placeholder="Level 202" value={newFloor.name} onChange={e => setNewFloor({...newFloor, name: e.target.value})} style={smallInputStyle} />
-                      </div>
-                      <div style={{ flex: 1, minWidth: '120px' }}>
-                        <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Price</label>
-                        <input type="text" placeholder="$1,200,000" value={newFloor.price} onChange={e => setNewFloor({...newFloor, price: e.target.value})} style={smallInputStyle} />
+                        <input type="text" placeholder="Level 3 - Bedrooms" value={newLevel.name} onChange={e => setNewLevel({...newLevel, name: e.target.value})} style={smallInputStyle} />
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '0.8rem', marginBottom: '1.2rem', flexWrap: 'wrap' }}>
-                      <div style={{ flex: 1, minWidth: '100px' }}>
-                        <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Status</label>
-                        <select value={newFloor.status} onChange={e => setNewFloor({...newFloor, status: e.target.value})} style={smallInputStyle}>
-                          <option value="Available">Available</option>
-                          <option value="Sold">Sold</option>
-                          <option value="Commercial">Commercial</option>
-                        </select>
-                      </div>
-                      <div style={{ flex: 1, minWidth: '100px' }}>
-                        <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Est. Yield</label>
-                        <input type="text" placeholder="5.8%" value={newFloor.yield} onChange={e => setNewFloor({...newFloor, yield: e.target.value})} style={smallInputStyle} />
-                      </div>
-                      <div style={{ flex: 2, minWidth: '160px' }}>
-                        <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Features</label>
-                        <input type="text" placeholder="2 beds, private balcony" value={newFloor.features} onChange={e => setNewFloor({...newFloor, features: e.target.value})} style={smallInputStyle} />
-                      </div>
-                    </div>
-
-                    <button type="button" onClick={handleAddFloor} className="btn-solid" style={{ padding: '0.6rem 1.2rem', fontSize: '0.8rem', background: 'var(--primary-dark)', width: 'auto', borderRadius: '6px' }}>
-                      + ADD LEVEL TO SCHEMATIC
+                    <button type="button" onClick={handleAddLevel} className="btn-solid" style={{ padding: '0.6rem 1.2rem', fontSize: '0.8rem', background: 'var(--primary-dark)', width: 'auto', borderRadius: '6px', marginTop: '1rem' }}>
+                      + CREATE LEVEL
                     </button>
                   </div>
                 </div>

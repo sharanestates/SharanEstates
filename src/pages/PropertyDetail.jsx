@@ -50,6 +50,21 @@ export default function PropertyDetail() {
     });
   };
 
+  const sanitizeFloors = (data) => {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if (typeof data === 'string') {
+      try {
+        const parsed = JSON.parse(data);
+        if (Array.isArray(parsed)) return parsed;
+        return [];
+      } catch (e) {
+        return [];
+      }
+    }
+    return [];
+  };
+
   if (loading) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-light)' }}>
@@ -109,7 +124,7 @@ export default function PropertyDetail() {
 
         {/* Right Side: Interactive Floor Plan */}
         <div style={{ flex: '1 1 500px', minHeight: '600px' }}>
-           <InteractiveFloorPlan propertyType={isVilla ? 'villa' : 'apartment'} floorsData={property.floors} />
+           <InteractiveFloorPlan propertyType={isVilla ? 'villa' : 'apartment'} floorsData={sanitizeFloors(property.floors)} />
         </div>
 
       </div>

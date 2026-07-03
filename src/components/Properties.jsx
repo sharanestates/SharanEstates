@@ -19,43 +19,14 @@ export default function Properties() {
           // Take the first 3 properties for homepage
           setProperties(data.slice(0, 3));
         } else {
-          loadMockProperties();
+          setProperties([]);
         }
       })
       .catch(err => {
-        console.warn('Failed to fetch featured properties, loading mock properties:', err.message);
-        loadMockProperties();
+        console.warn('Failed to fetch featured properties:', err.message);
+        setProperties([]);
       });
   }, []);
-
-  const loadMockProperties = () => {
-    setProperties([
-      {
-        id: 'villa-1',
-        title: 'The Serene Oasis',
-        price: '$8,500,000',
-        image: '/exterior_patio.png',
-        description: 'A pinnacle of modern engineering, offering an infinity pool with seamless sunset views.',
-        status: 'Just Listed'
-      },
-      {
-        id: 'apt-1',
-        title: 'Zenith Penthouse',
-        price: '$4,200,000',
-        image: '/interior_lounge.png',
-        description: 'Ultra-luxury interiors matched with expansive spaces, warm wood accents, and minimalist design.',
-        status: 'Turnkey'
-      },
-      {
-        id: 'villa-2',
-        title: 'Concrete Sanctuary',
-        price: '$6,100,000',
-        image: '/listing_villa.png',
-        description: 'Solid modern architecture blending raw materials with premium finishes.',
-        status: 'Off-Plan'
-      }
-    ]);
-  };
 
   useLayoutEffect(() => {
     if (properties.length === 0) return;
@@ -78,8 +49,9 @@ export default function Properties() {
         });
       });
     });
-    return () => ctx.revert();
   }, [properties]);
+
+  if (properties.length === 0) return null;
 
   return (
     <section id="properties" className="section" style={{ background: 'var(--bg-light)', padding: '8rem 0' }}>

@@ -103,7 +103,6 @@ export default function Navbar() {
 
         <li style={{ display: 'flex', alignItems: 'center' }}><Link to="/#properties" style={{ display: 'flex', alignItems: 'center', height: '100%', padding: '0.5rem 0' }}>Catalogue</Link></li>
         <li style={{ display: 'flex', alignItems: 'center' }}><Link to="/about" style={{ display: 'flex', alignItems: 'center', height: '100%', padding: '0.5rem 0' }}>About Us</Link></li>
-        <li style={{ display: 'flex', alignItems: 'center' }}><Link to="/admin" style={{ display: 'flex', alignItems: 'center', height: '100%', padding: '0.5rem 0' }}>Admin</Link></li>
       </ul>
 
       <button className="btn-solid" onClick={() => setIsModalOpen(true)}>Register Interest</button>

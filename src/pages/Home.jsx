@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Tilt from 'react-parallax-tilt';
 import FilterWidget from '../components/FilterWidget';
 import ScannerCard from '../components/ScannerCard';
+import Properties from '../components/Properties';
 
 export default function Home() {
   const [propertyValue, setPropertyValue] = useState(500000);
@@ -65,6 +66,9 @@ export default function Home() {
           <Link to="/about" className="btn-solid" style={{ background: 'var(--text-dark)', color: '#FFF' }}>Discover Our Story</Link>
         </div>
       </section>
+
+      {/* Featured Properties Portfolio */}
+      <Properties />
 
       {/* Interactive Cost Calculator */}
       <section id="calculator" className="section" style={{ background: 'var(--bg-lighter)', padding: '6rem 0' }}>

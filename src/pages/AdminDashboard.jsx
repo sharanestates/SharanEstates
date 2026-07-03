@@ -39,6 +39,23 @@ export default function AdminDashboard() {
 
   const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
 
+  // Sanitizes levels/floors configuration to guarantee it is always a parsed Array
+  const sanitizeFloorsArray = (data) => {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if (typeof data === 'string') {
+      try {
+        const parsed = JSON.parse(data);
+        if (Array.isArray(parsed)) return parsed;
+        return [];
+      } catch (e) {
+        console.warn("Failed to parse floors:", e);
+        return [];
+      }
+    }
+    return [];
+  };
+
   const checkAuth = () => {
     const token = localStorage.getItem('adminToken');
     if (token) {
@@ -138,7 +155,7 @@ export default function AdminDashboard() {
       type: prop.type,
       location: prop.location || 'Prime District',
       status: prop.status || 'Available',
-      floors: prop.floors || []
+      floors: sanitizeFloorsArray(prop.floors)
     });
     setFlatForms({});
     setNewLevel({ id: '', name: '' });
@@ -236,14 +253,17 @@ export default function AdminDashboard() {
   };
 
   // Floors & Building Structure Manager
-  const handleAddLevel = () => {
+  const handleAddLevel = (e) => {
+    if (e) e.preventDefault();
     if (!newLevel.id || !newLevel.name) {
       alert("Please fill in Level ID and Level Name.");
       return;
     }
 
     const lvlId = parseInt(newLevel.id);
-    if ((propertyForm.floors || []).some(lvl => lvl.id === lvlId)) {
+    const currentFloors = sanitizeFloorsArray(propertyForm.floors);
+
+    if (currentFloors.some(lvl => lvl.id === lvlId)) {
       alert("A level with this numeric ID already exists.");
       return;
     }
@@ -255,7 +275,7 @@ export default function AdminDashboard() {
     };
 
     // Sort levels descending (highest ID at the top)
-    const updatedFloors = [...(propertyForm.floors || []), newLvlObj].sort((a, b) => b.id - a.id);
+    const updatedFloors = [...currentFloors, newLvlObj].sort((a, b) => b.id - a.id);
 
     setPropertyForm({
       ...propertyForm,
@@ -265,9 +285,11 @@ export default function AdminDashboard() {
     setNewLevel({ id: '', name: '' });
   };
 
-  const handleRemoveLevel = (levelId) => {
+  const handleRemoveLevel = (levelId, e) => {
+    if (e) e.preventDefault();
     if (!window.confirm("Are you sure you want to delete this level and all its flats?")) return;
-    const updatedFloors = (propertyForm.floors || []).filter(lvl => lvl.id !== levelId);
+    const currentFloors = sanitizeFloorsArray(propertyForm.floors);
+    const updatedFloors = currentFloors.filter(lvl => lvl.id !== levelId);
     setPropertyForm({
       ...propertyForm,
       floors: updatedFloors
@@ -284,7 +306,8 @@ export default function AdminDashboard() {
     }));
   };
 
-  const handleAddFlat = (levelId) => {
+  const handleAddFlat = (levelId, e) => {
+    if (e) e.preventDefault();
     const form = flatForms[levelId];
     if (!form || !form.name || !form.price) {
       alert("Please fill in at least Flat Name and Price.");
@@ -300,7 +323,8 @@ export default function AdminDashboard() {
       status: form.status || 'Available'
     };
 
-    const updatedFloors = (propertyForm.floors || []).map(lvl => {
+    const currentFloors = sanitizeFloorsArray(propertyForm.floors);
+    const updatedFloors = currentFloors.map(lvl => {
       if (lvl.id === levelId) {
         return {
           ...lvl,
@@ -329,8 +353,10 @@ export default function AdminDashboard() {
     }));
   };
 
-  const handleRemoveFlat = (levelId, flatIndex) => {
-    const updatedFloors = (propertyForm.floors || []).map(lvl => {
+  const handleRemoveFlat = (levelId, flatIndex, e) => {
+    if (e) e.preventDefault();
+    const currentFloors = sanitizeFloorsArray(propertyForm.floors);
+    const updatedFloors = currentFloors.map(lvl => {
       if (lvl.id === levelId) {
         return {
           ...lvl,
@@ -342,6 +368,20 @@ export default function AdminDashboard() {
     setPropertyForm({
       ...propertyForm,
       floors: updatedFloors
+    });
+  };
+
+  // Pre-populate standard structure to save manual typing
+  const handlePrepopulateFloors = (e) => {
+    if (e) e.preventDefault();
+    const defaultStructure = [
+      { id: 3, name: 'Level 3', flats: [] },
+      { id: 2, name: 'Level 2', flats: [] },
+      { id: 1, name: 'Level 1', flats: [] }
+    ];
+    setPropertyForm({
+      ...propertyForm,
+      floors: defaultStructure
     });
   };
 
@@ -497,15 +537,13 @@ export default function AdminDashboard() {
                         </tr>
                       ) : (
                         properties.map((prop) => {
-                          // count flats inside this property
+                          const floorsArray = sanitizeFloorsArray(prop.floors);
                           let totalFlats = 0;
-                          if (prop.floors && Array.isArray(prop.floors)) {
-                            prop.floors.forEach(lvl => {
-                              if (lvl.flats && Array.isArray(lvl.flats)) {
-                                totalFlats += lvl.flats.length;
-                              }
-                            });
-                          }
+                          floorsArray.forEach(lvl => {
+                            if (lvl.flats && Array.isArray(lvl.flats)) {
+                              totalFlats += lvl.flats.length;
+                            }
+                          });
 
                           return (
                             <tr key={prop.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
@@ -857,16 +895,22 @@ export default function AdminDashboard() {
                     Define the levels of this building and add individual flats/units to each level with their own size, price, rooms, and availability status.
                   </p>
 
+                  <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+                    <button type="button" onClick={handlePrepopulateFloors} className="btn-solid" style={{ background: '#737373', fontSize: '0.8rem', padding: '0.5rem 1rem', borderRadius: '6px', width: 'auto' }}>
+                      ⚡ Pre-populate Standard Levels (1 to 3)
+                    </button>
+                  </div>
+
                   {/* List of current levels and flats */}
-                  {propertyForm.floors && propertyForm.floors.length > 0 ? (
+                  {sanitizeFloorsArray(propertyForm.floors).length > 0 ? (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', marginBottom: '1.5rem' }}>
-                      {propertyForm.floors.map((level) => (
+                      {sanitizeFloorsArray(propertyForm.floors).map((level) => (
                         <div key={level.id} style={{ background: '#fafafa', padding: '1.2rem', borderRadius: '12px', border: '1px solid #eaeaea' }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>
                             <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-dark)' }}>
                               🏢 {level.name} <span style={{ fontWeight: 400, fontSize: '0.8rem', color: 'var(--text-muted)' }}>(ID: {level.id})</span>
                             </span>
-                            <button type="button" onClick={() => handleRemoveLevel(level.id)} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem' }}>
+                            <button type="button" onClick={(e) => handleRemoveLevel(level.id, e)} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem' }}>
                               Delete Level
                             </button>
                           </div>
@@ -879,7 +923,7 @@ export default function AdminDashboard() {
                                   <div>
                                     <strong>{flat.name}</strong> | <span style={{ color: 'var(--primary-dark)', fontWeight: 600 }}>{flat.price}</span> | {flat.size} | {flat.beds}b/{flat.baths}ba | <span style={{ fontWeight: 600, color: flat.status === 'Available' ? '#16a34a' : flat.status === 'Sold' ? '#dc2626' : '#d97706' }}>{flat.status}</span>
                                   </div>
-                                  <button type="button" onClick={() => handleRemoveFlat(level.id, fIdx)} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold', padding: '0 0.2rem' }}>
+                                  <button type="button" onClick={(e) => handleRemoveFlat(level.id, fIdx, e)} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold', padding: '0 0.2rem' }}>
                                     &times;
                                   </button>
                                 </div>
@@ -906,7 +950,7 @@ export default function AdminDashboard() {
                                 <option value="Commercial">Commercial</option>
                               </select>
                             </div>
-                            <button type="button" onClick={() => handleAddFlat(level.id)} className="btn-solid" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', background: 'var(--primary-dark)', width: 'auto', borderRadius: '4px' }}>
+                            <button type="button" onClick={(e) => handleAddFlat(level.id, e)} className="btn-solid" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', background: 'var(--primary-dark)', width: 'auto', borderRadius: '4px' }}>
                               + Add Flat
                             </button>
                           </div>
@@ -916,7 +960,7 @@ export default function AdminDashboard() {
                     </div>
                   ) : (
                     <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontStyle: 'italic', marginBottom: '1.5rem', textAlign: 'center', background: '#fafafa', padding: '1rem', borderRadius: '8px' }}>
-                      No levels configured yet. Add levels below to build your building structure.
+                      No levels configured yet. Add levels below or click Pre-populate to build your building structure.
                     </p>
                   )}
 
@@ -935,7 +979,7 @@ export default function AdminDashboard() {
                       </div>
                     </div>
 
-                    <button type="button" onClick={handleAddLevel} className="btn-solid" style={{ padding: '0.6rem 1.2rem', fontSize: '0.8rem', background: 'var(--primary-dark)', width: 'auto', borderRadius: '6px', marginTop: '1rem' }}>
+                    <button type="button" onClick={(e) => handleAddLevel(e)} className="btn-solid" style={{ padding: '0.6rem 1.2rem', fontSize: '0.8rem', background: 'var(--primary-dark)', width: 'auto', borderRadius: '6px', marginTop: '1rem' }}>
                       + CREATE LEVEL
                     </button>
                   </div>

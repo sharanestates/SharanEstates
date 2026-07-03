@@ -31,19 +31,19 @@ export default function Home() {
         
         <div className="container" style={{ display: 'flex', justifyContent: 'center', width: '100%', zIndex: 1, padding: '0 1.5rem' }}>
           
-          {/* Centered Glassmorphic Content Card */}
-          <div className="glossy-glass" style={{ maxWidth: '800px', width: '100%', padding: '3.5rem 2.5rem', borderRadius: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', background: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.4)', boxShadow: '0 30px 60px rgba(0,0,0,0.1)' }}>
+          {/* Centered Content — fully transparent, no card */}
+          <div style={{ maxWidth: '800px', width: '100%', padding: '2rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
             
-            <p style={{ color: 'var(--primary-dark)', fontSize: '0.85rem', letterSpacing: '2px', fontWeight: 600, textTransform: 'uppercase', marginBottom: '1rem' }}>
+            <p style={{ color: 'var(--primary-dark)', fontSize: '0.85rem', letterSpacing: '3px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '1rem', textShadow: '0 1px 4px rgba(255,255,255,0.6)' }}>
               Proptech Workspace
             </p>
             
-            <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: 'var(--text-dark)', lineHeight: 1.15, fontWeight: 400, fontFamily: 'serif', marginBottom: '1.2rem' }}>
+            <h1 style={{ fontSize: 'clamp(2.8rem, 5.5vw, 5rem)', color: 'var(--text-dark)', lineHeight: 1.1, fontWeight: 400, fontFamily: 'serif', marginBottom: '1.2rem', textShadow: '0 2px 8px rgba(255,255,255,0.5)' }}>
               Luxury Investment <br />
               <span style={{ color: 'var(--primary-color)' }}>Advisory Portal</span>
             </h1>
             
-            <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', lineHeight: 1.6, maxWidth: '600px', marginBottom: '1rem' }}>
+            <p style={{ fontSize: '1rem', color: 'var(--text-muted)', lineHeight: 1.7, maxWidth: '580px', marginBottom: '1.5rem', textShadow: '0 1px 6px rgba(255,255,255,0.5)' }}>
               Welcome to the Sharan Estates portal. Filter units by interactive 3D floor highlights, simulate rental yields, and select properties for comparative checkout.
             </p>
             

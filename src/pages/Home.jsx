@@ -26,29 +26,44 @@ export default function Home() {
         {/* Background Layer */}
         <div className="hero-overlay"></div>
         <div className="grid-bg"></div>
-        {/* Enhanced background: no blur and higher opacity for a stunning look */}
         <img src="/light_exterior.png" alt="Background" className="hero-bg" style={{ filter: 'none', opacity: 0.85 }} />
         
-        <div className="container" style={{ display: 'flex', justifyContent: 'center', width: '100%', zIndex: 1, padding: '0 1.5rem' }}>
+        <div className="container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', zIndex: 1, padding: '0 2rem', gap: '2rem' }}>
           
-          {/* Centered Content — fully transparent, no card */}
-          <div style={{ maxWidth: '820px', width: '100%', padding: '2rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-            
-            <p style={{ color: 'var(--primary-dark)', fontSize: '0.85rem', letterSpacing: '3px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '1rem', textShadow: '0 1px 8px rgba(255,255,255,0.9), 0 0 20px rgba(255,255,255,0.6)' }}>
+          {/* Headline — floating, no card */}
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ color: 'var(--primary-dark)', fontSize: '0.82rem', letterSpacing: '3px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.8rem', textShadow: '0 1px 8px rgba(255,255,255,0.9)' }}>
               Proptech Workspace
             </p>
-            
-            <h1 style={{ fontSize: 'clamp(2.8rem, 5.5vw, 5rem)', color: 'var(--text-dark)', lineHeight: 1.1, fontWeight: 600, fontFamily: 'serif', marginBottom: '1.2rem', textShadow: '0 2px 12px rgba(255,255,255,0.8), 0 4px 24px rgba(255,255,255,0.5)' }}>
-              Luxury Investment <br />
-              <span style={{ color: 'var(--primary-color)', textShadow: '0 2px 12px rgba(255,255,255,0.7)' }}>Advisory Portal</span>
+            <h1 style={{ fontSize: 'clamp(3rem, 6vw, 5.5rem)', color: 'var(--text-dark)', lineHeight: 1.05, fontWeight: 600, fontFamily: 'serif', textShadow: '0 2px 16px rgba(255,255,255,0.7)' }}>
+              Luxury Investment
             </h1>
-            
-            <p style={{ fontSize: '1rem', color: '#3a3a3a', lineHeight: 1.7, maxWidth: '580px', marginBottom: '1.5rem', fontWeight: 500, textShadow: '0 1px 8px rgba(255,255,255,0.9), 0 0 16px rgba(255,255,255,0.7)' }}>
+          </div>
+
+          {/* Single Frosted Glass Card — description, search, stats */}
+          <div style={{
+            maxWidth: '780px', width: '100%',
+            background: 'rgba(255, 255, 255, 0.12)',
+            backdropFilter: 'blur(18px)',
+            WebkitBackdropFilter: 'blur(18px)',
+            border: '1px solid rgba(255, 255, 255, 0.25)',
+            borderRadius: '24px',
+            padding: '2.2rem 2.5rem',
+            boxShadow: '0 8px 40px rgba(0, 0, 0, 0.08)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '1.8rem'
+          }}>
+
+            {/* Description */}
+            <p style={{ fontSize: '1rem', color: '#2a2a2a', lineHeight: 1.7, textAlign: 'center', maxWidth: '600px', fontWeight: 500, margin: 0 }}>
               Welcome to the Sharan Estates portal. Filter units by interactive 3D floor highlights, simulate rental yields, and select properties for comparative checkout.
             </p>
-            
+
+            {/* Search & Tabs */}
             <FilterWidget />
-            
+
           </div>
 
         </div>

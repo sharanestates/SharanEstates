@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import AdminLogin from './AdminLogin';
 
 export default function AdminDashboard() {
@@ -27,6 +27,10 @@ export default function AdminDashboard() {
     status: 'Available',
     floors: []
   });
+
+  // State for dragging status & reference to file input
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef(null);
 
   // State for adding a new floor
   const [newFloor, setNewFloor] = useState({
@@ -187,10 +191,13 @@ export default function AdminDashboard() {
     }
   };
 
-  // Image upload to base64
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
+  // Process files from either click or drop
+  const handleFileProcessing = (file) => {
     if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file (jpg, png, webp, etc.)');
+      return;
+    }
 
     if (file.size > 2 * 1024 * 1024) {
       alert("Image size must be less than 2MB.");
@@ -202,6 +209,29 @@ export default function AdminDashboard() {
       setPropertyForm(prev => ({ ...prev, image: reader.result }));
     };
     reader.readAsDataURL(file);
+  };
+
+  // Image upload triggers
+  const handleImageUpload = (e) => {
+    handleFileProcessing(e.target.files[0]);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileProcessing(e.dataTransfer.files[0]);
+    }
   };
 
   // Floors Managers
@@ -574,25 +604,72 @@ export default function AdminDashboard() {
 
                 <div style={{ marginBottom: '1.2rem' }}>
                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Image Source</label>
-                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '0.5rem' }}>
+                  
+                  {/* Drag and Drop Zone */}
+                  <div 
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current.click()}
+                    style={{
+                      border: isDragging ? '2px dashed var(--primary-color)' : '2px dashed var(--border-color)',
+                      background: isDragging ? 'rgba(211, 185, 138, 0.08)' : '#fafafa',
+                      padding: '1.5rem',
+                      borderRadius: '12px',
+                      textAlign: 'center',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      marginBottom: '1rem',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minHeight: '140px',
+                      position: 'relative',
+                      overflow: 'hidden'
+                    }}
+                  >
                     <input 
                       type="file" 
+                      ref={fileInputRef}
                       accept="image/*" 
                       onChange={handleImageUpload} 
-                      style={{ fontSize: '0.85rem' }} 
+                      style={{ display: 'none' }} 
                     />
-                    <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>or enter URL below:</span>
+                    
+                    {propertyForm.image ? (
+                      <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+                        <img 
+                          src={propertyForm.image} 
+                          alt="Preview" 
+                          style={{ maxWidth: '100%', maxHeight: '180px', objectFit: 'contain', borderRadius: '8px' }} 
+                          onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                        <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: 'var(--primary-dark)', fontWeight: 600 }}>
+                          Click or drag to replace image
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem', opacity: 0.3 }}>📸</div>
+                        <div style={{ fontSize: '0.9rem', color: 'var(--text-dark)', fontWeight: 600 }}>Drag & drop image here</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>or click to browse files (Max 2MB)</div>
+                      </div>
+                    )}
                   </div>
+
+                  {/* Fallback URL input */}
+                  <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>Or paste direct Image URL:</label>
                   <input 
                     type="text" required placeholder="/listing_villa.png or paste image URL or upload above"
                     value={propertyForm.image} 
                     onChange={(e) => setPropertyForm({...propertyForm, image: e.target.value})}
                     style={inputStyle}
                   />
-                  {propertyForm.image && propertyForm.image.startsWith('data:image') && (
+                  {propertyForm.image && (
                     <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{ color: '#15803d', fontSize: '0.8rem', fontWeight: 600 }}>✓ File loaded successfully</span>
-                      <button type="button" onClick={() => setPropertyForm({ ...propertyForm, image: '' })} style={{ border: 'none', background: 'transparent', color: '#ef4444', fontSize: '0.8rem', cursor: 'pointer', textDecoration: 'underline' }}>Clear image</button>
+                      <span style={{ color: '#15803d', fontSize: '0.8rem', fontWeight: 600 }}>✓ Image loaded</span>
+                      <button type="button" onClick={() => setPropertyForm({ ...propertyForm, image: '' })} style={{ border: 'none', background: 'transparent', color: '#ef4444', fontSize: '0.8rem', cursor: 'pointer', textDecoration: 'underline' }}>Clear</button>
                     </div>
                   )}
                 </div>

@@ -1,38 +1,81 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Tilt from 'react-parallax-tilt';
 
 export default function Listings() {
   const { type, category } = useParams();
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Scroll to top on load
+  const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
+
+  // Scroll to top and fetch properties on load
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [type, category]);
+    setLoading(true);
 
-  // Determine images based on category
-  const isVilla = category === 'villas';
-  
-  const properties = [
-    {
-      id: isVilla ? 'villa-1' : 'apt-1',
-      title: isVilla ? 'The Oasis Concrete Villa' : 'Skyline Stone Residences',
-      price: isVilla ? '$4,500,000' : '$1,200,000',
-      image: isVilla ? '/listing_villa.png' : '/listing_apt.png',
-      desc: isVilla ? 'A solid, modern architectural masterpiece with brutalist aesthetics.' : 'Premium high-rise with stone facade and vertical gardens.',
-      beds: isVilla ? 5 : 2,
-      baths: isVilla ? 6 : 2
-    },
-    {
-      id: isVilla ? 'villa-2' : 'apt-2',
-      title: isVilla ? 'Desert Edge Sanctuary' : 'The Monolith Apartments',
-      price: isVilla ? '$5,200,000' : '$2,800,000',
-      image: isVilla ? '/listing_villa.png' : '/listing_apt.png',
-      desc: isVilla ? 'Expansive solid structure integrating wood and natural elements.' : 'Exclusive solid architecture with panoramic city views.',
-      beds: isVilla ? 6 : 4,
-      baths: isVilla ? 7 : 4
-    }
-  ];
+    fetch(`${API_BASE}/properties?category=${category}&type=${type}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setProperties(data);
+        } else {
+          // Fallback to mock data if database has no records
+          const isVilla = category === 'villas';
+          const mockData = [
+            {
+              id: isVilla ? 'villa-1' : 'apt-1',
+              title: isVilla ? 'The Oasis Concrete Villa' : 'Skyline Stone Residences',
+              price: isVilla ? '$4,500,000' : '$1,200,000',
+              image: isVilla ? '/listing_villa.png' : '/listing_apt.png',
+              description: isVilla ? 'A solid, modern architectural masterpiece with brutalist aesthetics.' : 'Premium high-rise with stone facade and vertical gardens.',
+              beds: isVilla ? 5 : 2,
+              baths: isVilla ? 6 : 2,
+              status: type === 'off-plan' ? 'Under Construction' : 'Available'
+            },
+            {
+              id: isVilla ? 'villa-2' : 'apt-2',
+              title: isVilla ? 'Desert Edge Sanctuary' : 'The Monolith Apartments',
+              price: isVilla ? '$5,200,000' : '$2,800,000',
+              image: isVilla ? '/listing_villa.png' : '/listing_apt.png',
+              description: isVilla ? 'Expansive solid structure integrating wood and natural elements.' : 'Exclusive solid architecture with panoramic city views.',
+              beds: isVilla ? 6 : 4,
+              baths: isVilla ? 7 : 4,
+              status: type === 'off-plan' ? 'Under Construction' : 'Available'
+            }
+          ];
+          setProperties(mockData);
+        }
+      })
+      .catch(err => {
+        console.warn('Backend fetch failed, using local fallback:', err.message);
+        const isVilla = category === 'villas';
+        const mockData = [
+          {
+            id: isVilla ? 'villa-1' : 'apt-1',
+            title: isVilla ? 'The Oasis Concrete Villa' : 'Skyline Stone Residences',
+            price: isVilla ? '$4,500,000' : '$1,200,000',
+            image: isVilla ? '/listing_villa.png' : '/listing_apt.png',
+            description: isVilla ? 'A solid, modern architectural masterpiece with brutalist aesthetics.' : 'Premium high-rise with stone facade and vertical gardens.',
+            beds: isVilla ? 5 : 2,
+            baths: isVilla ? 6 : 2,
+            status: type === 'off-plan' ? 'Under Construction' : 'Available'
+          },
+          {
+            id: isVilla ? 'villa-2' : 'apt-2',
+            title: isVilla ? 'Desert Edge Sanctuary' : 'The Monolith Apartments',
+            price: isVilla ? '$5,200,000' : '$2,800,000',
+            image: isVilla ? '/listing_villa.png' : '/listing_apt.png',
+            description: isVilla ? 'Expansive solid structure integrating wood and natural elements.' : 'Exclusive solid architecture with panoramic city views.',
+            beds: isVilla ? 6 : 4,
+            baths: isVilla ? 7 : 4,
+            status: type === 'off-plan' ? 'Under Construction' : 'Available'
+          }
+        ];
+        setProperties(mockData);
+      })
+      .finally(() => setLoading(false));
+  }, [type, category]);
 
   return (
     <div style={{ paddingTop: '8rem', minHeight: '100vh', background: 'var(--bg-light)' }}>
@@ -59,13 +102,13 @@ export default function Listings() {
                   <div style={{ height: '200px', position: 'relative' }}>
                     <img src={prop.image} alt={prop.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     <div style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(0,0,0,0.6)', color: '#FFF', padding: '0.4rem 1rem', borderRadius: '20px', fontSize: '0.8rem', backdropFilter: 'blur(5px)' }}>
-                      {type === 'off-plan' ? 'Under Construction' : 'Available'}
+                      {prop.status || (type === 'off-plan' ? 'Under Construction' : 'Available')}
                     </div>
                   </div>
 
                   <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
                     <h3 style={{ fontSize: '1.4rem', color: 'var(--text-dark)', marginBottom: '0.5rem' }}>{prop.title}</h3>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: 1.5, marginBottom: '1.5rem', flex: 1 }}>{prop.desc}</p>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: 1.5, marginBottom: '1.5rem', flex: 1 }}>{prop.desc || prop.description}</p>
                     
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
                       <div style={{ display: 'flex', gap: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 600 }}>

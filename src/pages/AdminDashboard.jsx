@@ -346,8 +346,8 @@ export default function AdminDashboard() {
         name: '',
         price: '',
         size: '',
-        beds: 0,
-        baths: 0,
+        beds: '',
+        baths: '',
         status: 'Available'
       }
     }));
@@ -934,24 +934,45 @@ export default function AdminDashboard() {
                           )}
 
                           {/* Add flat inline form */}
-                          <div style={{ background: '#ffffff', padding: '1rem', borderRadius: '8px', border: '1px solid #eaeaea' }}>
-                            <strong style={{ fontSize: '0.8rem', display: 'block', marginBottom: '0.5rem', color: 'var(--text-dark)' }}>+ Add Flat to {level.name}</strong>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                              <input type="text" placeholder="Flat Name (e.g. 101)" value={flatForms[level.id]?.name || ''} onChange={(e) => updateFlatForm(level.id, 'name', e.target.value)} style={smallInputStyle} />
-                              <input type="text" placeholder="Price (e.g. $450,000)" value={flatForms[level.id]?.price || ''} onChange={(e) => updateFlatForm(level.id, 'price', e.target.value)} style={smallInputStyle} />
-                              <input type="text" placeholder="Size (e.g. 950 Sq. Ft.)" value={flatForms[level.id]?.size || ''} onChange={(e) => updateFlatForm(level.id, 'size', e.target.value)} style={smallInputStyle} />
+                          <div style={{ background: '#ffffff', padding: '1.2rem', borderRadius: '10px', border: '1px solid #eaeaea', marginTop: '1rem' }}>
+                            <strong style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.8rem', color: 'var(--text-dark)' }}>+ Add Flat to {level.name}</strong>
+                            
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.8rem', marginBottom: '0.8rem' }}>
+                              <div>
+                                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '0.2rem' }}>Flat Name / No.</label>
+                                <input type="text" placeholder="e.g. 101" value={flatForms[level.id]?.name || ''} onChange={(e) => updateFlatForm(level.id, 'name', e.target.value)} style={smallInputStyle} />
+                              </div>
+                              <div>
+                                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '0.2rem' }}>Price</label>
+                                <input type="text" placeholder="e.g. $450,000" value={flatForms[level.id]?.price || ''} onChange={(e) => updateFlatForm(level.id, 'price', e.target.value)} style={smallInputStyle} />
+                              </div>
+                              <div>
+                                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '0.2rem' }}>Size (Area)</label>
+                                <input type="text" placeholder="e.g. 950 Sq. Ft." value={flatForms[level.id]?.size || ''} onChange={(e) => updateFlatForm(level.id, 'size', e.target.value)} style={smallInputStyle} />
+                              </div>
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', gap: '0.5rem', marginBottom: '0.8rem' }}>
-                              <input type="number" placeholder="Beds" min="0" value={flatForms[level.id]?.beds || 0} onChange={(e) => updateFlatForm(level.id, 'beds', e.target.value)} style={smallInputStyle} />
-                              <input type="number" placeholder="Baths" min="0" value={flatForms[level.id]?.baths || 0} onChange={(e) => updateFlatForm(level.id, 'baths', e.target.value)} style={smallInputStyle} />
-                              <select value={flatForms[level.id]?.status || 'Available'} onChange={(e) => updateFlatForm(level.id, 'status', e.target.value)} style={smallInputStyle}>
-                                <option value="Available">Available</option>
-                                <option value="Sold">Sold</option>
-                                <option value="Commercial">Commercial</option>
-                              </select>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.8rem', marginBottom: '1rem' }}>
+                              <div>
+                                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '0.2rem' }}>Bedrooms</label>
+                                <input type="number" placeholder="No. of rooms" min="0" value={flatForms[level.id]?.beds === undefined || flatForms[level.id]?.beds === null ? '' : flatForms[level.id]?.beds} onChange={(e) => updateFlatForm(level.id, 'beds', e.target.value)} style={smallInputStyle} />
+                              </div>
+                              <div>
+                                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '0.2rem' }}>Washrooms</label>
+                                <input type="number" placeholder="No. of baths" min="0" value={flatForms[level.id]?.baths === undefined || flatForms[level.id]?.baths === null ? '' : flatForms[level.id]?.baths} onChange={(e) => updateFlatForm(level.id, 'baths', e.target.value)} style={smallInputStyle} />
+                              </div>
+                              <div>
+                                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '0.2rem' }}>Status</label>
+                                <select value={flatForms[level.id]?.status || 'Available'} onChange={(e) => updateFlatForm(level.id, 'status', e.target.value)} style={smallInputStyle}>
+                                  <option value="Available">Available</option>
+                                  <option value="Sold">Sold</option>
+                                  <option value="Commercial">Commercial</option>
+                                </select>
+                              </div>
                             </div>
-                            <button type="button" onClick={(e) => handleAddFlat(level.id, e)} className="btn-solid" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', background: 'var(--primary-dark)', width: 'auto', borderRadius: '4px' }}>
-                              + Add Flat
+                            
+                            <button type="button" onClick={(e) => handleAddFlat(level.id, e)} className="btn-solid" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', background: 'var(--primary-dark)', width: 'auto', borderRadius: '6px' }}>
+                              + Add Flat to level
                             </button>
                           </div>
 

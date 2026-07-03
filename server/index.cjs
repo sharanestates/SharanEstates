@@ -150,7 +150,7 @@ app.get('/api/properties/:id', async (req, res) => {
 
 // Create Property (Admin Only)
 app.post('/api/properties', authenticateToken, async (req, res) => {
-  const { title, price, image, description, beds, baths, category, type, location, status } = req.body;
+  const { title, price, image, description, beds, baths, category, type, location, status, floors } = req.body;
   
   if (!title || !price || !image || !category || !type) {
     return res.status(400).json({ error: 'Missing required property fields' });
@@ -159,8 +159,8 @@ app.post('/api/properties', authenticateToken, async (req, res) => {
   try {
     const sql = `
       INSERT INTO properties 
-      (title, price, image, description, beds, baths, category, type, location, status) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
+      (title, price, image, description, beds, baths, category, type, location, status, floors) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
       RETURNING *
     `;
     const values = [
@@ -173,7 +173,8 @@ app.post('/api/properties', authenticateToken, async (req, res) => {
       category, 
       type, 
       location || 'Prime District', 
-      status || 'Available'
+      status || 'Available',
+      JSON.stringify(floors || [])
     ];
 
     const result = await pool.query(sql, values);
@@ -187,7 +188,7 @@ app.post('/api/properties', authenticateToken, async (req, res) => {
 // Update Property (Admin Only)
 app.put('/api/properties/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;
-  const { title, price, image, description, beds, baths, category, type, location, status } = req.body;
+  const { title, price, image, description, beds, baths, category, type, location, status, floors } = req.body;
 
   if (!title || !price || !image || !category || !type) {
     return res.status(400).json({ error: 'Missing required property fields' });
@@ -197,8 +198,8 @@ app.put('/api/properties/:id', authenticateToken, async (req, res) => {
     const sql = `
       UPDATE properties 
       SET title = $1, price = $2, image = $3, description = $4, beds = $5, baths = $6, 
-          category = $7, type = $8, location = $9, status = $10 
-      WHERE id = $11 
+          category = $7, type = $8, location = $9, status = $10, floors = $11 
+      WHERE id = $12 
       RETURNING *
     `;
     const values = [
@@ -212,6 +213,7 @@ app.put('/api/properties/:id', authenticateToken, async (req, res) => {
       type, 
       location, 
       status,
+      JSON.stringify(floors || []),
       id
     ];
 

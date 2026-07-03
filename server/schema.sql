@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS properties (
   id SERIAL PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
   price VARCHAR(100) NOT NULL,
-  image VARCHAR(500) NOT NULL,
+  image TEXT NOT NULL,
   description TEXT,
   beds INTEGER DEFAULT 0,
   baths INTEGER DEFAULT 0,
@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS properties (
   type VARCHAR(100) NOT NULL,
   location VARCHAR(255) DEFAULT 'Prime District',
   status VARCHAR(100) DEFAULT 'Available',
+  floors JSON DEFAULT '[]'::json,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

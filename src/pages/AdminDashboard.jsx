@@ -24,7 +24,18 @@ export default function AdminDashboard() {
     category: 'villas',
     type: 'buy',
     location: 'Prime District',
-    status: 'Available'
+    status: 'Available',
+    floors: []
+  });
+
+  // State for adding a new floor
+  const [newFloor, setNewFloor] = useState({
+    id: '',
+    name: '',
+    price: '',
+    status: 'Available',
+    yield: '',
+    features: ''
   });
 
   const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
@@ -105,7 +116,8 @@ export default function AdminDashboard() {
       category: 'villas',
       type: 'buy',
       location: 'Prime District',
-      status: 'Available'
+      status: 'Available',
+      floors: []
     });
     setFormType('create');
     setIsFormOpen(true);
@@ -122,7 +134,8 @@ export default function AdminDashboard() {
       category: prop.category,
       type: prop.type,
       location: prop.location || 'Prime District',
-      status: prop.status || 'Available'
+      status: prop.status || 'Available',
+      floors: prop.floors || []
     });
     setEditingId(prop.id);
     setFormType('edit');
@@ -172,6 +185,65 @@ export default function AdminDashboard() {
     } catch (err) {
       setError(err.message);
     }
+  };
+
+  // Image upload to base64
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Image size must be less than 2MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPropertyForm(prev => ({ ...prev, image: reader.result }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Floors Managers
+  const handleAddFloor = () => {
+    if (!newFloor.id || !newFloor.name || !newFloor.price) {
+      alert("Please fill in Level ID, Level Name, and Price.");
+      return;
+    }
+
+    const floorObj = {
+      id: parseInt(newFloor.id),
+      name: newFloor.name,
+      price: newFloor.price,
+      status: newFloor.status,
+      yield: newFloor.yield || 'N/A',
+      features: newFloor.features || ''
+    };
+
+    // Sort floors by ID descending (top floor at the top)
+    const updatedFloors = [...(propertyForm.floors || []), floorObj].sort((a, b) => b.id - a.id);
+
+    setPropertyForm({
+      ...propertyForm,
+      floors: updatedFloors
+    });
+
+    setNewFloor({
+      id: '',
+      name: '',
+      price: '',
+      status: 'Available',
+      yield: '',
+      features: ''
+    });
+  };
+
+  const handleRemoveFloor = (indexToRemove) => {
+    const updatedFloors = (propertyForm.floors || []).filter((_, idx) => idx !== indexToRemove);
+    setPropertyForm({
+      ...propertyForm,
+      floors: updatedFloors
+    });
   };
 
   // Inquiry Actions
@@ -331,7 +403,7 @@ export default function AdminDashboard() {
                               <img src={prop.image} alt={prop.title} style={{ width: '50px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={(e) => { e.target.src = '/listing_villa.png' }} />
                               <div>
                                 <div style={{ fontWeight: 600, color: 'var(--text-dark)' }}>{prop.title}</div>
-                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>🛏️ {prop.beds} Beds | 🚿 {prop.baths} Baths</div>
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>🛏️ {prop.beds} Beds | 🚿 {prop.baths} Baths | 🏢 {(prop.floors || []).length} Custom Levels</div>
                               </div>
                             </td>
                             <td style={{ padding: '1rem', textTransform: 'capitalize' }}>{prop.category}</td>
@@ -501,14 +573,28 @@ export default function AdminDashboard() {
                 </div>
 
                 <div style={{ marginBottom: '1.2rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Image URL</label>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Image Source</label>
+                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleImageUpload} 
+                      style={{ fontSize: '0.85rem' }} 
+                    />
+                    <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>or enter URL below:</span>
+                  </div>
                   <input 
-                    type="text" required placeholder="/listing_villa.png or web URL"
+                    type="text" required placeholder="/listing_villa.png or paste image URL or upload above"
                     value={propertyForm.image} 
                     onChange={(e) => setPropertyForm({...propertyForm, image: e.target.value})}
                     style={inputStyle}
                   />
-                  <small style={{ color: 'var(--text-muted)' }}>Use /listing_villa.png or /listing_apt.png for standard designs.</small>
+                  {propertyForm.image && propertyForm.image.startsWith('data:image') && (
+                    <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <span style={{ color: '#15803d', fontSize: '0.8rem', fontWeight: 600 }}>✓ File loaded successfully</span>
+                      <button type="button" onClick={() => setPropertyForm({ ...propertyForm, image: '' })} style={{ border: 'none', background: 'transparent', color: '#ef4444', fontSize: '0.8rem', cursor: 'pointer', textDecoration: 'underline' }}>Clear image</button>
+                    </div>
+                  )}
                 </div>
 
                 <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.2rem', flexWrap: 'wrap' }}>
@@ -585,7 +671,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                <div style={{ marginBottom: '2rem' }}>
+                <div style={{ marginBottom: '1.2rem' }}>
                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Description</label>
                   <textarea 
                     rows="4" required placeholder="A solid architectural masterpiece..."
@@ -595,7 +681,79 @@ export default function AdminDashboard() {
                   />
                 </div>
 
-                <button type="submit" className="btn-solid" style={{ width: '100%', padding: '1rem', borderRadius: '8px', fontSize: '1rem' }}>
+                {/* Floors & Interactive Levels Manager */}
+                <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem', marginBottom: '2rem' }}>
+                  <h4 style={{ fontSize: '1.1rem', fontFamily: 'serif', marginBottom: '0.5rem', color: 'var(--text-dark)' }}>Floors & Levels Schematic</h4>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1.2rem' }}>
+                    Define customized units/levels (e.g. Level 202, Rooftop, Penthouse 501) to populate on the interactive 3D floor plan.
+                  </p>
+
+                  {/* List of current levels */}
+                  {propertyForm.floors && propertyForm.floors.length > 0 ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>
+                      {propertyForm.floors.map((floor, index) => (
+                        <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f9f9f9', padding: '0.8rem 1rem', borderRadius: '8px', border: '1px solid #eaeaea', fontSize: '0.85rem' }}>
+                          <div>
+                            <strong>{floor.name}</strong> (ID/Num: {floor.id}) | <span style={{ color: 'var(--primary-dark)', fontWeight: 600 }}>{floor.price}</span> | <span style={{ fontWeight: 600 }}>{floor.status}</span>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>Yield: {floor.yield} | Features: {floor.features}</div>
+                          </div>
+                          <button type="button" onClick={() => handleRemoveFloor(index)} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}>
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontStyle: 'italic', marginBottom: '1.5rem', textAlign: 'center', background: '#fafafa', padding: '1rem', borderRadius: '8px' }}>
+                      No custom levels configured. Will display realistic defaults based on category.
+                    </p>
+                  )}
+
+                  {/* Add level helper form */}
+                  <div style={{ background: '#f5f5f5', padding: '1.2rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+                    <h5 style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.8rem', color: 'var(--text-dark)' }}>Add Level / Unit</h5>
+                    
+                    <div style={{ display: 'flex', gap: '0.8rem', marginBottom: '0.8rem', flexWrap: 'wrap' }}>
+                      <div style={{ flex: 1, minWidth: '100px' }}>
+                        <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Level ID (Numeric Order)</label>
+                        <input type="number" placeholder="202" value={newFloor.id} onChange={e => setNewFloor({...newFloor, id: e.target.value})} style={smallInputStyle} />
+                      </div>
+                      <div style={{ flex: 1, minWidth: '120px' }}>
+                        <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Level Name</label>
+                        <input type="text" placeholder="Level 202" value={newFloor.name} onChange={e => setNewFloor({...newFloor, name: e.target.value})} style={smallInputStyle} />
+                      </div>
+                      <div style={{ flex: 1, minWidth: '120px' }}>
+                        <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Price</label>
+                        <input type="text" placeholder="$1,200,000" value={newFloor.price} onChange={e => setNewFloor({...newFloor, price: e.target.value})} style={smallInputStyle} />
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '0.8rem', marginBottom: '1.2rem', flexWrap: 'wrap' }}>
+                      <div style={{ flex: 1, minWidth: '100px' }}>
+                        <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Status</label>
+                        <select value={newFloor.status} onChange={e => setNewFloor({...newFloor, status: e.target.value})} style={smallInputStyle}>
+                          <option value="Available">Available</option>
+                          <option value="Sold">Sold</option>
+                          <option value="Commercial">Commercial</option>
+                        </select>
+                      </div>
+                      <div style={{ flex: 1, minWidth: '100px' }}>
+                        <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Est. Yield</label>
+                        <input type="text" placeholder="5.8%" value={newFloor.yield} onChange={e => setNewFloor({...newFloor, yield: e.target.value})} style={smallInputStyle} />
+                      </div>
+                      <div style={{ flex: 2, minWidth: '160px' }}>
+                        <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Features</label>
+                        <input type="text" placeholder="2 beds, private balcony" value={newFloor.features} onChange={e => setNewFloor({...newFloor, features: e.target.value})} style={smallInputStyle} />
+                      </div>
+                    </div>
+
+                    <button type="button" onClick={handleAddFloor} className="btn-solid" style={{ padding: '0.6rem 1.2rem', fontSize: '0.8rem', background: 'var(--primary-dark)', width: 'auto', borderRadius: '6px' }}>
+                      + ADD LEVEL TO SCHEMATIC
+                    </button>
+                  </div>
+                </div>
+
+                <button type="submit" className="btn-solid" style={{ width: '100%', padding: '1rem', borderRadius: '8px', fontSize: '1rem', fontWeight: 600 }}>
                   {formType === 'create' ? 'PUBLISH LISTING' : 'SAVE CHANGES'}
                 </button>
               </form>
@@ -617,6 +775,19 @@ const inputStyle = {
   border: '1px solid var(--border-color)',
   background: '#fafafa',
   fontSize: '0.95rem',
+  outline: 'none',
+  marginTop: '0.2rem'
+};
+
+// Small input styling helper for Floors manager
+const smallInputStyle = {
+  width: '100%',
+  boxSizing: 'border-box',
+  padding: '0.5rem 0.8rem',
+  borderRadius: '6px',
+  border: '1px solid var(--border-color)',
+  background: '#ffffff',
+  fontSize: '0.85rem',
   outline: 'none',
   marginTop: '0.2rem'
 };

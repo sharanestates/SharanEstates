@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function InteractiveFloorPlan({ propertyType }) {
+export default function InteractiveFloorPlan({ propertyType, floorsData }) {
   const [hoveredFloor, setHoveredFloor] = useState(null);
   const [selectedFloor, setSelectedFloor] = useState(null);
 
   // Dummy floor data (varying by property type for realism)
   const isVilla = propertyType === 'villa';
   
-  const floors = isVilla ? [
+  const defaultFloors = isVilla ? [
     { id: 3, name: 'Rooftop Terrace', price: '$800,000', status: 'Available', yield: '4.5%', features: 'Private Pool, BBQ Area' },
     { id: 2, name: 'Level 2 - Bedrooms', price: '$1,500,000', status: 'Sold', yield: 'N/A', features: 'Master Suite, 3 Guest Rooms' },
     { id: 1, name: 'Level 1 - Living', price: '$2,200,000', status: 'Available', yield: '5.2%', features: 'Open Kitchen, Dining, Garden Access' },
@@ -19,6 +19,8 @@ export default function InteractiveFloorPlan({ propertyType }) {
     { id: 2, name: 'Standard Level 2', price: '$850,000', status: 'Available', yield: '5.5%', features: '3 Beds, Shared Amenities' },
     { id: 1, name: 'Ground / Retail', price: 'Not for Sale', status: 'Commercial', yield: 'N/A', features: 'Lobby, Concierge, Cafe' },
   ];
+
+  const floors = floorsData && floorsData.length > 0 ? floorsData : defaultFloors;
 
   return (
     <div style={{ display: 'flex', gap: '2rem', height: '100%' }}>

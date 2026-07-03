@@ -103,7 +103,7 @@ export default function PropertyDetail() {
 
         {/* Right Side: Interactive Floor Plan */}
         <div style={{ flex: '1 1 500px', minHeight: '600px' }}>
-           <InteractiveFloorPlan propertyType={isVilla ? 'villa' : 'apartment'} />
+           <InteractiveFloorPlan propertyType={isVilla ? 'villa' : 'apartment'} floorsData={property.floors} />
         </div>
 
       </div>

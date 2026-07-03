@@ -66,9 +66,10 @@ export default function Listings() {
                       <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: 1.5, marginBottom: '1.5rem', flex: 1 }}>{prop.desc || prop.description}</p>
                       
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
-                        <div style={{ display: 'flex', gap: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 600 }}>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 600 }}>
                           <span>🛏️ {prop.beds} Beds</span>
                           <span>🚿 {prop.baths} Baths</span>
+                          {prop.size && <span>📏 {prop.size}</span>}
                         </div>
                         <h4 style={{ color: 'var(--primary-dark)', fontSize: '1.2rem' }}>{prop.price}</h4>
                       </div>

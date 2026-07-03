@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS properties (
   description TEXT,
   beds INTEGER DEFAULT 0,
   baths INTEGER DEFAULT 0,
+  size VARCHAR(100),
   category VARCHAR(100) NOT NULL,
   type VARCHAR(100) NOT NULL,
   location VARCHAR(255) DEFAULT 'Prime District',

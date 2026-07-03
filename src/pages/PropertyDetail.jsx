@@ -86,12 +86,18 @@ export default function PropertyDetail() {
           <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '2rem' }}>
             {desc}
           </p>
-          <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
-            <div style={{ flex: 1, padding: '1rem 1.5rem', background: '#FFF', border: '1px solid #EAEAEA', borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.02)' }}>
+          <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, minWidth: '120px', padding: '1rem 1.5rem', background: '#FFF', border: '1px solid #EAEAEA', borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.02)' }}>
               <strong style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Location</strong>
               <span style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-dark)' }}>{property.location || 'Prime District'}</span>
             </div>
-            <div style={{ flex: 1, padding: '1rem 1.5rem', background: '#FFF', border: '1px solid #EAEAEA', borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.02)' }}>
+            {property.size && (
+              <div style={{ flex: 1, minWidth: '120px', padding: '1rem 1.5rem', background: '#FFF', border: '1px solid #EAEAEA', borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.02)' }}>
+                <strong style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Size</strong>
+                <span style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-dark)' }}>{property.size}</span>
+              </div>
+            )}
+            <div style={{ flex: 1, minWidth: '120px', padding: '1rem 1.5rem', background: '#FFF', border: '1px solid #EAEAEA', borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.02)' }}>
               <strong style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Status</strong>
               <span style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--primary-dark)' }}>{property.status || 'Available'}</span>
             </div>

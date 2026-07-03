@@ -21,6 +21,7 @@ export default function AdminDashboard() {
     description: '',
     beds: 0,
     baths: 0,
+    size: '',
     category: 'villas',
     type: 'buy',
     location: 'Prime District',
@@ -117,6 +118,7 @@ export default function AdminDashboard() {
       description: '',
       beds: 0,
       baths: 0,
+      size: '',
       category: 'villas',
       type: 'buy',
       location: 'Prime District',
@@ -135,6 +137,7 @@ export default function AdminDashboard() {
       description: prop.description || '',
       beds: prop.beds || 0,
       baths: prop.baths || 0,
+      size: prop.size || '',
       category: prop.category,
       type: prop.type,
       location: prop.location || 'Prime District',
@@ -433,7 +436,7 @@ export default function AdminDashboard() {
                               <img src={prop.image} alt={prop.title} style={{ width: '50px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={(e) => { e.target.src = '/listing_villa.png' }} />
                               <div>
                                 <div style={{ fontWeight: 600, color: 'var(--text-dark)' }}>{prop.title}</div>
-                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>🛏️ {prop.beds} Beds | 🚿 {prop.baths} Baths | 🏢 {(prop.floors || []).length} Custom Levels</div>
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>🛏️ {prop.beds} Beds | 🚿 {prop.baths} Baths{prop.size ? ` | 📏 ${prop.size}` : ''} | 🏢 {(prop.floors || []).length} Custom Levels</div>
                               </div>
                             </td>
                             <td style={{ padding: '1rem', textTransform: 'capitalize' }}>{prop.category}</td>
@@ -719,6 +722,15 @@ export default function AdminDashboard() {
                       type="number" min="0" required
                       value={propertyForm.baths} 
                       onChange={(e) => setPropertyForm({...propertyForm, baths: e.target.value})}
+                      style={inputStyle}
+                    />
+                  </div>
+                  <div style={{ flex: 1, minWidth: '150px' }}>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Size (e.g. 1,250 Sq. Ft.)</label>
+                    <input 
+                      type="text" placeholder="1,250 Sq. Ft."
+                      value={propertyForm.size || ''} 
+                      onChange={(e) => setPropertyForm({...propertyForm, size: e.target.value})}
                       style={inputStyle}
                     />
                   </div>

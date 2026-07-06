@@ -834,8 +834,16 @@ app.delete('/api/inquiries/:id', authenticateToken, async (req, res) => {
 });
 
 
-// Start Server and Init Database
-app.listen(PORT, async () => {
-  console.log(`Server is running on port ${PORT}`);
-  await initDb();
-});
+// Start Server and Init Database (Only if not running in Vercel Serverless environment)
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  app.listen(PORT, async () => {
+    console.log(`Server is running on port ${PORT}`);
+    await initDb();
+  });
+} else {
+  // Try to initialize the DB asynchronously on cold start
+  initDb().catch(console.error);
+}
+
+// Export for Vercel Serverless Functions
+module.exports = app;

@@ -75,10 +75,10 @@ export default function InteractiveFloorPlan({ propertyType, floorsData }) {
   const floors = floorsData && floorsData.length > 0 ? floorsData : defaultFloors;
 
   return (
-    <div style={{ display: 'flex', gap: '2rem', height: '100%', flexWrap: 'wrap' }}>
+    <div className="flex-col-mobile gap-mobile" style={{ display: 'flex', gap: '2rem', minHeight: '100%', flexWrap: 'wrap' }}>
       
       {/* 3D Stacked Floor Plan Representation */}
-      <div style={{ flex: '1 1 280px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: '8px', perspective: '1000px' }}>
+      <div style={{ flex: '1 1 280px', width: '100%', display: 'flex', flexDirection: 'column', gap: '8px', perspective: '1000px' }}>
         <div style={{ marginBottom: '1rem', alignSelf: 'flex-start', background: 'var(--primary-color)', color: '#FFF', padding: '0.4rem 1rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600 }}>
           Interactive Level Selection
         </div>
@@ -122,23 +122,23 @@ export default function InteractiveFloorPlan({ propertyType, floorsData }) {
                 z: isHovered ? 20 : 0
               }}
               style={{
-                height: '60px',
+                height: '45px',
                 background: bgColor,
-                border: `2px solid ${borderColor}`,
-                borderRadius: '8px',
+                border: `1px solid ${borderColor}`,
+                borderRadius: '4px',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '0 1.5rem',
+                padding: '0 1rem',
                 backdropFilter: 'blur(10px)',
                 boxShadow: isHovered ? '0 10px 30px rgba(0,0,0,0.1)' : '0 4px 10px rgba(0,0,0,0.02)',
                 transition: 'background 0.3s, border 0.3s',
                 transformStyle: 'preserve-3d'
               }}
             >
-              <div style={{ fontWeight: 600, color: isSelected ? '#FFF' : 'var(--text-dark)' }}>{floor.name}</div>
-              <div style={{ fontSize: '0.8rem', fontWeight: 600, color: allSold ? '#999' : isSelected ? '#FFF' : 'var(--primary-dark)' }}>
+              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: isSelected ? '#FFF' : 'var(--text-dark)' }}>{floor.name}</div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 600, color: allSold ? '#999' : isSelected ? '#FFF' : 'var(--primary-dark)' }}>
                 {statusText} ({flatsList.length} Units)
               </div>
             </motion.div>
@@ -147,7 +147,7 @@ export default function InteractiveFloorPlan({ propertyType, floorsData }) {
       </div>
 
       {/* Info Panel displaying flat details for selected level */}
-      <div style={{ flex: '1.2 1 340px', background: '#FFFFFF', borderRadius: '24px', padding: '2rem', boxShadow: '0 20px 40px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: '1.2 1 340px', width: '100%', background: '#FFFFFF', borderRadius: '4px', padding: '2rem', border: '1px solid rgba(211, 185, 138, 0.3)', boxShadow: '0 10px 30px rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column' }}>
         <AnimatePresence mode="wait">
           {selectedFloor ? (
             <motion.div
@@ -157,29 +157,31 @@ export default function InteractiveFloorPlan({ propertyType, floorsData }) {
               exit={{ opacity: 0, y: -10 }}
               style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
             >
-              <h3 style={{ fontSize: '1.5rem', color: 'var(--text-dark)', marginBottom: '0.5rem', fontFamily: 'serif' }}>{selectedFloor.name}</h3>
-              <div style={{ display: 'inline-block', padding: '0.3rem 0.8rem', background: 'var(--primary-color)', color: '#FFF', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 600, marginBottom: '1.5rem', alignSelf: 'flex-start' }}>
+              <h3 style={{ fontSize: '1.15rem', color: 'var(--text-dark)', marginBottom: '0.5rem', fontFamily: 'var(--font-serif)' }}>{selectedFloor.name}</h3>
+              <div style={{ display: 'inline-block', padding: '0.3rem 0.8rem', background: 'var(--primary-color)', color: '#FFF', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 600, marginBottom: '1.5rem', alignSelf: 'flex-start' }}>
                 Unit Configuration
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', overflowY: 'auto', flex: 1, maxHeight: '420px', paddingRight: '0.5rem' }}>
                 {selectedFloor.flats && selectedFloor.flats.length > 0 ? (
                   selectedFloor.flats.map((flat, idx) => (
-                    <div key={idx} style={{ border: '1px solid var(--border-color)', borderRadius: '12px', padding: '1.2rem', background: '#fafafa', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                    <div key={idx} style={{ border: '1px solid rgba(0,0,0,0.1)', borderRadius: '4px', padding: '1.5rem', background: '#FFFFFF', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <strong style={{ fontSize: '1.1rem', color: 'var(--text-dark)' }}>{flat.name}</strong>
+                        <strong style={{ fontSize: '0.95rem', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)' }}>{flat.name}</strong>
                         <span style={{
-                          padding: '0.2rem 0.6rem',
-                          borderRadius: '20px',
-                          fontSize: '0.75rem',
+                          padding: '0.3rem 0.8rem',
+                          borderRadius: '2px',
+                          fontSize: '0.7rem',
                           fontWeight: 600,
-                          background: flat.status === 'Available' ? '#d1fae5' : flat.status === 'Sold' ? '#f3f4f6' : '#fef3c7',
-                          color: flat.status === 'Available' ? '#065f46' : flat.status === 'Sold' ? '#374151' : '#92400e'
+                          letterSpacing: '1px',
+                          textTransform: 'uppercase',
+                          background: flat.status === 'Available' ? 'var(--primary-color)' : flat.status === 'Sold' ? '#EAEAEA' : '#fef3c7',
+                          color: flat.status === 'Available' ? '#FFF' : flat.status === 'Sold' ? 'var(--text-muted)' : '#92400e'
                         }}>
                           {flat.status}
                         </span>
                       </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                         <div>Price: <strong style={{ color: 'var(--primary-dark)' }}>{flat.price}</strong></div>
                         <div>Size: <strong style={{ color: 'var(--text-dark)' }}>{flat.size || 'N/A'}</strong></div>
                         <div>Rooms: <strong style={{ color: 'var(--text-dark)' }}>{flat.beds} Beds</strong></div>
@@ -187,8 +189,24 @@ export default function InteractiveFloorPlan({ propertyType, floorsData }) {
                       </div>
                       
                       {flat.status === 'Available' && (
-                        <button className="btn-solid" style={{ padding: '0.6rem', fontSize: '0.85rem', borderRadius: '8px' }} onClick={() => alert(`Registering interest for ${flat.name} at ${selectedFloor.name}!`)}>
-                          Register Interest for Unit
+                        <button className="btn-classic" style={{ 
+                          padding: '0.8rem', 
+                          fontSize: '0.75rem', 
+                          borderRadius: '0',
+                          background: 'transparent',
+                          color: 'var(--text-dark)',
+                          border: '2px solid var(--text-dark)',
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                          letterSpacing: '2px',
+                          cursor: 'pointer',
+                          transition: 'all 0.3s ease',
+                          marginTop: '0.5rem'
+                        }} 
+                        onMouseOver={(e) => { e.target.style.background = 'var(--text-dark)'; e.target.style.color = '#FFF'; }}
+                        onMouseOut={(e) => { e.target.style.background = 'transparent'; e.target.style.color = 'var(--text-dark)'; }}
+                        onClick={() => alert(`Registering interest for ${flat.name} at ${selectedFloor.name}!`)}>
+                          Register Interest
                         </button>
                       )}
                     </div>

@@ -88,42 +88,42 @@ export default function PropertyDetail() {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-light)' }}>
       
-      <div className="container" style={{ display: 'flex', flexWrap: 'wrap', flex: 1, alignItems: 'flex-start', gap: '4rem', paddingTop: '8rem', paddingBottom: '4rem', maxWidth: '1200px', margin: '0 auto' }}>
+      <div className="container flex-col-mobile gap-mobile property-detail-container" style={{ display: 'flex', flexWrap: 'wrap', flex: 1, alignItems: 'flex-start', gap: '4rem', paddingTop: '8rem', paddingBottom: '4rem', maxWidth: '1200px', margin: '0 auto' }}>
         
         {/* Left Side: Info */}
-        <div style={{ flex: '1 1 450px', display: 'flex', flexDirection: 'column', position: 'sticky', top: '8rem' }}>
-          <p style={{ color: 'var(--primary-dark)', fontSize: '0.9rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.5rem', cursor: 'pointer' }} onClick={() => navigate(-1)}>
+        <div style={{ flex: '1 1 450px', width: '100%', display: 'flex', flexDirection: 'column' }}>
+          <p style={{ color: 'var(--primary-dark)', fontSize: '0.8rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.5rem', cursor: 'pointer' }} onClick={() => navigate(-1)}>
             &larr; Back to Listings / {isVilla ? 'Villa' : 'Apartment'}
           </p>
-          <h1 style={{ fontSize: '3.5rem', color: 'var(--text-dark)', fontFamily: 'serif', lineHeight: 1.1, marginBottom: '1rem' }}>
+          <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', lineHeight: 1.1, marginBottom: '0.8rem' }}>
             {name}
           </h1>
-          <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '2rem' }}>
+          <p style={{ fontSize: '1rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '2rem' }}>
             {desc}
           </p>
-          <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-            <div style={{ flex: 1, minWidth: '120px', padding: '1rem 1.5rem', background: '#FFF', border: '1px solid #EAEAEA', borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.02)' }}>
-              <strong style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Location</strong>
-              <span style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-dark)' }}>{property.location || 'Prime District'}</span>
+          <div className="gap-mobile" style={{ display: 'flex', gap: '1rem', marginBottom: '2.5rem', flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, minWidth: '120px', padding: '1.2rem', background: '#FFFFFF', border: '1px solid rgba(211, 185, 138, 0.3)', borderRadius: '4px', boxShadow: '0 4px 10px rgba(0,0,0,0.02)' }}>
+              <strong style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.4rem' }}>Location</strong>
+              <span style={{ fontSize: 'clamp(0.85rem, 2vw, 1rem)', fontWeight: 600, color: 'var(--text-dark)' }}>{property.location || 'Prime District'}</span>
             </div>
             {property.size && (
-              <div style={{ flex: 1, minWidth: '120px', padding: '1rem 1.5rem', background: '#FFF', border: '1px solid #EAEAEA', borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.02)' }}>
-                <strong style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Size</strong>
-                <span style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-dark)' }}>{property.size}</span>
+              <div style={{ flex: 1, minWidth: '120px', padding: '1.2rem', background: '#FFFFFF', border: '1px solid rgba(211, 185, 138, 0.3)', borderRadius: '4px', boxShadow: '0 4px 10px rgba(0,0,0,0.02)' }}>
+                <strong style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.4rem' }}>Size</strong>
+                <span style={{ fontSize: 'clamp(0.85rem, 2vw, 1rem)', fontWeight: 600, color: 'var(--text-dark)' }}>{property.size}</span>
               </div>
             )}
-            <div style={{ flex: 1, minWidth: '120px', padding: '1rem 1.5rem', background: '#FFF', border: '1px solid #EAEAEA', borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.02)' }}>
-              <strong style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Status</strong>
-              <span style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--primary-dark)' }}>{property.status || 'Available'}</span>
+            <div style={{ flex: 1, minWidth: '120px', padding: '1.2rem', background: '#FFFFFF', border: '1px solid rgba(211, 185, 138, 0.3)', borderRadius: '4px', boxShadow: '0 4px 10px rgba(0,0,0,0.02)' }}>
+              <strong style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.4rem' }}>Status</strong>
+              <span style={{ fontSize: 'clamp(0.85rem, 2vw, 1rem)', fontWeight: 600, color: 'var(--primary-dark)' }}>{property.status || 'Available'}</span>
             </div>
           </div>
-          <div style={{ borderRadius: '16px', overflow: 'hidden', height: '300px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
+          <div style={{ borderRadius: '4px', overflow: 'hidden', height: '350px', border: '1px solid rgba(0,0,0,0.1)' }}>
              <img src={property.image} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.src = isVilla ? '/listing_villa.png' : '/listing_apt.png' }} />
           </div>
         </div>
 
         {/* Right Side: Interactive Floor Plan */}
-        <div style={{ flex: '1 1 500px', minHeight: '600px' }}>
+        <div style={{ flex: '1 1 500px', width: '100%', minHeight: '600px' }}>
            <InteractiveFloorPlan propertyType={isVilla ? 'villa' : 'apartment'} floorsData={sanitizeFloors(property.floors)} />
         </div>
 

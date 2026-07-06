@@ -94,7 +94,7 @@ export default function AdminLogin({ onLoginSuccess }) {
           <h2 style={{
             fontSize: '2.2rem',
             color: '#FFFFFF',
-            fontFamily: 'serif',
+            fontFamily: 'var(--font-serif)',
             letterSpacing: '1px',
             marginBottom: '0.5rem'
           }}>

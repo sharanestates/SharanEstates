@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS inquiries (
   phone VARCHAR(100),
   property_type VARCHAR(100) DEFAULT 'villa',
   property_id INTEGER,
+  message TEXT,
   status VARCHAR(100) DEFAULT 'Pending',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

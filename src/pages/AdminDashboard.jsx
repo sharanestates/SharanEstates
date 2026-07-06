@@ -432,7 +432,14 @@ export default function AdminDashboard() {
   const totalProperties = properties.length;
   const totalInquiries = inquiries.length;
   const activeProperties = properties.filter(p => p.status === 'Available').length;
-  const pendingInquiries = inquiries.filter(i => i.status === 'Pending').length;
+  
+  const propertyInquiries = inquiries.filter(i => i.property_type !== 'consultancy');
+  const consultationInquiries = inquiries.filter(i => i.property_type === 'consultancy');
+
+  const pendingInquiriesCount = propertyInquiries.filter(i => i.status === 'Pending' || i.status === 'New').length;
+  const pendingConsultationsCount = consultationInquiries.filter(i => i.status === 'Pending' || i.status === 'New').length;
+
+  const totalPendingInquiries = pendingInquiriesCount + pendingConsultationsCount;
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-light)', paddingTop: '8rem', paddingBottom: '4rem' }}>
@@ -441,7 +448,7 @@ export default function AdminDashboard() {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1.5rem' }}>
           <div>
-            <h1 style={{ fontSize: '2.8rem', fontFamily: 'serif', color: 'var(--text-dark)' }}>Admin Console</h1>
+            <h1 style={{ fontSize: '2.8rem', fontFamily: 'var(--font-serif)', color: 'var(--text-dark)' }}>Admin Console</h1>
             <p style={{ color: 'var(--text-muted)' }}>Manage your luxury property listings and respond to client inquiries.</p>
           </div>
           <button onClick={handleLogout} className="btn-solid" style={{ background: '#737373' }}>
@@ -479,7 +486,7 @@ export default function AdminDashboard() {
           </div>
           <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Pending Follow-ups</span>
-            <strong style={{ fontSize: '2.2rem', marginTop: '0.5rem', color: '#B59B6A' }}>{pendingInquiries}</strong>
+            <strong style={{ fontSize: '2.2rem', marginTop: '0.5rem', color: '#B59B6A' }}>{totalPendingInquiries}</strong>
           </div>
         </div>
 
@@ -497,7 +504,7 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab('inquiries')}
             style={{ fontSize: '1rem', paddingBottom: '0.8rem' }}
           >
-            Client Inquiries ({pendingInquiries})
+            Client Inquiries ({totalPendingInquiries})
           </span>
         </div>
 
@@ -511,7 +518,7 @@ export default function AdminDashboard() {
             {activeTab === 'listings' && (
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                  <h3 style={{ fontSize: '1.5rem', fontFamily: 'serif' }}>Property Inventory</h3>
+                  <h3 style={{ fontSize: '1.5rem', fontFamily: 'var(--font-serif)' }}>Property Inventory</h3>
                   <button onClick={handleOpenCreateForm} className="btn-solid">
                     + ADD PROPERTY
                   </button>
@@ -598,9 +605,10 @@ export default function AdminDashboard() {
 
             {activeTab === 'inquiries' && (
               <div>
-                <h3 style={{ fontSize: '1.5rem', fontFamily: 'serif', marginBottom: '1.5rem' }}>Client Consultation Requests</h3>
+                <h3 style={{ fontSize: '1.5rem', fontFamily: 'var(--font-serif)', marginBottom: '0.5rem' }}>Property Inquiries ({propertyInquiries.length})</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Inquiries from clients interested in specific property types.</p>
                 
-                <div className="glass-panel" style={{ overflowX: 'auto', padding: '1rem' }}>
+                <div className="glass-panel" style={{ overflowX: 'auto', padding: '1rem', marginBottom: '3rem' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                     <thead>
                       <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
@@ -613,12 +621,12 @@ export default function AdminDashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {inquiries.length === 0 ? (
+                      {propertyInquiries.length === 0 ? (
                         <tr>
-                          <td colSpan="6" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No inquiries found.</td>
+                          <td colSpan="6" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No property inquiries found.</td>
                         </tr>
                       ) : (
-                        inquiries.map((inq) => (
+                        propertyInquiries.map((inq) => (
                           <tr key={inq.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
                             <td style={{ padding: '1rem', fontWeight: 600, color: 'var(--text-dark)' }}>{inq.name}</td>
                             <td style={{ padding: '1rem' }}>
@@ -628,7 +636,8 @@ export default function AdminDashboard() {
                             <td style={{ padding: '1rem', textTransform: 'capitalize' }}>
                               {inq.property_type === 'villa' ? 'Luxury Villas' : 
                                inq.property_type === 'apartment' ? 'Apartments' : 
-                               inq.property_type === 'offplan' ? 'Off-Plan' : 'Commercial'}
+                               inq.property_type === 'offplan' ? 'Off-Plan' : 
+                               inq.property_type === 'commercial' ? 'Commercial' : inq.property_type}
                             </td>
                             <td style={{ padding: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
                               {new Date(inq.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
@@ -642,8 +651,8 @@ export default function AdminDashboard() {
                                   borderRadius: '6px',
                                   border: '1px solid var(--border-color)',
                                   fontSize: '0.85rem',
-                                  background: inq.status === 'Pending' ? '#fef3c7' : inq.status === 'Contacted' ? '#dbeafe' : '#d1fae5',
-                                  color: inq.status === 'Pending' ? '#92400e' : inq.status === 'Contacted' ? '#1e40af' : '#065f46',
+                                  background: (inq.status === 'Pending' || inq.status === 'New') ? '#fef3c7' : inq.status === 'Contacted' ? '#dbeafe' : '#d1fae5',
+                                  color: (inq.status === 'Pending' || inq.status === 'New') ? '#92400e' : inq.status === 'Contacted' ? '#1e40af' : '#065f46',
                                   fontWeight: 600,
                                   cursor: 'pointer'
                                 }}
@@ -663,6 +672,85 @@ export default function AdminDashboard() {
                             </td>
                           </tr>
                         ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                <h3 style={{ fontSize: '1.5rem', fontFamily: 'var(--font-serif)', marginBottom: '0.5rem' }}>Consultation Requests ({consultationInquiries.length})</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Private advisor booking requests from the portfolio consultation form.</p>
+                
+                <div className="glass-panel" style={{ overflowX: 'auto', padding: '1rem' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
+                        <th style={{ padding: '1rem' }}>Client</th>
+                        <th style={{ padding: '1rem' }}>Contact Info</th>
+                        <th style={{ padding: '1rem' }}>Requested Details</th>
+                        <th style={{ padding: '1rem' }}>Date Received</th>
+                        <th style={{ padding: '1rem' }}>Status</th>
+                        <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {consultationInquiries.length === 0 ? (
+                        <tr>
+                          <td colSpan="6" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No consultation requests found.</td>
+                        </tr>
+                      ) : (
+                        consultationInquiries.map((inq) => {
+                          const details = getConsultationDetails(inq.message);
+                          return (
+                            <tr key={inq.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
+                              <td style={{ padding: '1rem', fontWeight: 600, color: 'var(--text-dark)' }}>{inq.name}</td>
+                              <td style={{ padding: '1rem' }}>
+                                <div>✉ {inq.email}</div>
+                                {inq.phone && <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>☎ {inq.phone}</div>}
+                              </td>
+                              <td style={{ padding: '1rem' }}>
+                                {details.rawMessage ? (
+                                  <div style={{ color: 'var(--text-dark)', fontSize: '0.9rem' }}>{details.rawMessage}</div>
+                                ) : (
+                                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                                    <div style={{ fontSize: '0.9rem' }}>💰 <strong>Budget:</strong> {details.budget}</div>
+                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{details.mode}</div>
+                                  </div>
+                                )}
+                              </td>
+                              <td style={{ padding: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                                {new Date(inq.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+                              </td>
+                              <td style={{ padding: '1rem' }}>
+                                <select 
+                                  value={inq.status} 
+                                  onChange={(e) => handleInquiryStatusChange(inq.id, e.target.value)}
+                                  style={{
+                                    padding: '0.3rem 0.6rem',
+                                    borderRadius: '6px',
+                                    border: '1px solid var(--border-color)',
+                                    fontSize: '0.85rem',
+                                    background: (inq.status === 'Pending' || inq.status === 'New') ? '#fef3c7' : inq.status === 'Contacted' ? '#dbeafe' : '#d1fae5',
+                                    color: (inq.status === 'Pending' || inq.status === 'New') ? '#92400e' : inq.status === 'Contacted' ? '#1e40af' : '#065f46',
+                                    fontWeight: 600,
+                                    cursor: 'pointer'
+                                  }}
+                                >
+                                  <option value="Pending">Pending</option>
+                                  <option value="Contacted">Contacted</option>
+                                  <option value="Closed">Closed</option>
+                                </select>
+                              </td>
+                              <td style={{ padding: '1rem', textAlign: 'right' }}>
+                                <button 
+                                  onClick={() => handleInquiryDelete(inq.id, inq.name)} 
+                                  style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
+                                >
+                                  Delete
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })
                       )}
                     </tbody>
                   </table>
@@ -696,7 +784,7 @@ export default function AdminDashboard() {
                 &times;
               </button>
 
-              <h2 style={{ fontFamily: 'serif', fontSize: '2.2rem', marginBottom: '1.5rem' }}>
+              <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.2rem', marginBottom: '1.5rem' }}>
                 {formType === 'create' ? 'Add New Listing' : 'Edit Listing'}
               </h2>
 
@@ -890,7 +978,7 @@ export default function AdminDashboard() {
 
                 {/* Floors & Dynamic Flats schematic manager */}
                 <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem', marginBottom: '2rem' }}>
-                  <h4 style={{ fontSize: '1.2rem', fontFamily: 'serif', marginBottom: '0.5rem', color: 'var(--text-dark)' }}>Building Structure Manager</h4>
+                  <h4 style={{ fontSize: '1.2rem', fontFamily: 'var(--font-serif)', marginBottom: '0.5rem', color: 'var(--text-dark)' }}>Building Structure Manager</h4>
                   <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1.2rem' }}>
                     Define the levels of this building and add individual flats/units to each level with their own size, price, rooms, and availability status.
                   </p>
@@ -1043,4 +1131,33 @@ const smallInputStyle = {
   fontSize: '0.85rem',
   outline: 'none',
   marginTop: '0.2rem'
+};
+
+// Helper to parse consultation details from the message
+const getConsultationDetails = (message) => {
+  if (!message) return { budget: 'N/A', mode: 'N/A' };
+  // Expected format: "Consultancy Request - Budget: 10m-20m, Mode: virtual"
+  const budgetMatch = message.match(/Budget:\s*([^,]+)/i);
+  const modeMatch = message.match(/Mode:\s*(.+)$/i);
+  
+  const budget = budgetMatch ? budgetMatch[1].trim() : null;
+  const mode = modeMatch ? modeMatch[1].trim() : null;
+  
+  if (budget || mode) {
+    return {
+      budget: budget ? formatBudget(budget) : 'N/A',
+      mode: mode === 'virtual' ? '💻 Virtual Video Briefing' : mode === 'in-person' ? '💼 Private Office Session (Dubai)' : mode || 'N/A'
+    };
+  }
+  return { budget: 'N/A', mode: 'N/A', rawMessage: message };
+};
+
+const formatBudget = (budget) => {
+  switch (budget.toLowerCase()) {
+    case 'below-5m': return 'Below AED 5,000,000';
+    case '5m-10m': return 'AED 5,000,000 - 10,000,000';
+    case '10m-20m': return 'AED 10,000,000 - 20,000,000';
+    case 'above-20m': return 'AED 20,000,000+';
+    default: return budget;
+  }
 };

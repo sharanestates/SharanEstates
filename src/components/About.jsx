@@ -23,17 +23,26 @@ export default function About() {
   }, []);
 
   return (
-    <section className="section" style={{ justifyContent: 'center' }}>
+    <section className="section" style={{ padding: '6rem 0', background: 'var(--bg-light)', minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
       <div className="container" ref={textRef}>
-        <h2 style={{ fontSize: '3rem', color: 'var(--primary-color)', marginBottom: '2rem' }}>
-          The Standard of Excellence
-        </h2>
-        <p style={{ fontSize: '1.5rem', lineHeight: '1.6', maxWidth: '800px', color: 'var(--text-muted)' }}>
-          At Sharan Estates, we don't just build homes; we curate lifestyles. 
-          Our avant-garde approach blends modern architectural brilliance with unparalleled luxury, 
-          ensuring that every property we offer is a masterpiece of design and comfort. 
-          Experience real estate in a new dimension.
-        </p>
+        <div className="flex-col-mobile gap-mobile" style={{ display: 'flex', gap: '4rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ flex: '1 1 300px' }}>
+            <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', color: 'var(--text-dark)', marginBottom: '1.5rem', fontFamily: 'var(--font-serif)', lineHeight: 1.1 }}>
+              The Standard of Excellence
+            </h2>
+            <p style={{ fontSize: 'clamp(1rem, 3vw, 1.15rem)', lineHeight: '1.7', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+              At Sharan Estates, we don't just build homes; we curate lifestyles. 
+              Our avant-garde approach blends modern architectural brilliance with unparalleled luxury, 
+              ensuring that every property we offer is a masterpiece of design and comfort. 
+            </p>
+            <p style={{ fontSize: 'clamp(1rem, 3vw, 1.15rem)', lineHeight: '1.7', color: 'var(--text-muted)' }}>
+              Experience real estate in a completely new dimension with our bespoke portfolio of off-market properties and interactive tech tools.
+            </p>
+          </div>
+          <div style={{ flex: '1 1 300px', width: '100%', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
+            <img src="/interior_lounge.png" alt="Luxury Interior" style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }} />
+          </div>
+        </div>
       </div>
     </section>
   );

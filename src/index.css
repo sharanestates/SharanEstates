@@ -697,9 +697,9 @@ h1, h2, h3, h4, h5, h6, .serif-font {
     align-items: center; 
     text-align: left !important; 
   }
-  .emi-title-mobile { font-size: 0.65rem !important; width: 100%; margin-bottom: 0.25rem !important; }
-  .emi-value-mobile { font-size: 1.5rem !important; margin: 0 !important; }
-  .emi-desc-mobile { font-size: 0.65rem !important; margin: 0 !important; text-align: right; }
+  .emi-title-mobile { font-size: 0.65rem !important; width: 100%; margin-bottom: 0.25rem !important; color: var(--text-dark) !important; }
+  .emi-value-mobile { font-size: 1.5rem !important; margin: 0 !important; color: var(--primary-dark) !important; }
+  .emi-desc-mobile { font-size: 0.65rem !important; margin: 0 !important; text-align: right; color: var(--text-muted) !important; }
   
   /* Consultation Form Mobile Styles - Clean and compact */
   .consultation-form-mobile { padding: 1.5rem !important; border-radius: 4px !important; }

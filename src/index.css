@@ -654,7 +654,8 @@ h1, h2, h3, h4, h5, h6, .serif-font {
     height: 10px;
     border-top: 2px solid var(--primary-color);
     border-right: 2px solid var(--primary-color);
-    transform: rotate(-45deg) translate(2px, 2px);
+    transform: rotate(-45deg);
+    margin-top: 4px;
     transition: border-color 0.4s ease;
   }
   .swipe-up-handle.expanded .swipe-chevron {

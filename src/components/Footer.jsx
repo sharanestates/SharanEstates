@@ -4,6 +4,15 @@ import { Link } from 'react-router-dom';
 export default function Footer() {
   const [expanded, setExpanded] = useState(false);
 
+  const toggleFooter = () => {
+    setExpanded(!expanded);
+    if (!expanded) {
+      setTimeout(() => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      }, 150); // slight delay to allow CSS transition to happen
+    }
+  };
+
   return (
     <footer className={`footer-wrapper ${expanded ? 'expanded' : 'collapsed'}`} style={{ background: '#0a0a0a', color: '#FFFFFF', padding: '4rem 0 2rem', position: 'relative', overflow: 'hidden' }}>
       
@@ -12,7 +21,7 @@ export default function Footer() {
       <div style={{ position: 'absolute', bottom: 0, left: 0, width: '40%', height: '40%', background: 'radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%)', zIndex: 0, filter: 'blur(60px)' }}></div>
 
       <div className="container" style={{ position: 'relative', zIndex: 1, maxWidth: '1200px', margin: '0 auto' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1rem', cursor: 'pointer' }} onClick={() => setExpanded(!expanded)}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1rem', cursor: 'pointer' }} onClick={toggleFooter}>
           <div className={`swipe-up-handle ${expanded ? 'expanded' : ''}`} style={{ marginBottom: '0.5rem' }}>
             <div className="swipe-chevron"></div>
           </div>

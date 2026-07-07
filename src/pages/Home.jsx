@@ -59,7 +59,7 @@ export default function Home() {
           
           {/* Headline — floating, no card */}
           <div style={{ textAlign: 'center' }}>
-            <p style={{ color: 'var(--primary-dark)', fontSize: '0.82rem', letterSpacing: '3px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.8rem', textShadow: '0 1px 8px rgba(255,255,255,0.9)' }}>
+            <p style={{ color: 'var(--text-dark)', fontSize: '0.85rem', letterSpacing: '4px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '1rem', textShadow: '0 2px 10px rgba(255,255,255,0.8)' }}>
               Proptech Workspace
             </p>
             <h1 style={{ fontSize: 'clamp(3rem, 6vw, 5.5rem)', color: 'var(--text-dark)', lineHeight: 1.05, fontWeight: 600, fontFamily: 'var(--font-serif)', textShadow: '0 2px 16px rgba(255,255,255,0.7)' }}>

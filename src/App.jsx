@@ -11,6 +11,7 @@ import PlaceholderPage from './pages/PlaceholderPage';
 import CareersPage from './pages/CareersPage';
 import BlogsPage from './pages/BlogsPage';
 import AreaGuidePage from './pages/AreaGuidePage';
+import ListWithUsPage from './pages/ListWithUsPage';
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<PlaceholderPage title="Contact Us" description="Reach out to our luxury consultants to discuss your real estate portfolio." email="contactus@sharanestates.com" />} />
           <Route path="/careers" element={<CareersPage />} />
-          <Route path="/list-with-us" element={<PlaceholderPage title="List With Us" description="Showcase your property to our exclusive global network of buyers." email="contactus@sharanestates.com" />} />
+          <Route path="/list-with-us" element={<ListWithUsPage />} />
           <Route path="/area-guide" element={<AreaGuidePage />} />
           <Route path="/market-trends" element={<PlaceholderPage title="Market Trends" description="Deep analytics and intelligence on the global luxury real estate market. Coming soon." />} />
           <Route path="/blogs" element={<BlogsPage />} />

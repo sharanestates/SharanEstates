@@ -99,7 +99,7 @@ export default function Listings() {
 
         {/* Property Grid — 4 columns */}
         {!loading && properties.length > 0 && (
-          <div className="listings-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.1rem', marginBottom: '3rem' }}>
+          <div className="listings-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', rowGap: '2.5rem', columnGap: '1.5rem', marginBottom: '3rem' }}>
             {properties.map(prop => (
               <div
                 key={prop.id}

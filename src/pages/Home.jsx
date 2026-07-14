@@ -86,13 +86,13 @@ export default function Home() {
 
           <div className="p-mobile hero-card-mobile" style={{
             maxWidth: '780px', width: '100%',
-            background: 'rgba(10, 10, 10, 0.75)', /* dark luxury glass */
-            backdropFilter: 'blur(15px)',
-            WebkitBackdropFilter: 'blur(15px)',
-            border: '1px solid rgba(211, 185, 138, 0.25)', /* subtle gold border */
-            borderRadius: '4px', /* cleaner, sharp luxury corners */
+            background: 'rgba(0, 0, 0, 0.22)', /* highly transparent dark backing */
+            backdropFilter: 'none',
+            WebkitBackdropFilter: 'none',
+            border: '1px solid rgba(255, 255, 255, 0.12)', /* thin clean white border */
+            borderRadius: '4px',
             padding: '2.5rem 3.5rem',
-            boxShadow: '0 30px 60px rgba(0, 0, 0, 0.35)',
+            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.15)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',

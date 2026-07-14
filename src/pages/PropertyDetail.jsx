@@ -142,7 +142,7 @@ function FloorPlanModal({ property, onClose }) {
 // ─── Image Gallery ────────────────────────────────────────────────────────────
 function ImageGallery({ images, fallback }) {
   const [active, setActive] = useState(0);
-  const allImages = images && images.length > 0 ? images : [fallback || '/listing_villa.png'];
+  const allImages = images && images.length > 0 ? images : [fallback || '/listing_villa.webp'];
 
   return (
     <div style={{ marginBottom: '2.5rem' }}>
@@ -152,7 +152,7 @@ function ImageGallery({ images, fallback }) {
           src={allImages[active]}
           alt="Property"
           style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'opacity 0.3s' }}
-          onError={e => { e.target.src = fallback || '/listing_villa.png'; }}
+          onError={e => { e.target.src = fallback || '/listing_villa.webp'; }}
         />
         {allImages.length > 1 && (
           <>
@@ -176,7 +176,7 @@ function ImageGallery({ images, fallback }) {
               onClick={() => setActive(i)}
               style={{ height: '80px', borderRadius: '4px', overflow: 'hidden', cursor: 'pointer', opacity: active === i ? 1 : 0.65, border: active === i ? '2px solid var(--primary-dark)' : '2px solid transparent', transition: 'all 0.2s' }}
             >
-              <img src={img} alt={`View ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.src = fallback || '/listing_villa.png'; }} />
+              <img src={img} alt={`View ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.src = fallback || '/listing_villa.webp'; }} />
             </div>
           ))}
         </div>

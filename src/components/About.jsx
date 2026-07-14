@@ -40,7 +40,7 @@ export default function About() {
             </p>
           </div>
           <div style={{ flex: '1 1 300px', width: '100%', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
-            <img src="/interior_lounge.png" alt="Luxury Interior" style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }} />
+            <img src="/interior_lounge.webp" alt="Luxury Interior" style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }} />
           </div>
         </div>
       </div>

@@ -47,7 +47,7 @@ export default function Listings() {
 
   const getImage = (prop) => {
     if (prop.images && Array.isArray(prop.images) && prop.images.length > 0) return prop.images[0];
-    return prop.image || '/listing_villa.png';
+    return prop.image || '/listing_villa.webp';
   };
 
   const cardStyle = {
@@ -114,7 +114,7 @@ export default function Listings() {
                       src={getImage(prop)}
                       alt={prop.title}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      onError={e => { e.target.src = '/listing_villa.png'; }}
+                      onError={e => { e.target.src = '/listing_villa.webp'; }}
                     />
                     {/* Price gradient overlay */}
                     {prop.price && (

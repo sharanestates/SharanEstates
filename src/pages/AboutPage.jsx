@@ -62,10 +62,10 @@ export default function AboutPage() {
 
           <div style={{ flex: '1 1 300px', position: 'relative', height: 'clamp(350px, 60vw, 500px)', width: '100%' }}>
             <div style={{ position: 'absolute', top: 0, right: 0, width: '70%', height: '75%', zIndex: 2 }}>
-              <img src="/luxury_flats.png" alt="Luxury Flats Interior" style={{ border: '3px solid white', width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }} />
+              <img src="/luxury_flats.webp" alt="Luxury Flats Interior" style={{ border: '3px solid white', width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }} />
             </div>
             <div style={{ position: 'absolute', bottom: 0, left: 0, width: '65%', height: '70%', zIndex: 3, transform: 'translateZ(30px)' }}>
-              <img src="/modern_infrastructure.png" alt="Modern Infrastructure" style={{ border: '3px solid white', width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }} />
+              <img src="/modern_infrastructure.webp" alt="Modern Infrastructure" style={{ border: '3px solid white', width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }} />
             </div>
           </div>
 
@@ -88,7 +88,7 @@ export default function AboutPage() {
             <div>
               <div className="classic-property-card" style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%' }}>
                 <div style={{ height: '350px', position: 'relative' }}>
-                  <img src="/founder.png" alt="Founder" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img src="/founder.webp" alt="Founder" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
                 <div style={{ padding: '2rem', textAlign: 'center', flex: 1 }}>
                   <h3 style={{ fontSize: '1.3rem', color: 'var(--text-dark)', marginBottom: '0.2rem', fontFamily: 'var(--font-serif)' }}>John Doe</h3>
@@ -104,7 +104,7 @@ export default function AboutPage() {
             <div>
               <div className="classic-property-card" style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%' }}>
                 <div style={{ height: '350px', position: 'relative' }}>
-                  <img src="/founder.png" alt="Executive" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'hue-rotate(15deg) contrast(1.1)' }} />
+                  <img src="/founder.webp" alt="Executive" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'hue-rotate(15deg) contrast(1.1)' }} />
                 </div>
                 <div style={{ padding: '2rem', textAlign: 'center', flex: 1 }}>
                   <h3 style={{ fontSize: '1.3rem', color: 'var(--text-dark)', marginBottom: '0.2rem', fontFamily: 'var(--font-serif)' }}>Jane Smith</h3>

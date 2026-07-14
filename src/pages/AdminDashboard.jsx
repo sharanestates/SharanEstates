@@ -650,7 +650,7 @@ export default function AdminDashboard() {
                           return (
                             <tr key={prop.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
                               <td style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <img src={prop.image} alt={prop.title} style={{ width: '50px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={(e) => { e.target.src = '/listing_villa.png' }} />
+                                <img src={prop.image} alt={prop.title} style={{ width: '50px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={(e) => { e.target.src = '/listing_villa.webp' }} />
                                 <div>
                                   <div style={{ fontWeight: 600, color: 'var(--text-dark)' }}>{prop.title}</div>
                                   <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
@@ -974,7 +974,7 @@ export default function AdminDashboard() {
                   {/* Fallback URL input */}
                   <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>Or paste direct Image URL:</label>
                   <input 
-                    type="text" required placeholder="/listing_villa.png or paste image URL or upload above"
+                    type="text" required placeholder="/listing_villa.webp or paste image URL or upload above"
                     value={propertyForm.image} 
                     onChange={(e) => setPropertyForm({...propertyForm, image: e.target.value})}
                     style={inputStyle}
@@ -1124,7 +1124,7 @@ export default function AdminDashboard() {
                 <div style={{ marginBottom: '1.2rem' }}>
                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Gallery Images (Paste one URL per line)</label>
                   <textarea 
-                    rows="3" placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"
+                    rows="3" placeholder="https://example.com/image1.webp&#10;https://example.com/image2.webp"
                     value={propertyForm.imagesInput || ''} 
                     onChange={(e) => setPropertyForm({...propertyForm, imagesInput: e.target.value})}
                     style={{ ...inputStyle, fontFamily: 'inherit', resize: 'vertical' }}

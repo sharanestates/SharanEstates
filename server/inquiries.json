@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "phone": "+971 50 123 4567",
+    "property_type": "villa",
+    "property_id": 1,
+    "status": "Pending",
+    "created_at": "2026-07-14T05:23:05.120Z"
+  },
+  {
+    "id": 2,
+    "name": "Sarah Smith",
+    "email": "sarah.smith@example.com",
+    "phone": "+971 52 987 6543",
+    "property_type": "apartment",
+    "property_id": 2,
+    "status": "Contacted",
+    "created_at": "2026-07-14T05:23:05.122Z"
+  }
+]

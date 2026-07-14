@@ -14,28 +14,28 @@ export default function ScannerCard() {
       title: 'The Golden Crest Tower',
       desc: 'Complete architectural schematic of the modern residences, containing standard flats, premium executive floors, and luxury penthouses.',
       price: 'AED 8,200,000 - 35,000,000',
-      image: '/light_exterior.png'
+      image: '/light_exterior.webp'
     },
     penthouse: {
       subtitle: 'Penthouse Collection | Level 70-75',
       title: 'Triplex Sky Penthouses',
       desc: 'Elite top-tier triplex residences. Private glass elevators, rooftop infinity pools, and 360-degree views of the skyline and ocean.',
       price: 'AED 35,000,000',
-      image: '/listing_penthouse.png'
+      image: '/listing_penthouse.webp'
     },
     executive: {
       subtitle: 'Executive Suites | Level 40-69',
       title: 'Bespoke Executive Flats',
       desc: 'Spacious half-floor layouts featuring bespoke marble finishing, automated floor-to-ceiling shades, and private wellness spas.',
       price: 'AED 14,500,000',
-      image: '/interior_lounge.png'
+      image: '/interior_lounge.webp'
     },
     residences: {
       subtitle: 'Signature Residences | Level 1-39',
       title: 'The Golden Crest Condos',
       desc: 'Exclusive lower-level residences with private gardens, direct access to golf course paths, and custom handcrafted modular kitchens.',
       price: 'AED 18,500,000',
-      image: '/exterior_patio.png'
+      image: '/exterior_patio.webp'
     }
   };
 

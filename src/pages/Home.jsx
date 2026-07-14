@@ -7,11 +7,11 @@ import Properties from '../components/Properties';
 import ConsultationSection from '../components/ConsultationSection';
 
 const bgImages = [
-  '/light_exterior.png',
-  '/luxury_flats.png',
-  '/listing_villa.png',
-  '/interior.png',
-  '/interior_lounge.png'
+  '/light_exterior.webp',
+  '/luxury_flats.webp',
+  '/listing_villa.webp',
+  '/interior.webp',
+  '/interior_lounge.webp'
 ];
 
 export default function Home() {

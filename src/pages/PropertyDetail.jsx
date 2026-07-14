@@ -379,18 +379,6 @@ export default function PropertyDetail() {
               >
                 📐 View Floor Plan
               </button>
-
-              {/* Marketing Materials */}
-              {property.dropbox_link && (
-                <a
-                  href={property.dropbox_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.8rem 1.5rem', background: 'transparent', color: 'var(--text-dark)', border: '1px solid rgba(0,0,0,0.2)', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', textDecoration: 'none', transition: 'all 0.2s' }}
-                >
-                  📥 Agent Pack
-                </a>
-              )}
             </div>
           </div>
 

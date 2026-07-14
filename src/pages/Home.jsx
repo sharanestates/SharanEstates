@@ -41,7 +41,6 @@ export default function Home() {
         
         {/* Background Layer (Slideshow) */}
         <div className="hero-overlay"></div>
-        <div className="grid-bg"></div>
         <div className="cinematic-bg-container">
           <div className="parallax-wrapper">
             {bgImages.map((img, idx) => (
@@ -86,13 +85,13 @@ export default function Home() {
 
           <div className="p-mobile hero-card-mobile" style={{
             maxWidth: '780px', width: '100%',
-            background: 'rgba(0, 0, 0, 0.22)', /* highly transparent dark backing */
-            backdropFilter: 'none',
-            WebkitBackdropFilter: 'none',
-            border: '1px solid rgba(255, 255, 255, 0.12)', /* thin clean white border */
+            background: 'rgba(255, 255, 255, 0.85)', /* white transparent card */
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: '1px solid rgba(211, 185, 138, 0.25)', /* subtle gold border */
             borderRadius: '4px',
             padding: '2.5rem 3.5rem',
-            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.15)',
+            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.06)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -100,7 +99,7 @@ export default function Home() {
           }}>
 
             {/* Description */}
-            <p className="hide-on-mobile" style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, textAlign: 'center', maxWidth: '620px', fontWeight: 500, margin: 0, letterSpacing: '0.2px' }}>
+            <p className="hide-on-mobile" style={{ fontSize: '0.88rem', color: 'var(--text-dark)', lineHeight: 1.7, textAlign: 'center', maxWidth: '620px', fontWeight: 500, margin: 0, letterSpacing: '0.2px' }}>
               Welcome to Sharan Estates. We curate exceptional residential properties, waterfront estates, and private off-market penthouses for discerning global investors.
             </p>
 

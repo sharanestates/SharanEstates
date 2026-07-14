@@ -59,26 +59,26 @@ export default function Home() {
           {/* Headline — floating, no card */}
           <div style={{ textAlign: 'center' }}>
             <p style={{ 
-              color: 'var(--text-dark)', 
+              color: 'var(--primary-color)', 
               fontSize: '0.8rem', 
               letterSpacing: '5px', 
-              fontWeight: 500, 
+              fontWeight: 600, 
               textTransform: 'uppercase', 
               marginBottom: '1.25rem', 
-              textShadow: '0 2px 10px rgba(255,255,255,0.8)',
+              textShadow: '0 2px 10px rgba(0,0,0,0.5)',
               fontFamily: 'var(--font-sans)'
             }}>
               Private Real Estate Advisory
             </p>
             <h1 style={{ 
               fontSize: 'clamp(2.5rem, 5.5vw, 5.2rem)', 
-              color: 'var(--text-dark)', 
+              color: '#FFFFFF', 
               lineHeight: 1.1, 
               fontWeight: 300, 
               fontFamily: 'var(--font-serif)', 
               letterSpacing: '1px',
               textTransform: 'uppercase',
-              textShadow: '0 2px 16px rgba(255,255,255,0.7)' 
+              textShadow: '0 2px 20px rgba(0,0,0,0.6)' 
             }}>
               Curated Luxury Real Estate
             </h1>
@@ -86,13 +86,13 @@ export default function Home() {
 
           <div className="p-mobile hero-card-mobile" style={{
             maxWidth: '780px', width: '100%',
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.15))',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255, 255, 255, 0.4)',
+            background: 'rgba(10, 10, 10, 0.75)', /* dark luxury glass */
+            backdropFilter: 'blur(15px)',
+            WebkitBackdropFilter: 'blur(15px)',
+            border: '1px solid rgba(211, 185, 138, 0.25)', /* subtle gold border */
             borderRadius: '4px', /* cleaner, sharp luxury corners */
             padding: '2.5rem 3.5rem',
-            boxShadow: '0 30px 60px rgba(0, 0, 0, 0.05)',
+            boxShadow: '0 30px 60px rgba(0, 0, 0, 0.35)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -100,7 +100,7 @@ export default function Home() {
           }}>
 
             {/* Description */}
-            <p className="hide-on-mobile" style={{ fontSize: '0.88rem', color: '#222', lineHeight: 1.7, textAlign: 'center', maxWidth: '620px', fontWeight: 500, margin: 0, letterSpacing: '0.2px' }}>
+            <p className="hide-on-mobile" style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, textAlign: 'center', maxWidth: '620px', fontWeight: 500, margin: 0, letterSpacing: '0.2px' }}>
               Welcome to Sharan Estates. We curate exceptional residential properties, waterfront estates, and private off-market penthouses for discerning global investors.
             </p>
 
@@ -115,7 +115,7 @@ export default function Home() {
       </section>
 
       {/* About Us Teaser Section */}
-      <section className="section" style={{ background: 'var(--primary-light)', padding: '7.5rem 0', textAlign: 'center' }}>
+      <section className="section" style={{ background: 'var(--primary-light)', padding: '3.8rem 0', textAlign: 'center' }}>
         <div className="container">
           <p style={{ color: 'var(--primary-dark)', fontSize: '0.85rem', letterSpacing: '4px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1.25rem' }}>
             The Standard of Excellence

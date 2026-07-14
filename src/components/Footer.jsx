@@ -90,9 +90,9 @@ export default function Footer() {
             <p className="footer-desc-mobile" style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.8, fontSize: '0.9rem', marginBottom: '1.25rem' }}>
               Subscribe to gain access to exclusive off-market listings, early-stage off-plan releases, and deep market insights.
             </p>
-            <div className="footer-newsletter-input-mobile" style={{ display: 'flex', gap: '0.5rem', width: '100%', background: 'rgba(255,255,255,0.05)', padding: '0.5rem', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)' }}>
-              <input type="email" placeholder="Enter your email address" style={{ flex: 1, minWidth: 0, padding: '1rem 1.5rem', borderRadius: '4px', border: 'none', background: 'transparent', color: '#FFF', outline: 'none', fontSize: '0.9rem' }} />
-              <button style={{ padding: '0.8rem 1.5rem', borderRadius: '4px', background: '#FFF', color: '#000', border: 'none', fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'background 0.3s', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px' }}
+            <div className="footer-newsletter-input-mobile" style={{ display: 'flex', gap: '0.4rem', width: '100%', maxWidth: '380px', background: 'rgba(255,255,255,0.05)', padding: '0.3rem', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <input type="email" placeholder="Enter your email address" style={{ flex: 1, minWidth: 0, padding: '0.5rem 1rem', borderRadius: '4px', border: 'none', background: 'transparent', color: '#FFF', outline: 'none', fontSize: '0.82rem' }} />
+              <button style={{ padding: '0.5rem 1rem', borderRadius: '4px', background: '#FFF', color: '#000', border: 'none', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.3s ease', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}
                       onMouseOver={(e) => e.target.style.background = 'var(--primary-color)'}
                       onMouseOut={(e) => e.target.style.background = '#FFF'}>
                 Subscribe

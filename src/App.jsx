@@ -13,6 +13,8 @@ import BlogsPage from './pages/BlogsPage';
 import AreaGuidePage from './pages/AreaGuidePage';
 import ListWithUsPage from './pages/ListWithUsPage';
 import AreaDetailPage from './pages/AreaDetailPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsPage from './pages/TermsPage';
 
 function App() {
   return (
@@ -33,6 +35,8 @@ function App() {
           <Route path="/listings/:type/:category" element={<Listings />} />
           <Route path="/property/:id" element={<PropertyDetail />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms-of-service" element={<TermsPage />} />
         </Routes>
       </main>
       <Footer />

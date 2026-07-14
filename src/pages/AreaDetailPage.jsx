@@ -297,23 +297,6 @@ export default function AreaDetailPage() {
         }} />
         
         <div className="container" style={{ position: 'relative', zIndex: 1, paddingBottom: '3rem', width: '100%' }}>
-          <Link 
-            to="/area-guide" 
-            style={{ 
-              color: 'var(--primary-color)', 
-              textDecoration: 'none', 
-              fontSize: '0.72rem', 
-              letterSpacing: '2px', 
-              textTransform: 'uppercase',
-              fontWeight: 600,
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              marginBottom: '1rem',
-            }}
-          >
-            ← Back to Area Guide
-          </Link>
           <p style={{ color: 'var(--primary-color)', fontSize: '0.72rem', letterSpacing: '4px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.5rem' }}>
             {detail.tagline}
           </p>
@@ -333,7 +316,38 @@ export default function AreaDetailPage() {
       </section>
 
       {/* ── DETAILS MAIN CONTENT ── */}
-      <section className="container" style={{ padding: '4rem 1.5rem 2rem' }}>
+      <section className="container" style={{ padding: '3rem 1.5rem 2rem' }}>
+        
+        {/* Breadcrumb Back Button */}
+        <div style={{ marginBottom: '2.5rem' }}>
+          <Link 
+            to="/area-guide" 
+            style={{ 
+              color: 'var(--primary-dark)', 
+              textDecoration: 'none', 
+              fontSize: '0.75rem', 
+              letterSpacing: '1.5px', 
+              textTransform: 'uppercase',
+              fontWeight: 600,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.6rem 1.25rem',
+              background: '#FFFFFF',
+              border: '1px solid rgba(211,185,138,0.4)',
+              borderRadius: '3px',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--text-dark)'; e.currentTarget.style.color = '#FFFFFF'; e.currentTarget.style.borderColor = 'var(--text-dark)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.color = 'var(--primary-dark)'; e.currentTarget.style.borderColor = 'rgba(211,185,138,0.4)'; }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+            </svg>
+            Back to Area Guide
+          </Link>
+        </div>
         <div style={{
           display: 'grid',
           gridTemplateColumns: '1fr 340px',

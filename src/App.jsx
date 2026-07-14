@@ -12,6 +12,7 @@ import CareersPage from './pages/CareersPage';
 import BlogsPage from './pages/BlogsPage';
 import AreaGuidePage from './pages/AreaGuidePage';
 import ListWithUsPage from './pages/ListWithUsPage';
+import AreaDetailPage from './pages/AreaDetailPage';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/careers" element={<CareersPage />} />
           <Route path="/list-with-us" element={<ListWithUsPage />} />
           <Route path="/area-guide" element={<AreaGuidePage />} />
+          <Route path="/area-guide/:id" element={<AreaDetailPage />} />
           <Route path="/market-trends" element={<PlaceholderPage title="Market Trends" description="Deep analytics and intelligence on the global luxury real estate market. Coming soon." />} />
           <Route path="/blogs" element={<BlogsPage />} />
           <Route path="/listings/:type" element={<Listings />} />

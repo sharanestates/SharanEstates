@@ -128,122 +128,124 @@ function AreaCard({ area, index }) {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <div
-      className="area-guide-card"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        position: 'relative',
-        borderRadius: '4px',
-        overflow: 'hidden',
-        aspectRatio: '4 / 3',
-        cursor: 'pointer',
-        animation: `fadeSlideUp 0.6s ease ${index * 0.06}s both`,
-        boxShadow: hovered ? '0 20px 50px rgba(0,0,0,0.2)' : '0 4px 15px rgba(0,0,0,0.08)',
-        transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-        transform: hovered ? 'translateY(-6px)' : 'translateY(0)',
-      }}
-    >
-      {/* Image */}
-      <img
-        src={area.image}
-        alt={area.name}
+    <Link to={`/area-guide/${area.id}`} style={{ textDecoration: 'none', display: 'block' }}>
+      <div
+        className="area-guide-card"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
         style={{
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          transition: 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)',
-          transform: hovered ? 'scale(1.08)' : 'scale(1)',
-        }}
-      />
-
-      {/* Dark gradient overlay */}
-      <div style={{
-        position: 'absolute',
-        inset: 0,
-        background: hovered
-          ? 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.15) 100%)'
-          : 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 50%, transparent 100%)',
-        transition: 'background 0.5s',
-      }} />
-
-      {/* Content */}
-      <div style={{
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        padding: hovered ? '1.75rem' : '1.25rem',
-        transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-      }}>
-        {/* Tagline - only shows on hover */}
-        <p style={{
-          color: 'var(--primary-color)',
-          fontSize: '0.6rem',
-          letterSpacing: '2.5px',
-          textTransform: 'uppercase',
-          fontWeight: 600,
-          marginBottom: '0.35rem',
-          opacity: hovered ? 1 : 0,
-          transform: hovered ? 'translateY(0)' : 'translateY(10px)',
-          transition: 'all 0.4s ease 0.1s',
-        }}>
-          {area.tagline}
-        </p>
-
-        {/* Area Name */}
-        <h3 style={{
-          color: '#FFFFFF',
-          fontSize: hovered ? '1.1rem' : '0.95rem',
-          fontFamily: 'var(--font-serif)',
-          fontWeight: 300,
-          letterSpacing: '2px',
-          textTransform: 'uppercase',
-          margin: 0,
-          transition: 'all 0.4s',
-          marginBottom: hovered ? '0.6rem' : '0',
-        }}>
-          {area.name}
-        </h3>
-
-        {/* Extra info on hover */}
-        <div style={{
+          position: 'relative',
+          borderRadius: '4px',
           overflow: 'hidden',
-          maxHeight: hovered ? '80px' : '0',
-          opacity: hovered ? 1 : 0,
+          aspectRatio: '4 / 3',
+          cursor: 'pointer',
+          animation: `fadeSlideUp 0.6s ease ${index * 0.06}s both`,
+          boxShadow: hovered ? '0 20px 50px rgba(0,0,0,0.2)' : '0 4px 15px rgba(0,0,0,0.08)',
+          transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+          transform: hovered ? 'translateY(-6px)' : 'translateY(0)',
+        }}
+      >
+        {/* Image */}
+        <img
+          src={area.image}
+          alt={area.name}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            transition: 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)',
+            transform: hovered ? 'scale(1.08)' : 'scale(1)',
+          }}
+        />
+
+        {/* Dark gradient overlay */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: hovered
+            ? 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.15) 100%)'
+            : 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 50%, transparent 100%)',
+          transition: 'background 0.5s',
+        }} />
+
+        {/* Content */}
+        <div style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: hovered ? '1.75rem' : '1.25rem',
           transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
         }}>
-          <div style={{
-            display: 'flex',
-            gap: '1rem',
-            alignItems: 'center',
-            marginBottom: '0.5rem',
-          }}>
-            <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.6)', letterSpacing: '0.5px' }}>
-              {area.propertyTypes}
-            </span>
-            <span style={{ fontSize: '0.65rem', color: 'var(--primary-color)', fontWeight: 600, letterSpacing: '1px' }}>
-              From {area.priceFrom}
-            </span>
-          </div>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
+          {/* Tagline - only shows on hover */}
+          <p style={{
             color: 'var(--primary-color)',
-            fontSize: '0.72rem',
-            fontWeight: 600,
-            letterSpacing: '1.5px',
+            fontSize: '0.6rem',
+            letterSpacing: '2.5px',
             textTransform: 'uppercase',
+            fontWeight: 600,
+            marginBottom: '0.35rem',
+            opacity: hovered ? 1 : 0,
+            transform: hovered ? 'translateY(0)' : 'translateY(10px)',
+            transition: 'all 0.4s ease 0.1s',
           }}>
-            Explore Area
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-            </svg>
+            {area.tagline}
+          </p>
+
+          {/* Area Name */}
+          <h3 style={{
+            color: '#FFFFFF',
+            fontSize: hovered ? '1.1rem' : '0.95rem',
+            fontFamily: 'var(--font-serif)',
+            fontWeight: 300,
+            letterSpacing: '2px',
+            textTransform: 'uppercase',
+            margin: 0,
+            transition: 'all 0.4s',
+            marginBottom: hovered ? '0.6rem' : '0',
+          }}>
+            {area.name}
+          </h3>
+
+          {/* Extra info on hover */}
+          <div style={{
+            overflow: 'hidden',
+            maxHeight: hovered ? '80px' : '0',
+            opacity: hovered ? 1 : 0,
+            transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+          }}>
+            <div style={{
+              display: 'flex',
+              gap: '1rem',
+              alignItems: 'center',
+              marginBottom: '0.5rem',
+            }}>
+              <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.6)', letterSpacing: '0.5px' }}>
+                {area.propertyTypes}
+              </span>
+              <span style={{ fontSize: '0.65rem', color: 'var(--primary-color)', fontWeight: 600, letterSpacing: '1px' }}>
+                From {area.priceFrom}
+              </span>
+            </div>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              color: 'var(--primary-color)',
+              fontSize: '0.72rem',
+              fontWeight: 600,
+              letterSpacing: '1.5px',
+              textTransform: 'uppercase',
+            }}>
+              Explore Area
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 

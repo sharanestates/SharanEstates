@@ -9,7 +9,7 @@ export default function Footer() {
     if (!expanded) {
       setTimeout(() => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-      }, 150); // slight delay to allow CSS transition to happen
+      }, 150);
     }
   };
 
@@ -21,14 +21,24 @@ export default function Footer() {
       <div style={{ position: 'absolute', bottom: 0, left: 0, width: '40%', height: '40%', background: 'radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%)', zIndex: 0, filter: 'blur(60px)' }}></div>
 
       <div className="container" style={{ position: 'relative', zIndex: 1, maxWidth: '1200px', margin: '0 auto' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1rem', cursor: 'pointer' }} onClick={toggleFooter}>
-          <div className={`swipe-up-handle ${expanded ? 'expanded' : ''}`} style={{ marginBottom: '0.5rem' }}>
-            <div className="swipe-chevron"></div>
+        
+        {/* Mobile-only toggle header */}
+        <div 
+          className="show-on-mobile-only" 
+          onClick={toggleFooter}
+          style={{ cursor: 'pointer', marginBottom: '1rem' }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div className={`swipe-up-handle ${expanded ? 'expanded' : ''}`} style={{ marginBottom: '0.5rem' }}>
+              <div className="swipe-chevron"></div>
+            </div>
+            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', margin: 0, textAlign: 'center' }}>
+              &copy; 2026 Sharan Estates. All rights reserved.
+            </p>
           </div>
-          <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', margin: 0, textAlign: 'center' }}>
-            &copy; 2026 Sharan Estates. All rights reserved.
-          </p>
         </div>
+
+        {/* Footer Main Grid */}
         <div className="footer-grid-mobile" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '4rem', paddingBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
           
           {/* Brand */}
@@ -92,14 +102,60 @@ export default function Footer() {
 
         </div>
 
-        <div className="footer-bottom-mobile" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', paddingTop: '1.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
-            <div className="footer-policy-links" style={{ display: 'flex', gap: '2rem' }}>
-              <a href="#" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.3s' }} onMouseOver={e=>e.target.style.color='#FFF'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.4)'}>Privacy Policy</a>
-              <a href="#" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.3s' }} onMouseOver={e=>e.target.style.color='#FFF'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.4)'}>Terms of Service</a>
+        {/* Desktop-only disclaimer and bottom section */}
+        <div className="hide-on-mobile" style={{ marginTop: '2.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', paddingBottom: '2.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+            <div>
+              <h4 style={{ fontSize: '0.72rem', color: 'var(--primary-color)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '0.4rem', fontWeight: 600 }}>
+                Disclaimer & Legal Notice
+              </h4>
+              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.72rem', lineHeight: 1.6, margin: 0 }}>
+                This website is owned and managed by K Estates L.L.C, a real estate agency fully authorized and licensed by the Real Estate Regulatory Agency (RERA) under License Number 1067808 and ORN: 30498. The content provided on this website is for informational purposes only and does not constitute a formal offer, financial advice, or an investment guarantee. All property details, including pricing, payment plans, and availability, are subject to change by the developers without prior notice. Images, renders, and virtual tours are for illustrative and representational purposes only.
+              </p>
+            </div>
+
+            <div>
+              <h4 style={{ fontSize: '0.72rem', color: 'var(--primary-color)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '0.4rem', fontWeight: 600 }}>
+                Data Privacy
+              </h4>
+              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.72rem', lineHeight: 1.6, margin: 0 }}>
+                By submitting your contact information, you authorize K Estates L.L.C to share your details with RERA-registered developers or relevant third parties as necessary to fulfill your request. We may contact you via your registered mobile number or email with project updates and marketing materials.
+              </p>
+            </div>
+
+            <div>
+              <h4 style={{ fontSize: '0.72rem', color: 'var(--primary-color)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '0.4rem', fontWeight: 600 }}>
+                Copyright
+              </h4>
+              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.72rem', lineHeight: 1.6, margin: 0 }}>
+                All website design, text, and graphics are protected by UAE Intellectual Property laws. Any unauthorized reproduction is strictly prohibited. For official inquiries or to verify current property status, please contact us directly using the information provided on our official contact page.
+              </p>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1.5rem' }}>
+            <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem', margin: 0 }}>
+              &copy; 2026 Sharan Estates. All rights reserved.
+            </p>
+            <div style={{ display: 'flex', gap: '2rem' }}>
+              <a href="#" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none', fontSize: '0.75rem', transition: 'color 0.3s' }} onMouseOver={e=>e.target.style.color='#FFF'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.4)'}>Privacy Policy</a>
+              <a href="#" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none', fontSize: '0.75rem', transition: 'color 0.3s' }} onMouseOver={e=>e.target.style.color='#FFF'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.4)'}>Terms of Service</a>
             </div>
           </div>
         </div>
+
+        {/* Mobile expanded bottom section */}
+        <div className="show-on-mobile-only">
+          {expanded && (
+            <div className="footer-bottom-mobile" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', paddingTop: '1.5rem' }}>
+              <div className="footer-policy-links" style={{ display: 'flex', gap: '2rem' }}>
+                <a href="#" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none', fontSize: '0.9rem' }}>Privacy Policy</a>
+                <a href="#" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none', fontSize: '0.9rem' }}>Terms of Service</a>
+              </div>
+            </div>
+          )}
+        </div>
+
       </div>
     </footer>
   );

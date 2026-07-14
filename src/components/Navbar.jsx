@@ -58,20 +58,59 @@ export default function Navbar() {
 
   return (
     <nav className="pill-nav" style={{ zIndex: 1000 }}>
-      <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', textDecoration: 'none' }}>
-        <div className="nav-logo-icon-mobile" style={{
-          width: '32px', height: '32px', background: 'var(--primary-color)', color: '#FFF', 
-          display: 'flex', alignItems: 'center', justifyContent: 'center', 
-          borderRadius: '4px', fontFamily: 'var(--font-serif)', fontWeight: 400, fontSize: '1.2rem',
-          border: '1px solid var(--primary-dark)', boxShadow: '0 2px 8px rgba(211, 185, 138, 0.3)'
-        }}>
-          S
-        </div>
-        <div className="nav-logo-text-mobile" style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, marginTop: '2px' }}>
-          <span style={{ fontSize: '1.1rem', fontFamily: 'var(--font-sans)', fontWeight: 600, letterSpacing: '2px', color: 'var(--text-dark)', margin: 0, textTransform: 'uppercase' }}>
-            SHARAN
-          </span>
-          <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', letterSpacing: '2.5px', textTransform: 'uppercase', marginTop: '2px' }}>ESTATES</span>
+      <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+          <div style={{
+            fontFamily: 'var(--font-serif)',
+            fontSize: '1.8rem',
+            fontWeight: 300,
+            color: 'var(--primary-color)',
+            lineHeight: 1,
+            letterSpacing: '-1.5px',
+            display: 'flex',
+            alignItems: 'center',
+            position: 'relative'
+          }}>
+            SE
+            <span style={{
+              position: 'absolute',
+              right: '-6px',
+              top: '4px',
+              width: '4px',
+              height: '4px',
+              background: 'var(--primary-color)',
+              borderRadius: '50%'
+            }} />
+          </div>
+          <div style={{
+            borderLeft: '1px solid rgba(211, 185, 138, 0.3)',
+            paddingLeft: '0.8rem',
+            display: 'flex',
+            flexDirection: 'column',
+            lineHeight: 1.1
+          }}>
+            <span style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: '1.1rem',
+              fontWeight: 500,
+              letterSpacing: '1px',
+              color: 'var(--text-dark)',
+              textTransform: 'uppercase'
+            }}>
+              Sharan
+            </span>
+            <span style={{
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.52rem',
+              fontWeight: 500,
+              letterSpacing: '2.5px',
+              color: 'var(--text-muted)',
+              textTransform: 'uppercase',
+              marginTop: '1px'
+            }}>
+              Private Advisory
+            </span>
+          </div>
         </div>
       </Link>
       
@@ -125,7 +164,7 @@ export default function Navbar() {
       </div>
 
       <button className="mobile-menu-btn" style={{ display: 'none' }} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        {isMobileMenuOpen ? <X size={20} strokeWidth={1.25} /> : <Menu size={20} strokeWidth={1.25} />}
       </button>
 
       <div className={`mobile-nav-menu ${isMobileMenuOpen ? 'open' : ''}`}>

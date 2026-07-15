@@ -49,12 +49,13 @@ export default function Home() {
         
         {/* Background Layer (Slideshow) */}
         <div className="hero-overlay"></div>
+        <div className="cinematic-vignette"></div>
         <div className="cinematic-bg-container">
           <div className="parallax-wrapper">
             {bgImages.map((img, idx) => (
               <div 
                 key={img} 
-                className={`cinematic-slide ${idx === currentSlide ? 'active' : ''}`}
+                className={`cinematic-slide ${idx === currentSlide ? 'active' : ''} ${idx % 2 === 0 ? 'zoom-in' : 'zoom-out'}`}
                 style={{ backgroundImage: `url(${img})`, opacity: idx === currentSlide ? 1 : 0 }}
               />
             ))}

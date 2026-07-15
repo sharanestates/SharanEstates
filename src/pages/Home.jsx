@@ -104,17 +104,82 @@ export default function Home() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: '1.5rem'
+            gap: '1.8rem'
           }}>
 
             {/* Description */}
-            <p className="hide-on-mobile" style={{ fontSize: '0.88rem', color: '#FFFFFF', lineHeight: 1.7, textAlign: 'center', maxWidth: '620px', fontWeight: 500, margin: 0, letterSpacing: '0.2px', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
+            <p className="hide-on-mobile" style={{ fontSize: '0.9rem', color: '#FFFFFF', lineHeight: 1.8, textAlign: 'center', maxWidth: '640px', fontWeight: 400, margin: 0, letterSpacing: '0.2px', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
               Welcome to Sharan Estates. We curate exceptional residential properties, waterfront estates, and private off-market penthouses for discerning global investors.
             </p>
 
-            {/* Search & Tabs */}
-            <div style={{ width: '100%' }}>
-              <FilterWidget />
+            {/* Redesigned CTAs */}
+            <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', justifyContent: 'center', margin: '0.5rem 0' }}>
+              <Link to="/listings/off-plan" style={{
+                background: '#FFFFFF',
+                color: 'var(--text-dark)',
+                padding: '0.75rem 2rem',
+                borderRadius: '30px',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '1.5px',
+                textDecoration: 'none',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 15px rgba(0,0,0,0.08)'
+              }}
+              onMouseOver={e => { e.currentTarget.style.background = 'var(--primary-color)'; e.currentTarget.style.color = 'var(--text-dark)'; }}
+              onMouseOut={e => { e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.color = 'var(--text-dark)'; }}
+              >
+                Explore Portfolio
+              </Link>
+              <button onClick={() => {
+                const element = document.getElementById('consultation');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+              }} style={{
+                background: 'transparent',
+                color: '#FFFFFF',
+                padding: '0.75rem 2rem',
+                borderRadius: '30px',
+                border: '1px solid rgba(255, 255, 255, 0.4)',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '1.5px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseOver={e => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'; e.currentTarget.style.borderColor = '#FFFFFF'; }}
+              onMouseOut={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)'; }}
+              >
+                Private Advisory
+              </button>
+            </div>
+
+            {/* Credibility Stats Block */}
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(4, 1fr)', 
+              gap: '0.5rem', 
+              width: '100%',
+              paddingTop: '1.5rem', 
+              borderTop: '1px solid rgba(255, 255, 255, 0.15)' 
+            }} className="grid-2-mobile">
+              <div style={{ padding: '0.2rem 0', textAlign: 'center' }}>
+                <h4 style={{ fontSize: '1.2rem', fontWeight: 300, color: '#FFFFFF', margin: 0, fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>AED 300M+</h4>
+                <p style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.3rem', fontWeight: 600 }}>In Sales Closed</p>
+              </div>
+              <div style={{ padding: '0.2rem 0', textAlign: 'center', borderLeft: '1px solid rgba(255, 255, 255, 0.15)' }} className="border-left-none-mobile">
+                <h4 style={{ fontSize: '1.2rem', fontWeight: 300, color: '#FFFFFF', margin: 0, fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>Exclusive</h4>
+                <p style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.3rem', fontWeight: 600 }}>Private Listings</p>
+              </div>
+              <div style={{ padding: '0.2rem 0', textAlign: 'center', borderLeft: '1px solid rgba(255, 255, 255, 0.15)' }} className="border-left-none-mobile">
+                <h4 style={{ fontSize: '1.2rem', fontWeight: 300, color: '#FFFFFF', margin: 0, fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>Dual-City</h4>
+                <p style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.3rem', fontWeight: 600 }}>Dubai & Abu Dhabi</p>
+              </div>
+              <div style={{ padding: '0.2rem 0', textAlign: 'center', borderLeft: '1px solid rgba(255, 255, 255, 0.15)' }} className="border-left-none-mobile">
+                <h4 style={{ fontSize: '1.2rem', fontWeight: 300, color: '#FFFFFF', margin: 0, fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>Advisory</h4>
+                <p style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.3rem', fontWeight: 600 }}>Private Strategy</p>
+              </div>
             </div>
 
           </div>

@@ -79,7 +79,7 @@ export default function Navbar() {
   const navBackground = shouldShowOpaque 
     ? 'linear-gradient(90deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.98) 100%)' 
     : 'transparent';
-  const navPadding = shouldShowOpaque ? '0.45rem 4.5rem' : '1.25rem 4.5rem';
+  const navPadding = shouldShowOpaque ? '0.3rem 4.5rem' : '0.75rem 4.5rem';
   const navBorderBottom = shouldShowOpaque 
     ? '1px solid rgba(211, 185, 138, 0.22)' 
     : '1px solid rgba(255, 255, 255, 0.08)';
@@ -100,7 +100,7 @@ export default function Navbar() {
     background: shouldShowOpaque ? 'var(--text-dark)' : 'transparent',
     color: '#FFFFFF',
     border: shouldShowOpaque ? '1px solid var(--text-dark)' : '1px solid rgba(255, 255, 255, 0.5)',
-    padding: '0.55rem 1.35rem',
+    padding: '0.45rem 1.25rem',
     borderRadius: '30px',
     fontSize: '0.75rem',
     fontWeight: 600,
@@ -120,7 +120,7 @@ export default function Navbar() {
       backdropFilter: navBlur,
       WebkitBackdropFilter: navBlur,
       transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-      height: shouldShowOpaque ? '60px' : '82px',
+      height: shouldShowOpaque ? '52px' : '68px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',

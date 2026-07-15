@@ -7,6 +7,14 @@ import Properties from '../components/Properties';
 import ConsultationSection from '../components/ConsultationSection';
 
 const bgImages = [
+  '/dubai_luxury_1.jpg',
+  '/dubai_luxury_2.jpg',
+  '/dubai_luxury_3.jpg',
+  '/dubai_luxury_4.jpg',
+  '/dubai_luxury_5.jpg',
+  '/dubai_luxury_6.jpg',
+  '/dubai_luxury_7.jpg',
+  '/dubai_luxury_8.jpg',
   '/exclusive_villa.webp',
   '/luxury_facade.webp',
   '/luxury_community.webp',
@@ -23,7 +31,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % bgImages.length);
-    }, 3000); // 3 seconds interval
+    }, 6500); // 6.5 seconds interval for slow cinematic feel
     return () => clearInterval(timer);
   }, []);
 
@@ -85,13 +93,13 @@ export default function Home() {
 
           <div className="p-mobile hero-card-mobile" style={{
             maxWidth: '780px', width: '100%',
-            background: 'rgba(255, 255, 255, 0.85)', /* white transparent card */
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(211, 185, 138, 0.25)', /* subtle gold border */
+            background: 'rgba(255, 255, 255, 0.08)', /* highly transparent white glass */
+            backdropFilter: 'blur(3px)',
+            WebkitBackdropFilter: 'blur(3px)',
+            border: '1px solid rgba(255, 255, 255, 0.18)', /* extremely thin white glass border */
             borderRadius: '4px',
             padding: '2.5rem 3.5rem',
-            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.06)',
+            boxShadow: '0 15px 35px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -99,7 +107,7 @@ export default function Home() {
           }}>
 
             {/* Description */}
-            <p className="hide-on-mobile" style={{ fontSize: '0.88rem', color: 'var(--text-dark)', lineHeight: 1.7, textAlign: 'center', maxWidth: '620px', fontWeight: 500, margin: 0, letterSpacing: '0.2px' }}>
+            <p className="hide-on-mobile" style={{ fontSize: '0.88rem', color: '#FFFFFF', lineHeight: 1.7, textAlign: 'center', maxWidth: '620px', fontWeight: 500, margin: 0, letterSpacing: '0.2px', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
               Welcome to Sharan Estates. We curate exceptional residential properties, waterfront estates, and private off-market penthouses for discerning global investors.
             </p>
 

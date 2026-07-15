@@ -163,14 +163,13 @@ h4, h5, h6 { font-size: 0.9rem !important; line-height: 1.5 !important; }
   background-position: center;
   opacity: 0;
   transform: scale(1.0);
-  transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
+  transition: opacity 2.2s ease-in-out;
   pointer-events: none;
 }
 
 .cinematic-slide.active {
   opacity: 1; 
-  transform: scale(1.0);
-  animation: kenBurnsEffect 20s infinite alternate ease-in-out;
+  animation: kenBurnsEffect 24s infinite alternate ease-in-out;
 }
 
 @keyframes kenBurnsEffect {

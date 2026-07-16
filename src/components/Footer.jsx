@@ -124,8 +124,8 @@ export default function Footer() {
         </div>
 
         {/* Disclaimer and bottom section */}
-        <div style={{ marginTop: '1.5rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+        <div className="footer-bottom-wrapper" style={{ marginTop: '1.5rem' }}>
+          <div className="footer-disclaimer-container" style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
             <div>
               <p style={{ color: 'rgba(255,255,255,0.22)', fontSize: '0.54rem', lineHeight: 1.5, margin: 0, textAlign: 'center' }}>
                 Disclaimer: Sharan Estates is a real estate agency licensed by the Real Estate Regulatory Agency (RERA) under License Number 1067808 and ORN: 30498. The content provided on this website is for informational purposes only. Renders, virtual tours, and images are for illustrative and representational purposes only and subject to change by developers. Read our full <Link to="/privacy-policy" style={{ color: 'rgba(0,0,0,0.5)', textDecoration: 'underline' }}>Disclaimer & Privacy Policy</Link> and <Link to="/terms-of-service" style={{ color: 'rgba(0,0,0,0.5)', textDecoration: 'underline' }}>Terms of Service</Link>.
@@ -133,7 +133,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+          <div className="footer-copyright-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
             <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem', margin: 0 }}>
               &copy; 2026 Sharan Estates. All rights reserved.
             </p>

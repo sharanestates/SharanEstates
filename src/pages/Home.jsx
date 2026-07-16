@@ -53,11 +53,6 @@ export default function Home() {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.innerWidth <= 768) {
-        if (slideshowRef.current) slideshowRef.current.style.transform = 'none';
-        if (heroCardRef.current) heroCardRef.current.style.transform = 'none';
-        return;
-      }
       const scrolled = window.scrollY;
       if (slideshowRef.current) {
         slideshowRef.current.style.transform = `translate3d(0, ${scrolled * 0.28}px, 0)`;
@@ -83,16 +78,18 @@ export default function Home() {
       <section className="hero-section-wrapper">
         
         {/* Full Viewport Background Slideshow (Whole Landing Page Screen) */}
-        <div ref={slideshowRef} className="hero-slideshow-container">
+        <div className="hero-slideshow-container" style={{ overflow: 'hidden' }}>
           <div className="hero-overlay"></div>
           <div className="cinematic-vignette"></div>
-          {bgImages.map((img, idx) => (
-            <div 
-              key={img} 
-              className={`cinematic-slide ${idx === currentSlide ? 'active' : ''} ${idx % 2 === 0 ? 'zoom-in' : 'zoom-out'}`}
-              style={{ backgroundImage: `url(${img})`, opacity: idx === currentSlide ? 1 : 0 }}
-            />
-          ))}
+          <div ref={slideshowRef} style={{ position: 'absolute', inset: '-30px', width: 'calc(100% + 60px)', height: 'calc(100% + 60px)', willChange: 'transform' }}>
+            {bgImages.map((img, idx) => (
+              <div 
+                key={img} 
+                className={`cinematic-slide ${idx === currentSlide ? 'active' : ''} ${idx % 2 === 0 ? 'zoom-in' : 'zoom-out'}`}
+                style={{ backgroundImage: `url(${img})`, opacity: idx === currentSlide ? 1 : 0 }}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Content Container on Top of Slideshow */}

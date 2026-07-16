@@ -115,6 +115,16 @@ export default function Home() {
                 Welcome to Sharan Estates. We curate exceptional residential properties, waterfront estates, and private off-market penthouses for discerning global investors.
               </p>
 
+              {/* Action CTA Buttons */}
+              <div className="hero-cta-buttons">
+                <Link to="/listings/off-plan" className="hero-cta-btn btn-solid">
+                  Buy Off-Plan
+                </Link>
+                <Link to="/listings/ready" className="hero-cta-btn btn-outline">
+                  Buy Ready Property
+                </Link>
+              </div>
+
               {/* Credibility Stats Block */}
               <div className="hero-stats-grid">
                 <div>

@@ -19,6 +19,8 @@ function FeaturedCard({ post, index }) {
         flexDirection: 'column',
         animation: `fadeSlideUp 0.6s ease ${index * 0.1}s both`,
         cursor: 'pointer',
+        background: '#FFFFFF',
+        color: '#000000',
       }}
     >
       {/* Image */}
@@ -51,7 +53,7 @@ function FeaturedCard({ post, index }) {
           background: 'rgba(0,0,0,0.65)',
           backdropFilter: 'blur(6px)',
           borderRadius: '2px',
-          color: 'var(--primary-color)',
+          color: '#FFFFFF',
           fontSize: '0.6rem',
           fontWeight: 600,
           letterSpacing: '2px',
@@ -69,29 +71,28 @@ function FeaturedCard({ post, index }) {
         flexDirection: 'column',
       }}>
         <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.75rem', alignItems: 'center' }}>
-          <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 500 }}>{post.date}</span>
-          <span style={{ width: '3px', height: '3px', borderRadius: '50%', background: 'var(--primary-color)' }} />
-          <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 500 }}>{post.readTime}</span>
+          <span style={{ fontSize: '0.68rem', color: '#666666', fontWeight: 500 }}>{post.date}</span>
+          <span style={{ width: '3px', height: '3px', borderRadius: '50%', background: '#000000' }} />
+          <span style={{ fontSize: '0.68rem', color: '#666666', fontWeight: 500 }}>{post.readTime}</span>
         </div>
 
         <h3 style={{
           fontSize: '1rem',
           fontFamily: 'var(--font-serif)',
-          color: 'var(--text-dark)',
+          color: hovered ? '#1A1A1A' : '#000000',
           fontWeight: 300,
           letterSpacing: '1px',
           textTransform: 'uppercase',
           lineHeight: 1.4,
           marginBottom: '0.75rem',
           transition: 'color 0.3s',
-          ...(hovered ? { color: 'var(--primary-dark)' } : {}),
         }}>
           {post.title}
         </h3>
 
         <p style={{
           fontSize: '0.82rem',
-          color: 'var(--text-muted)',
+          color: '#444444',
           lineHeight: 1.7,
           flex: 1,
         }}>
@@ -103,7 +104,7 @@ function FeaturedCard({ post, index }) {
           display: 'flex',
           alignItems: 'center',
           gap: '0.5rem',
-          color: 'var(--primary-dark)',
+          color: '#000000',
           fontSize: '0.7rem',
           fontWeight: 600,
           letterSpacing: '1.5px',
@@ -134,6 +135,8 @@ function BlogListCard({ post, index }) {
         display: 'flex',
         animation: `fadeSlideUp 0.5s ease ${index * 0.08}s both`,
         cursor: 'pointer',
+        background: '#FFFFFF',
+        color: '#000000',
       }}
     >
       {/* Image */}
@@ -171,9 +174,9 @@ function BlogListCard({ post, index }) {
         <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.6rem', alignItems: 'center', flexWrap: 'wrap' }}>
           <span style={{
             padding: '0.2rem 0.65rem',
-            background: 'rgba(0, 0, 0,0.1)',
-            color: 'var(--primary-dark)',
-            border: '1px solid rgba(0, 0, 0,0.2)',
+            background: 'rgba(0, 0, 0,0.06)',
+            color: '#000000',
+            border: '1px solid rgba(0, 0, 0,0.15)',
             borderRadius: '2px',
             fontSize: '0.58rem',
             fontWeight: 600,
@@ -182,14 +185,14 @@ function BlogListCard({ post, index }) {
           }}>
             {post.category}
           </span>
-          <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 500 }}>{post.date}</span>
-          <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 500 }}>{post.readTime}</span>
+          <span style={{ fontSize: '0.68rem', color: '#666666', fontWeight: 500 }}>{post.date}</span>
+          <span style={{ fontSize: '0.68rem', color: '#666666', fontWeight: 500 }}>{post.readTime}</span>
         </div>
 
         <h3 style={{
           fontSize: '0.95rem',
           fontFamily: 'var(--font-serif)',
-          color: hovered ? 'var(--primary-dark)' : 'var(--text-dark)',
+          color: hovered ? '#1A1A1A' : '#000000',
           fontWeight: 300,
           letterSpacing: '1px',
           textTransform: 'uppercase',
@@ -202,7 +205,7 @@ function BlogListCard({ post, index }) {
 
         <p style={{
           fontSize: '0.8rem',
-          color: 'var(--text-muted)',
+          color: '#444444',
           lineHeight: 1.7,
           display: '-webkit-box',
           WebkitLineClamp: 2,
@@ -217,7 +220,7 @@ function BlogListCard({ post, index }) {
           display: 'flex',
           alignItems: 'center',
           gap: hovered ? '0.8rem' : '0.5rem',
-          color: 'var(--primary-dark)',
+          color: '#000000',
           fontSize: '0.68rem',
           fontWeight: 600,
           letterSpacing: '1.5px',
@@ -278,7 +281,7 @@ export default function BlogsPage() {
   const remainingPosts = filtered.filter(p => !p.featured);
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-light)' }}>
+    <div style={{ minHeight: '100vh', background: '#FFFFFF' }}>
 
       {/* ── HERO ── */}
       <RevealSection>
@@ -289,19 +292,19 @@ export default function BlogsPage() {
           alignItems: 'center',
           justifyContent: 'center',
           overflow: 'hidden',
-          background: 'var(--text-dark)',
+          background: '#0F0F0F',
         }}>
           <div style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: 'radial-gradient(circle at 25% 55%, rgba(0, 0, 0,0.06) 0%, transparent 50%), radial-gradient(circle at 75% 30%, rgba(0, 0, 0,0.04) 0%, transparent 40%)',
+            backgroundImage: 'radial-gradient(circle at 25% 55%, rgba(255, 255, 255, 0.03) 0%, transparent 50%), radial-gradient(circle at 75% 30%, rgba(255, 255, 255, 0.02) 0%, transparent 40%)',
           }} />
           <div style={{
             position: 'absolute',
             top: '50%', left: '50%',
             transform: 'translate(-50%, -50%)',
             width: '600px', height: '600px',
-            border: '1px solid rgba(0, 0, 0,0.05)',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
             borderRadius: '50%',
             pointerEvents: 'none',
           }} />
@@ -313,9 +316,10 @@ export default function BlogsPage() {
             padding: 'clamp(7rem, 14vw, 9rem) 1.5rem clamp(4rem, 8vw, 5rem)',
             maxWidth: '760px',
           }}>
-            <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', margin: '0 auto 1.5rem' }} />
+            <div style={{ width: '40px', height: '1px', background: '#FFFFFF', opacity: 0.3, margin: '0 auto 1.5rem' }} />
             <p style={{
-              color: 'var(--primary-color)',
+              color: '#FFFFFF',
+              opacity: 0.7,
               fontSize: '0.7rem',
               letterSpacing: '4px',
               textTransform: 'uppercase',
@@ -335,10 +339,10 @@ export default function BlogsPage() {
               fontWeight: 300,
             }}>
               The Sharan Estates<br />
-              <span style={{ color: 'var(--primary-color)' }}>Journal</span>
+              <span style={{ color: '#FFFFFF', opacity: 0.95 }}>Journal</span>
             </h1>
             <p style={{
-              color: 'rgba(255,255,255,0.45)',
+              color: 'rgba(255,255,255,0.65)',
               fontSize: '0.95rem',
               lineHeight: 1.8,
               maxWidth: '520px',
@@ -497,11 +501,11 @@ export default function BlogsPage() {
       {/* ── NEWSLETTER CTA ── */}
       <RevealSection>
         <section style={{
-          background: 'var(--text-dark)',
-          padding: '3rem 1.5rem',
+          background: '#0F0F0F',
+          padding: '3.5rem 1.5rem',
         }}>
         <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', margin: '0 auto 1.25rem' }} />
+          <div style={{ width: '40px', height: '1px', background: '#FFFFFF', opacity: 0.3, margin: '0 auto 1.25rem' }} />
           <h2 style={{
             fontSize: 'clamp(1.2rem, 2.5vw, 1.6rem)',
             fontFamily: 'var(--font-serif)',
@@ -511,10 +515,10 @@ export default function BlogsPage() {
             fontWeight: 300,
             marginBottom: '0.75rem',
           }}>
-            Stay <span style={{ color: 'var(--primary-color)' }}>Informed</span>
+            Stay <span style={{ color: '#FFFFFF', opacity: 0.95 }}>Informed</span>
           </h2>
           <p style={{
-            color: 'rgba(255,255,255,0.45)',
+            color: 'rgba(255,255,255,0.65)',
             fontSize: '0.88rem',
             lineHeight: 1.7,
             marginBottom: '2rem',
@@ -535,17 +539,17 @@ export default function BlogsPage() {
                 flex: 1,
                 padding: '0.85rem 1.2rem',
                 background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
                 borderRadius: '3px',
-                color: '#fff',
+                color: '#ffffff',
                 fontSize: '0.85rem',
                 fontFamily: 'var(--font-sans)',
                 outline: 'none',
                 boxSizing: 'border-box',
                 transition: 'border-color 0.3s',
               }}
-              onFocus={e => e.currentTarget.style.borderColor = 'var(--primary-color)'}
-              onBlur={e => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
+              onFocus={e => e.currentTarget.style.borderColor = '#FFFFFF'}
+              onBlur={e => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)'}
             />
             <button
               className="btn-solid"
@@ -556,12 +560,25 @@ export default function BlogsPage() {
                 fontWeight: 700,
                 letterSpacing: '1.5px',
                 flexShrink: 0,
+                background: '#FFFFFF',
+                color: '#000000',
+                border: '1px solid #FFFFFF',
+                cursor: 'pointer',
+                transition: 'background 0.3s, color 0.3s',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.color = '#FFFFFF';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = '#FFFFFF';
+                e.currentTarget.style.color = '#000000';
               }}
             >
               Subscribe
             </button>
           </div>
-          <p style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.25)', marginTop: '0.75rem' }}>
+          <p style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.35)', marginTop: '0.75rem' }}>
             No spam. Unsubscribe anytime.
           </p>
         </div>

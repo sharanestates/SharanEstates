@@ -2,7 +2,6 @@ import React, { useLayoutEffect, useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Tilt from 'react-parallax-tilt';
 import { GitCompare } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -88,8 +87,8 @@ export default function Properties({ compareList = [], onToggleCompare }) {
                       height: '38px',
                       borderRadius: '50%',
                       background: isCompared ? 'var(--text-dark)' : 'rgba(255,255,255,0.92)',
-                      color: isCompared ? 'var(--primary-color)' : 'var(--text-dark)',
-                      border: '1px solid rgba(211,185,138,0.25)',
+                      color: isCompared ? '#FFFFFF' : 'var(--text-dark)',
+                      border: '1px solid rgba(0, 0, 0,0.25)',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
@@ -108,7 +107,7 @@ export default function Properties({ compareList = [], onToggleCompare }) {
                     onMouseOut={(e) => {
                       if (!isCompared) {
                         e.currentTarget.style.transform = 'scale(1)';
-                        e.currentTarget.style.borderColor = 'rgba(211,185,138,0.25)';
+                        e.currentTarget.style.borderColor = 'rgba(0, 0, 0,0.25)';
                       }
                     }}
                   >
@@ -126,7 +125,7 @@ export default function Properties({ compareList = [], onToggleCompare }) {
                     <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
                       <h3 style={{ color: 'var(--text-dark)', fontSize: '1.3rem', marginBottom: '0.5rem', fontFamily: 'var(--font-serif)' }}>{prop.title}</h3>
                       <p style={{ color: 'var(--text-muted)', lineHeight: 1.5, flex: 1, fontSize: '0.85rem' }}>{prop.desc || prop.description}</p>
-                      <div style={{ marginTop: '1.2rem', color: 'var(--primary-dark)', fontWeight: 600, fontSize: '1.15rem', borderTop: '1px solid rgba(211, 185, 138, 0.2)', paddingTop: '1rem' }}>{prop.price}</div>
+                      <div style={{ marginTop: '1.2rem', color: 'var(--primary-dark)', fontWeight: 600, fontSize: '1.15rem', borderTop: '1px solid rgba(0, 0, 0, 0.2)', paddingTop: '1rem' }}>{prop.price}</div>
                     </div>
                   </div>
                 </Link>

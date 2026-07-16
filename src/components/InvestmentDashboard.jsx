@@ -85,7 +85,7 @@ export default function InvestmentDashboard({ propertyValue, downPayment, intere
         flexDirection: 'column',
         padding: '2.5rem',
         background: 'rgba(20, 20, 22, 0.95)',
-        border: '1px solid rgba(211, 185, 138, 0.25)',
+        border: '1px solid rgba(0, 0, 0, 0.25)',
         boxShadow: '0 30px 70px rgba(0,0,0,0.15)',
         borderRadius: '28px',
         color: '#FFFFFF'
@@ -196,7 +196,7 @@ export default function InvestmentDashboard({ propertyValue, downPayment, intere
               ))}
 
               {/* Equity Growth Area */}
-              <path d={equityAreaPath} fill="rgba(211, 185, 138, 0.15)" />
+              <path d={equityAreaPath} fill="rgba(0, 0, 0, 0.15)" />
 
               {/* Lines */}
               <path d={propPath} fill="none" stroke="var(--primary-color)" strokeWidth="2.5" />

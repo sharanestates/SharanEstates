@@ -63,7 +63,7 @@ export default function AdminLogin({ onLoginSuccess }) {
         width: '300px',
         height: '300px',
         borderRadius: '50%',
-        background: 'rgba(211, 185, 138, 0.1)',
+        background: 'rgba(0, 0, 0, 0.1)',
         filter: 'blur(80px)',
         top: '10%',
         left: '20%',
@@ -94,14 +94,14 @@ export default function AdminLogin({ onLoginSuccess }) {
           <h2 style={{
             fontSize: '2.2rem',
             color: '#FFFFFF',
-            fontFamily: 'var(--font-serif)',
+            fontFamily: 'var(--font-logo)',
             letterSpacing: '1px',
             marginBottom: '0.5rem'
           }}>
             SHARAN ESTATES
           </h2>
           <p style={{
-            color: 'var(--primary-color)',
+            color: '#FFFFFF',
             fontSize: '0.85rem',
             letterSpacing: '2px',
             textTransform: 'uppercase',
@@ -205,14 +205,11 @@ export default function AdminLogin({ onLoginSuccess }) {
               borderRadius: '8px',
               fontSize: '0.95rem',
               fontWeight: '700',
-              background: 'var(--primary-color)',
-              color: '#000000',
-              border: 'none',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 4px 20px rgba(211, 185, 138, 0.3)'
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
             }}
           >
             {loading ? 'AUTHENTICATING...' : 'ACCESS DASHBOARD'}

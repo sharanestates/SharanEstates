@@ -127,7 +127,7 @@ export default function RegisterInterestModal({ isOpen, onClose }) {
 
         {submitted ? (
           <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-            <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(211, 185, 138, 0.1)', color: 'var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', margin: '0 auto 1.5rem' }}>
+            <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(0, 0, 0, 0.1)', color: 'var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', margin: '0 auto 1.5rem' }}>
               ✓
             </div>
             <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>Request Received</h2>

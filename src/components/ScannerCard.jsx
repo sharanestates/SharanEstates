@@ -43,12 +43,12 @@ export default function ScannerCard() {
 
   return (
     <Tilt tiltMaxAngleX={3} tiltMaxAngleY={3} perspective={1500} scale={1.01} transitionSpeed={1000} style={{ width: '100%', maxWidth: '800px' }}>
-      <div className="glass-panel card-3d" style={{ display: 'flex', flexDirection: 'column', padding: '2rem', background: 'rgba(255, 255, 255, 0.95)', border: '1px solid rgba(211, 185, 138, 0.2)', boxShadow: '0 30px 70px rgba(0,0,0,0.06)', borderRadius: '28px' }}>
+      <div className="glass-panel card-3d" style={{ display: 'flex', flexDirection: 'column', padding: '2rem', background: 'rgba(255, 255, 255, 0.95)', border: '1px solid rgba(0, 0, 0, 0.2)', boxShadow: '0 30px 70px rgba(0,0,0,0.06)', borderRadius: '28px' }}>
         
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '1.2rem', borderBottom: '1px solid var(--border-color)', marginBottom: '1.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontWeight: 700, color: 'var(--text-dark)', fontSize: '1.1rem', letterSpacing: '0.5px' }}>
-            <Layers size={22} color="var(--primary-dark)" style={{ filter: 'drop-shadow(0 2px 4px rgba(211,185,138,0.2))' }} />
+            <Layers size={22} color="var(--primary-dark)" style={{ filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0,0.2))' }} />
             3D Building Scanner
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Interactive Viewport</div>
@@ -63,7 +63,7 @@ export default function ScannerCard() {
             <div className="holoscene-grid" />
             <div className="scanner-scanline" />
             
-            <div style={{ position: 'absolute', bottom: '1.2rem', left: '50%', transform: 'translateX(-50%)', background: 'rgba(13, 13, 15, 0.85)', border: '1px solid rgba(211, 185, 138, 0.25)', backdropFilter: 'blur(8px)', padding: '0.4rem 1.2rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 600, color: 'var(--primary-color)', boxShadow: '0 4px 15px rgba(0,0,0,0.2)', zIndex: 3, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+            <div style={{ position: 'absolute', bottom: '1.2rem', left: '50%', transform: 'translateX(-50%)', background: 'rgba(13, 13, 15, 0.85)', border: '1px solid rgba(0, 0, 0, 0.25)', backdropFilter: 'blur(8px)', padding: '0.4rem 1.2rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 600, color: 'var(--primary-color)', boxShadow: '0 4px 15px rgba(0,0,0,0.2)', zIndex: 3, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
               Drag to Rotate | Select segments
             </div>
             
@@ -72,7 +72,7 @@ export default function ScannerCard() {
               <directionalLight position={[5, 10, 5]} intensity={2.5} color="#FFFDF0" />
               <Environment preset="city" />
               <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={1.5} />
-              <Building3D color="#F5F2EB" accent="#D3B98A" scale={0.9} rotationSpeed={0} />
+              <Building3D color="#F5F2EB" accent="#000000" scale={0.9} rotationSpeed={0} />
             </Canvas>
           </div>
 

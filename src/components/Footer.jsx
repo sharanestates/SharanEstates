@@ -17,37 +17,58 @@ export default function Footer() {
     <footer className={`footer-wrapper ${expanded ? 'expanded' : 'collapsed'}`} style={{ background: '#0a0a0a', color: '#FFFFFF', padding: '3rem 0 1.5rem', position: 'relative', overflow: 'hidden' }}>
       
       {/* Background glow */}
-      <div style={{ position: 'absolute', top: 0, right: 0, width: '40%', height: '40%', background: 'radial-gradient(circle, rgba(211, 185, 138, 0.1) 0%, transparent 70%)', zIndex: 0, filter: 'blur(60px)' }}></div>
+      <div style={{ position: 'absolute', top: 0, right: 0, width: '40%', height: '40%', background: 'radial-gradient(circle, rgba(0, 0, 0, 0.1) 0%, transparent 70%)', zIndex: 0, filter: 'blur(60px)' }}></div>
       <div style={{ position: 'absolute', bottom: 0, left: 0, width: '40%', height: '40%', background: 'radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%)', zIndex: 0, filter: 'blur(60px)' }}></div>
 
       <div className="container" style={{ position: 'relative', zIndex: 1, maxWidth: '1200px', margin: '0 auto' }}>
         
-        {/* Mobile-only toggle header */}
-        <div 
-          className="show-on-mobile-only" 
-          onClick={toggleFooter}
-          style={{ cursor: 'pointer', marginBottom: '1rem' }}
-        >
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div className={`swipe-up-handle ${expanded ? 'expanded' : ''}`} style={{ marginBottom: '0.5rem' }}>
-              <div className="swipe-chevron"></div>
-            </div>
-            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', margin: 0, textAlign: 'center' }}>
-              &copy; 2026 Sharan Estates. All rights reserved.
-            </p>
-          </div>
-        </div>
+
 
         {/* Footer Main Grid */}
         <div className="footer-grid-mobile" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
           
           {/* Brand */}
           <div className="footer-col-mobile" style={{ display: 'flex', flexDirection: 'column' }}>
-            <div className="footer-brand-header" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-              <h2 style={{ fontSize: '1.8rem', fontWeight: 800, letterSpacing: '2px', color: '#FFF', margin: 0 }}>
-                SHARAN
-              </h2>
-              <span style={{ fontSize: '0.8rem', color: 'var(--primary-color)', letterSpacing: '2px', alignSelf: 'flex-end', paddingBottom: '4px' }}>ESTATES</span>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '1.1rem',
+              border: '1px solid rgba(255, 255, 255, 0.45)',
+              padding: '0.7rem 1.4rem',
+              borderRadius: '2px',
+              color: '#FFFFFF',
+              marginBottom: '1.25rem',
+              width: 'fit-content'
+            }}>
+              {/* Left Initials */}
+              <span style={{
+                fontFamily: 'var(--font-serif)',
+                fontSize: '1.6rem',
+                fontWeight: 600,
+                letterSpacing: '1.5px',
+                lineHeight: 1
+              }}>
+                SE
+              </span>
+
+              {/* Vertical Divider */}
+              <div style={{
+                width: '1px',
+                height: '24px',
+                backgroundColor: 'rgba(255, 255, 255, 0.25)'
+              }} />
+
+              {/* Right Brand Name */}
+              <span style={{
+                fontFamily: 'var(--font-serif)',
+                fontSize: '1.1rem',
+                fontWeight: 600,
+                letterSpacing: '3px',
+                textTransform: 'uppercase',
+                lineHeight: 1
+              }}>
+                Sharan Estates
+              </span>
             </div>
             <p className="footer-desc-mobile" style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.8, fontSize: '0.9rem', marginBottom: '1.5rem' }}>
               Elevating real estate investment through visionary PropTech, interactive 3D modeling, and unparalleled global market intelligence.
@@ -102,17 +123,17 @@ export default function Footer() {
 
         </div>
 
-        {/* Desktop-only disclaimer and bottom section */}
-        <div className="hide-on-mobile" style={{ marginTop: '1.5rem' }}>
+        {/* Disclaimer and bottom section */}
+        <div style={{ marginTop: '1.5rem' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
             <div>
               <p style={{ color: 'rgba(255,255,255,0.22)', fontSize: '0.54rem', lineHeight: 1.5, margin: 0, textAlign: 'center' }}>
-                Disclaimer: Sharan Estates is a real estate agency licensed by the Real Estate Regulatory Agency (RERA) under License Number 1067808 and ORN: 30498. The content provided on this website is for informational purposes only. Renders, virtual tours, and images are for illustrative and representational purposes only and subject to change by developers. Read our full <Link to="/privacy-policy" style={{ color: 'rgba(211,185,138,0.5)', textDecoration: 'underline' }}>Disclaimer & Privacy Policy</Link> and <Link to="/terms-of-service" style={{ color: 'rgba(211,185,138,0.5)', textDecoration: 'underline' }}>Terms of Service</Link>.
+                Disclaimer: Sharan Estates is a real estate agency licensed by the Real Estate Regulatory Agency (RERA) under License Number 1067808 and ORN: 30498. The content provided on this website is for informational purposes only. Renders, virtual tours, and images are for illustrative and representational purposes only and subject to change by developers. Read our full <Link to="/privacy-policy" style={{ color: 'rgba(0,0,0,0.5)', textDecoration: 'underline' }}>Disclaimer & Privacy Policy</Link> and <Link to="/terms-of-service" style={{ color: 'rgba(0,0,0,0.5)', textDecoration: 'underline' }}>Terms of Service</Link>.
               </p>
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
             <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem', margin: 0 }}>
               &copy; 2026 Sharan Estates. All rights reserved.
             </p>
@@ -121,18 +142,6 @@ export default function Footer() {
               <Link to="/terms-of-service" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none', fontSize: '0.75rem', transition: 'color 0.3s' }} onMouseOver={e=>e.target.style.color='#FFF'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.4)'}>Terms of Service</Link>
             </div>
           </div>
-        </div>
-
-        {/* Mobile expanded bottom section */}
-        <div className="show-on-mobile-only">
-          {expanded && (
-            <div className="footer-bottom-mobile" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', paddingTop: '1.5rem' }}>
-              <div className="footer-policy-links" style={{ display: 'flex', gap: '2rem' }}>
-                <a href="#" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none', fontSize: '0.9rem' }}>Privacy Policy</a>
-                <a href="#" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none', fontSize: '0.9rem' }}>Terms of Service</a>
-              </div>
-            </div>
-          )}
         </div>
 
       </div>

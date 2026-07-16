@@ -2,7 +2,7 @@ import React, { useRef, useLayoutEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import gsap from 'gsap';
 
-export default function Building3D({ color = "#ffffff", accent = "#D3B98A", scale = 1, rotationSpeed = 0.005 }) {
+export default function Building3D({ color = "#ffffff", accent = "#000000", scale = 1, rotationSpeed = 0.005 }) {
   const groupRef = useRef();
 
   useFrame(() => {

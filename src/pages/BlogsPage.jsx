@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import RevealSection from '../components/RevealSection';
 
 const blogPosts = [
   {
@@ -232,9 +233,9 @@ function BlogListCard({ post, index }) {
         <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.6rem', alignItems: 'center', flexWrap: 'wrap' }}>
           <span style={{
             padding: '0.2rem 0.65rem',
-            background: 'rgba(211,185,138,0.1)',
+            background: 'rgba(0, 0, 0,0.1)',
             color: 'var(--primary-dark)',
-            border: '1px solid rgba(211,185,138,0.2)',
+            border: '1px solid rgba(0, 0, 0,0.2)',
             borderRadius: '2px',
             fontSize: '0.58rem',
             fontWeight: 600,
@@ -320,77 +321,79 @@ export default function BlogsPage() {
     <div style={{ minHeight: '100vh', background: 'var(--bg-light)' }}>
 
       {/* ── HERO ── */}
-      <section style={{
-        position: 'relative',
-        minHeight: '480px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden',
-        background: 'var(--text-dark)',
-      }}>
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: 'radial-gradient(circle at 25% 55%, rgba(211,185,138,0.06) 0%, transparent 50%), radial-gradient(circle at 75% 30%, rgba(211,185,138,0.04) 0%, transparent 40%)',
-        }} />
-        <div style={{
-          position: 'absolute',
-          top: '50%', left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '600px', height: '600px',
-          border: '1px solid rgba(211,185,138,0.05)',
-          borderRadius: '50%',
-          pointerEvents: 'none',
-        }} />
-
-        <div style={{
+      <RevealSection>
+        <section style={{
           position: 'relative',
-          zIndex: 1,
-          textAlign: 'center',
-          padding: 'clamp(7rem, 14vw, 9rem) 1.5rem clamp(4rem, 8vw, 5rem)',
-          maxWidth: '760px',
+          minHeight: '480px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
+          background: 'var(--text-dark)',
         }}>
-          <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', margin: '0 auto 1.5rem' }} />
-          <p style={{
-            color: 'var(--primary-color)',
-            fontSize: '0.7rem',
-            letterSpacing: '4px',
-            textTransform: 'uppercase',
-            fontWeight: 600,
-            marginBottom: '1.5rem',
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: 'radial-gradient(circle at 25% 55%, rgba(0, 0, 0,0.06) 0%, transparent 50%), radial-gradient(circle at 75% 30%, rgba(0, 0, 0,0.04) 0%, transparent 40%)',
+          }} />
+          <div style={{
+            position: 'absolute',
+            top: '50%', left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '600px', height: '600px',
+            border: '1px solid rgba(0, 0, 0,0.05)',
+            borderRadius: '50%',
+            pointerEvents: 'none',
+          }} />
+
+          <div style={{
+            position: 'relative',
+            zIndex: 1,
+            textAlign: 'center',
+            padding: 'clamp(7rem, 14vw, 9rem) 1.5rem clamp(4rem, 8vw, 5rem)',
+            maxWidth: '760px',
           }}>
-            Insights & Analysis
-          </p>
-          <h1 style={{
-            fontSize: 'clamp(1.8rem, 4.5vw, 3.2rem)',
-            color: '#FFFFFF',
-            fontFamily: 'var(--font-serif)',
-            letterSpacing: '3px',
-            textTransform: 'uppercase',
-            lineHeight: 1.15,
-            marginBottom: '1.75rem',
-            fontWeight: 300,
-          }}>
-            The Sharan Estates<br />
-            <span style={{ color: 'var(--primary-color)' }}>Journal</span>
-          </h1>
-          <p style={{
-            color: 'rgba(255,255,255,0.45)',
-            fontSize: '0.95rem',
-            lineHeight: 1.8,
-            maxWidth: '520px',
-            margin: '0 auto',
-          }}>
-            Expert perspectives on Dubai's luxury real estate landscape — market intelligence, investment strategies, and lifestyle insights for discerning investors.
-          </p>
-        </div>
-      </section>
+            <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', margin: '0 auto 1.5rem' }} />
+            <p style={{
+              color: 'var(--primary-color)',
+              fontSize: '0.7rem',
+              letterSpacing: '4px',
+              textTransform: 'uppercase',
+              fontWeight: 600,
+              marginBottom: '1.5rem',
+            }}>
+              Insights & Analysis
+            </p>
+            <h1 style={{
+              fontSize: 'clamp(1.8rem, 4.5vw, 3.2rem)',
+              color: '#FFFFFF',
+              fontFamily: 'var(--font-serif)',
+              letterSpacing: '3px',
+              textTransform: 'uppercase',
+              lineHeight: 1.15,
+              marginBottom: '1.75rem',
+              fontWeight: 300,
+            }}>
+              The Sharan Estates<br />
+              <span style={{ color: 'var(--primary-color)' }}>Journal</span>
+            </h1>
+            <p style={{
+              color: 'rgba(255,255,255,0.45)',
+              fontSize: '0.95rem',
+              lineHeight: 1.8,
+              maxWidth: '520px',
+              margin: '0 auto',
+            }}>
+              Expert perspectives on Dubai's luxury real estate landscape — market intelligence, investment strategies, and lifestyle insights for discerning investors.
+            </p>
+          </div>
+        </section>
+      </RevealSection>
 
       {/* ── FILTERS BAR ── */}
       <section style={{
         background: '#FFFFFF',
-        borderBottom: '1px solid rgba(211,185,138,0.15)',
+        borderBottom: '1px solid rgba(0, 0, 0,0.15)',
         position: 'sticky',
         top: '0',
         zIndex: 50,
@@ -414,7 +417,7 @@ export default function BlogsPage() {
                 style={{
                   padding: '0.4rem 1rem',
                   border: '1px solid',
-                  borderColor: activeCategory === cat ? 'var(--text-dark)' : 'rgba(211,185,138,0.3)',
+                  borderColor: activeCategory === cat ? 'var(--text-dark)' : 'rgba(0, 0, 0,0.3)',
                   borderRadius: '2px',
                   background: activeCategory === cat ? 'var(--text-dark)' : 'transparent',
                   color: activeCategory === cat ? '#fff' : 'var(--text-muted)',
@@ -449,7 +452,7 @@ export default function BlogsPage() {
                 width: '100%',
                 padding: '0.6rem 0.9rem 0.6rem 2.5rem',
                 background: 'var(--bg-light)',
-                border: '1px solid rgba(211,185,138,0.25)',
+                border: '1px solid rgba(0, 0, 0,0.25)',
                 borderRadius: '3px',
                 color: 'var(--text-dark)',
                 fontSize: '0.8rem',
@@ -459,7 +462,7 @@ export default function BlogsPage() {
                 transition: 'border-color 0.3s',
               }}
               onFocus={e => e.currentTarget.style.borderColor = 'var(--primary-dark)'}
-              onBlur={e => e.currentTarget.style.borderColor = 'rgba(211,185,138,0.25)'}
+              onBlur={e => e.currentTarget.style.borderColor = 'rgba(0, 0, 0,0.25)'}
             />
           </div>
         </div>
@@ -467,71 +470,76 @@ export default function BlogsPage() {
 
       {/* ── FEATURED POSTS ── */}
       {featuredPosts.length > 0 && (
-        <section style={{ padding: 'clamp(3rem, 6vw, 4.5rem) 1.5rem 0' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-            <div style={{ marginBottom: '2rem' }}>
-              <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', marginBottom: '0.75rem' }} />
-              <p style={{
-                color: 'var(--primary-dark)',
-                fontSize: '0.68rem',
-                letterSpacing: '3.5px',
-                textTransform: 'uppercase',
-                fontWeight: 600,
-              }}>Featured Articles</p>
-            </div>
+        <RevealSection>
+          <section style={{ padding: '3rem 1.5rem 0' }}>
+            <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+              <div style={{ marginBottom: '2rem' }}>
+                <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', marginBottom: '0.75rem' }} />
+                <p style={{
+                  color: 'var(--primary-dark)',
+                  fontSize: '0.68rem',
+                  letterSpacing: '3.5px',
+                  textTransform: 'uppercase',
+                  fontWeight: 600,
+                }}>Featured Articles</p>
+              </div>
 
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: '1.5rem',
-            }} className="featured-blog-grid">
-              {featuredPosts.map((post, i) => (
-                <FeaturedCard key={post.id} post={post} index={i} />
-              ))}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: '1.5rem',
+              }} className="featured-blog-grid">
+                {featuredPosts.map((post, i) => (
+                  <FeaturedCard key={post.id} post={post} index={i} />
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </RevealSection>
       )}
 
       {/* ── ALL POSTS ── */}
-      <section style={{ padding: 'clamp(3rem, 6vw, 4.5rem) 1.5rem' }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          {remainingPosts.length > 0 && (
-            <div style={{ marginBottom: '2rem' }}>
-              <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', marginBottom: '0.75rem' }} />
-              <p style={{
-                color: 'var(--primary-dark)',
-                fontSize: '0.68rem',
-                letterSpacing: '3.5px',
-                textTransform: 'uppercase',
-                fontWeight: 600,
-              }}>Latest Articles</p>
-            </div>
-          )}
+      <RevealSection>
+        <section style={{ padding: '3rem 1.5rem' }}>
+          <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+            {remainingPosts.length > 0 && (
+              <div style={{ marginBottom: '2rem' }}>
+                <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', marginBottom: '0.75rem' }} />
+                <p style={{
+                  color: 'var(--primary-dark)',
+                  fontSize: '0.68rem',
+                  letterSpacing: '3.5px',
+                  textTransform: 'uppercase',
+                  fontWeight: 600,
+                }}>Latest Articles</p>
+              </div>
+            )}
 
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem',
-          }}>
-            {remainingPosts.map((post, i) => (
-              <BlogListCard key={post.id} post={post} index={i} />
-            ))}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
+            }}>
+              {remainingPosts.map((post, i) => (
+                <BlogListCard key={post.id} post={post} index={i} />
+              ))}
+            </div>
+
+            {filtered.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '4rem 1rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+                No articles found matching your criteria. Try a different search or category.
+              </div>
+            )}
           </div>
-
-          {filtered.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '4rem 1rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-              No articles found matching your criteria. Try a different search or category.
-            </div>
-          )}
-        </div>
-      </section>
+        </section>
+      </RevealSection>
 
       {/* ── NEWSLETTER CTA ── */}
-      <section style={{
-        background: 'var(--text-dark)',
-        padding: 'clamp(3rem, 6vw, 4.5rem) 1.5rem',
-      }}>
+      <RevealSection>
+        <section style={{
+          background: 'var(--text-dark)',
+          padding: '3rem 1.5rem',
+        }}>
         <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
           <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', margin: '0 auto 1.25rem' }} />
           <h2 style={{
@@ -567,7 +575,7 @@ export default function BlogsPage() {
                 flex: 1,
                 padding: '0.85rem 1.2rem',
                 background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(211,185,138,0.2)',
+                border: '1px solid rgba(0, 0, 0,0.2)',
                 borderRadius: '3px',
                 color: '#fff',
                 fontSize: '0.85rem',
@@ -577,7 +585,7 @@ export default function BlogsPage() {
                 transition: 'border-color 0.3s',
               }}
               onFocus={e => e.currentTarget.style.borderColor = 'var(--primary-color)'}
-              onBlur={e => e.currentTarget.style.borderColor = 'rgba(211,185,138,0.2)'}
+              onBlur={e => e.currentTarget.style.borderColor = 'rgba(0, 0, 0,0.2)'}
             />
             <button
               className="btn-solid"
@@ -598,6 +606,7 @@ export default function BlogsPage() {
           </p>
         </div>
       </section>
+    </RevealSection>
 
       <style>{`
         @keyframes fadeSlideUp {

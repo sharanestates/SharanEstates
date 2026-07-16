@@ -1,5 +1,6 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import Lenis from 'lenis';
 import Home from './pages/Home';
 import PropertyDetail from './pages/PropertyDetail';
 import Listings from './pages/Listings';
@@ -17,6 +18,47 @@ import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsPage from './pages/TermsPage';
 
 function App() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 0.95,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      smoothTouch: true,
+      syncTouch: true,
+      wheelMultiplier: 1.05,
+      touchMultiplier: 2.6,
+      infinite: false,
+    });
+
+    window.lenis = lenis;
+
+    let rafId;
+    function raf(time) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+      cancelAnimationFrame(rafId);
+      window.lenis = null;
+    };
+  }, []);
+
+  // Reset scroll position on route change to make sure scroll reveals trigger correctly
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (window.lenis) {
+      window.lenis.scrollTo(0, { immediate: true });
+    }
+  }, [location.pathname]);
+
   return (
     <div className="app-container">
       <Navbar />

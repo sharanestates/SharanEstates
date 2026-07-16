@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import InteractiveFloorPlan from '../components/InteractiveFloorPlan';
+import RevealSection from '../components/RevealSection';
 
 // ─── Floor Plan Lead Modal ────────────────────────────────────────────────────
 function FloorPlanModal({ property, onClose }) {
@@ -250,7 +251,7 @@ export default function PropertyDetail() {
   if (loading) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-light)' }}>
       <div style={{ textAlign: 'center' }}>
-        <div style={{ width: '40px', height: '40px', border: '3px solid rgba(211,185,138,0.3)', borderTopColor: 'var(--primary-dark)', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 1rem' }} />
+        <div style={{ width: '40px', height: '40px', border: '3px solid rgba(0, 0, 0,0.3)', borderTopColor: 'var(--primary-dark)', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 1rem' }} />
         <p style={{ color: 'var(--text-muted)' }}>Loading property details...</p>
       </div>
     </div>
@@ -283,189 +284,195 @@ export default function PropertyDetail() {
       {showFloorPlan && <FloorPlanModal property={property} onClose={() => setShowFloorPlan(false)} />}
 
       <div className="container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem' }}>
-        {/* Breadcrumb */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '2rem', fontSize: '0.78rem', color: 'var(--text-muted)', letterSpacing: '1px', textTransform: 'uppercase' }}>
-          <span style={{ cursor: 'pointer', color: 'var(--primary-dark)', fontWeight: 600 }} onClick={() => navigate('/')}>Home</span>
-          <span>›</span>
-          <span style={{ cursor: 'pointer', color: 'var(--primary-dark)', fontWeight: 600 }} onClick={() => navigate(-1)}>
-            {property.type === 'off-plan' ? 'Off-Plan' : 'Ready'}
-          </span>
-          <span>›</span>
-          <span style={{ color: 'var(--text-muted)' }}>{property.title}</span>
-        </div>
+        {/* Breadcrumb & Gallery */}
+        <RevealSection>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '2rem', fontSize: '0.78rem', color: 'var(--text-muted)', letterSpacing: '1px', textTransform: 'uppercase' }}>
+            <span style={{ cursor: 'pointer', color: 'var(--primary-dark)', fontWeight: 600 }} onClick={() => navigate('/')}>Home</span>
+            <span>›</span>
+            <span style={{ cursor: 'pointer', color: 'var(--primary-dark)', fontWeight: 600 }} onClick={() => navigate(-1)}>
+              {property.type === 'off-plan' ? 'Off-Plan' : 'Ready'}
+            </span>
+            <span>›</span>
+            <span style={{ color: 'var(--text-muted)' }}>{property.title}</span>
+          </div>
 
-        {/* ── Image Gallery (full width) ── */}
-        <ImageGallery images={images} fallback={property.image} />
+          {/* ── Image Gallery (full width) ── */}
+          <ImageGallery images={images} fallback={property.image} />
+        </RevealSection>
 
         {/* ── Two Column Layout ── */}
         <div className="property-grid" style={{ display: 'grid', gridTemplateColumns: isOffPlan ? 'minmax(0,1fr) 380px' : 'minmax(0,1fr) 520px', gap: '3rem', alignItems: 'flex-start' }}>
 
           {/* ──── LEFT: Property Details ──── */}
-          <div>
-            {/* Title */}
-            <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontFamily: 'var(--font-serif)', color: 'var(--text-dark)', letterSpacing: '1px', textTransform: 'uppercase', lineHeight: 1.1, marginBottom: '1.25rem' }}>
-              {property.title}
-            </h1>
+          <RevealSection style={{ width: '100%' }}>
+            <div>
+              {/* Title */}
+              <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontFamily: 'var(--font-serif)', color: 'var(--text-dark)', letterSpacing: '1px', textTransform: 'uppercase', lineHeight: 1.1, marginBottom: '1.25rem' }}>
+                {property.title}
+              </h1>
 
-            {/* Key Metadata Row */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem 1.5rem', marginBottom: '0.75rem', fontSize: '0.9rem', color: 'var(--text-dark)' }}>
-              {property.location && (
-                <span><strong style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Location: </strong>{property.location}</span>
-              )}
-              {(property.property_type || property.category) && (
-                <span><strong style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Type: </strong>{property.property_type || property.category}</span>
-              )}
-              {(property.bedrooms_range || property.beds) && (
-                <span><strong style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Bedrooms: </strong>{property.bedrooms_range || property.beds}</span>
-              )}
-            </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem 1.5rem', marginBottom: '1.5rem', fontSize: '0.9rem', color: 'var(--text-dark)' }}>
-              {property.handover && (
-                <span><strong style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Handover: </strong>{property.handover}</span>
-              )}
-              {property.payment_plan && (
-                <span><strong style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Payment Plan: </strong>{property.payment_plan}</span>
-              )}
-              {property.price && (
-                <span style={{ color: 'var(--text-dark)' }}>
-                  <strong style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Starting From: </strong>
-                  <strong style={{ color: 'var(--primary-dark)', fontSize: '1.05rem' }}>{property.price}</strong>
-                </span>
-              )}
-            </div>
-
-            {/* Status Badge */}
-            <div style={{ marginBottom: '2rem' }}>
-              <span style={{ display: 'inline-block', padding: '0.3rem 0.9rem', background: 'rgba(211,185,138,0.15)', color: 'var(--primary-dark)', border: '1px solid rgba(211,185,138,0.4)', borderRadius: '3px', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }}>
-                {property.status || (isOffPlan ? 'Off-Plan' : 'Ready')}
-              </span>
-            </div>
-
-            {/* Description */}
-            <div style={{ marginBottom: '2.5rem' }}>
-              <h2 style={{ fontSize: '0.8rem', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--primary-dark)', fontWeight: 600, marginBottom: '1rem', fontFamily: 'var(--font-sans)' }}>
-                Description
-              </h2>
-              <p style={{ color: 'var(--text-muted)', lineHeight: 1.8, fontSize: '0.95rem' }}>
-                {property.description}
-              </p>
-            </div>
-
-            {/* Features & Amenities */}
-            {features.length > 0 && (
-              <div style={{ marginBottom: '2.5rem' }}>
-                <h2 style={{ fontSize: '0.8rem', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--primary-dark)', fontWeight: 600, marginBottom: '1.25rem', fontFamily: 'var(--font-sans)' }}>
-                  Features & Amenities
-                </h2>
-                <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '0.7rem', padding: 0, listStyle: 'none', margin: 0 }}>
-                  {features.map((f, i) => (
-                    <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--text-muted)', fontSize: '0.88rem' }}>
-                      <span style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'rgba(211,185,138,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--primary-dark)', fontSize: '0.7rem', fontWeight: 700 }}>✓</span>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
+              {/* Key Metadata Row */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem 1.5rem', marginBottom: '0.75rem', fontSize: '0.9rem', color: 'var(--text-dark)' }}>
+                {property.location && (
+                  <span><strong style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Location: </strong>{property.location}</span>
+                )}
+                {(property.property_type || property.category) && (
+                  <span><strong style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Type: </strong>{property.property_type || property.category}</span>
+                )}
+                {(property.bedrooms_range || property.beds) && (
+                  <span><strong style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Bedrooms: </strong>{property.bedrooms_range || property.beds}</span>
+                )}
               </div>
-            )}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem 1.5rem', marginBottom: '1.5rem', fontSize: '0.9rem', color: 'var(--text-dark)' }}>
+                {property.handover && (
+                  <span><strong style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Handover: </strong>{property.handover}</span>
+                )}
+                {property.payment_plan && (
+                  <span><strong style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Payment Plan: </strong>{property.payment_plan}</span>
+                )}
+                {property.price && (
+                  <span style={{ color: 'var(--text-dark)' }}>
+                    <strong style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Starting From: </strong>
+                    <strong style={{ color: 'var(--primary-dark)', fontSize: '1.05rem' }}>{property.price}</strong>
+                  </span>
+                )}
+              </div>
 
-            {/* Action Buttons */}
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              {/* View Floor Plan button */}
-              <button
-                onClick={() => setShowFloorPlan(true)}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.8rem 1.5rem', background: '#0a0a0a', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s' }}
-                onMouseEnter={e => e.currentTarget.style.background = 'var(--primary-dark)'}
-                onMouseLeave={e => e.currentTarget.style.background = '#0a0a0a'}
-              >
-                📐 View Floor Plan
-              </button>
+              {/* Status Badge */}
+              <div style={{ marginBottom: '2rem' }}>
+                <span style={{ display: 'inline-block', padding: '0.3rem 0.9rem', background: 'rgba(0, 0, 0,0.15)', color: 'var(--primary-dark)', border: '1px solid rgba(0, 0, 0,0.4)', borderRadius: '3px', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }}>
+                  {property.status || (isOffPlan ? 'Off-Plan' : 'Ready')}
+                </span>
+              </div>
+
+              {/* Description */}
+              <div style={{ marginBottom: '2.5rem' }}>
+                <h2 style={{ fontSize: '0.8rem', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--primary-dark)', fontWeight: 600, marginBottom: '1rem', fontFamily: 'var(--font-sans)' }}>
+                  Description
+                </h2>
+                <p style={{ color: 'var(--text-muted)', lineHeight: 1.8, fontSize: '0.95rem' }}>
+                  {property.description}
+                </p>
+              </div>
+
+              {/* Features & Amenities */}
+              {features.length > 0 && (
+                <div style={{ marginBottom: '2.5rem' }}>
+                  <h2 style={{ fontSize: '0.8rem', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--primary-dark)', fontWeight: 600, marginBottom: '1.25rem', fontFamily: 'var(--font-sans)' }}>
+                    Features & Amenities
+                  </h2>
+                  <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '0.7rem', padding: 0, listStyle: 'none', margin: 0 }}>
+                    {features.map((f, i) => (
+                      <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--text-muted)', fontSize: '0.88rem' }}>
+                        <span style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'rgba(0, 0, 0,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--primary-dark)', fontSize: '0.7rem', fontWeight: 700 }}>✓</span>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                {/* View Floor Plan button */}
+                <button
+                  onClick={() => setShowFloorPlan(true)}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.8rem 1.5rem', background: '#0a0a0a', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--primary-dark)'}
+                  onMouseLeave={e => e.currentTarget.style.background = '#0a0a0a'}
+                >
+                  📐 View Floor Plan
+                </button>
+              </div>
             </div>
-          </div>
+          </RevealSection>
 
           {/* ──── RIGHT: Request Brochure Form or Unit Selection ──── */}
-          <div style={{ position: 'sticky', top: '8rem', width: '100%' }}>
-            {!isOffPlan ? (
-              <InteractiveFloorPlan 
-                propertyType={property.category === 'villas' ? 'villa' : 'apartment'} 
-                floorsData={sanitizeFloors(property.floors)} 
-              />
-            ) : (
-              <div style={{ background: '#0a0a0a', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}>
-                {/* Form Header */}
-                <div style={{ padding: '1.75rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-                  <p style={{ color: 'var(--primary-dark)', fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.4rem' }}>Get In Touch</p>
-                  <h3 style={{ color: '#fff', fontSize: '1.3rem', fontFamily: 'var(--font-serif)', margin: 0 }}>Request Brochure</h3>
-                </div>
+          <RevealSection delay={150} style={{ width: '100%', position: 'sticky', top: '8rem' }}>
+            <div style={{ width: '100%' }}>
+              {!isOffPlan ? (
+                <InteractiveFloorPlan 
+                  propertyType={property.category === 'villas' ? 'villa' : 'apartment'} 
+                  floorsData={sanitizeFloors(property.floors)} 
+                />
+              ) : (
+                <div style={{ background: '#0a0a0a', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.2)' }}>
+                  {/* Form Header */}
+                  <div style={{ padding: '1.75rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                    <p style={{ color: 'var(--primary-dark)', fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.4rem' }}>Get In Touch</p>
+                    <h3 style={{ color: '#fff', fontSize: '1.3rem', fontFamily: 'var(--font-serif)', margin: 0 }}>Request Brochure</h3>
+                  </div>
 
-                {/* Contact Buttons */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1px', background: 'rgba(255,255,255,0.06)' }}>
-                  {[
-                    { label: '📞 Call', href: 'tel:+971000000000' },
-                    { label: '💬 WhatsApp', href: `https://wa.me/971000000000?text=I'm interested in ${encodeURIComponent(property.title)}` },
-                    { label: '✉️ Email', href: 'mailto:info@sharanestates.com' }
-                  ].map((btn, i) => (
-                    <a
-                      key={i}
-                      href={btn.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.7rem 0.5rem', background: 'rgba(255,255,255,0.05)', color: '#fff', textDecoration: 'none', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.5px', transition: 'background 0.2s', textAlign: 'center' }}
-                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.12)'}
-                      onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                    >
-                      {btn.label}
-                    </a>
-                  ))}
-                </div>
-
-                {/* Form */}
-                <div style={{ padding: '1.75rem 2rem' }}>
-                  {!brochureSubmitted ? (
-                    <form onSubmit={handleBrochureSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                      {[
-                        { key: 'name', label: 'Name', type: 'text', placeholder: 'Your full name' },
-                        { key: 'phone', label: 'Phone', type: 'tel', placeholder: '+971 50 000 0000' },
-                        { key: 'email', label: 'Email', type: 'email', placeholder: 'your@email.com' },
-                      ].map(field => (
-                        <input
-                          key={field.key}
-                          type={field.type}
-                          placeholder={field.placeholder}
-                          value={brochureForm[field.key]}
-                          required
-                          onChange={e => setBrochureForm({ ...brochureForm, [field.key]: e.target.value })}
-                          style={{ width: '100%', padding: '0.8rem 1rem', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', color: '#fff', fontSize: '0.9rem', fontFamily: 'var(--font-sans)', outline: 'none', boxSizing: 'border-box' }}
-                        />
-                      ))}
-                      <textarea
-                        placeholder="Your message (optional)"
-                        rows={3}
-                        value={brochureForm.message}
-                        onChange={e => setBrochureForm({ ...brochureForm, message: e.target.value })}
-                        style={{ width: '100%', padding: '0.8rem 1rem', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', color: '#fff', fontSize: '0.9rem', fontFamily: 'var(--font-sans)', outline: 'none', resize: 'vertical', boxSizing: 'border-box' }}
-                      />
-                      <button
-                        type="submit"
-                        disabled={brochureLoading}
-                        style={{ padding: '0.9rem', background: 'var(--primary-dark)', color: '#0a0a0a', border: 'none', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s', opacity: brochureLoading ? 0.7 : 1 }}
+                  {/* Contact Buttons */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1px', background: 'rgba(255,255,255,0.06)' }}>
+                    {[
+                      { label: '📞 Call', href: 'tel:+971000000000' },
+                      { label: '💬 WhatsApp', href: `https://wa.me/971000000000?text=I'm interested in ${encodeURIComponent(property.title)}` },
+                      { label: '✉️ Email', href: 'mailto:info@sharanestates.com' }
+                    ].map((btn, i) => (
+                      <a
+                        key={i}
+                        href={btn.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.7rem 0.5rem', background: 'rgba(255,255,255,0.05)', color: '#fff', textDecoration: 'none', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.5px', transition: 'background 0.2s', textAlign: 'center' }}
+                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.12)'}
+                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
                       >
-                        {brochureLoading ? 'Sending...' : 'Send Request →'}
-                      </button>
-                      <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.7rem', textAlign: 'center', margin: 0 }}>
-                        Our team typically responds within 2 hours
-                      </p>
-                    </form>
-                  ) : (
-                    <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
-                      <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>✅</div>
-                      <h4 style={{ color: '#fff', fontFamily: 'var(--font-serif)', marginBottom: '0.5rem' }}>Request Received!</h4>
-                      <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem' }}>Our specialist will contact you shortly with the brochure and full details.</p>
-                    </div>
-                  )}
+                        {btn.label}
+                      </a>
+                    ))}
+                  </div>
+
+                  {/* Form */}
+                  <div style={{ padding: '1.75rem 2rem' }}>
+                    {!brochureSubmitted ? (
+                      <form onSubmit={handleBrochureSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        {[
+                          { key: 'name', label: 'Name', type: 'text', placeholder: 'Your full name' },
+                          { key: 'phone', label: 'Phone', type: 'tel', placeholder: '+971 50 000 0000' },
+                          { key: 'email', label: 'Email', type: 'email', placeholder: 'your@email.com' },
+                        ].map(field => (
+                          <input
+                            key={field.key}
+                            type={field.type}
+                            placeholder={field.placeholder}
+                            value={brochureForm[field.key]}
+                            required
+                            onChange={e => setBrochureForm({ ...brochureForm, [field.key]: e.target.value })}
+                            style={{ width: '100%', padding: '0.8rem 1rem', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', color: '#fff', fontSize: '0.9rem', fontFamily: 'var(--font-sans)', outline: 'none', boxSizing: 'border-box' }}
+                          />
+                        ))}
+                        <textarea
+                          placeholder="Your message (optional)"
+                          rows={3}
+                          value={brochureForm.message}
+                          onChange={e => setBrochureForm({ ...brochureForm, message: e.target.value })}
+                          style={{ width: '100%', padding: '0.8rem 1rem', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', color: '#fff', fontSize: '0.9rem', fontFamily: 'var(--font-sans)', outline: 'none', resize: 'vertical', boxSizing: 'border-box' }}
+                        />
+                        <button
+                          type="submit"
+                          disabled={brochureLoading}
+                          style={{ padding: '0.9rem', background: 'var(--primary-dark)', color: '#0a0a0a', border: 'none', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s', opacity: brochureLoading ? 0.7 : 1 }}
+                        >
+                          {brochureLoading ? 'Sending...' : 'Send Request →'}
+                        </button>
+                        <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.7rem', textAlign: 'center', margin: 0 }}>
+                          Our team typically responds within 2 hours
+                        </p>
+                      </form>
+                    ) : (
+                      <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
+                        <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>✅</div>
+                        <h4 style={{ color: '#fff', fontFamily: 'var(--font-serif)', marginBottom: '0.5rem' }}>Request Received!</h4>
+                        <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem' }}>Our specialist will contact you shortly with the brochure and full details.</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          </RevealSection>
         </div>
       </div>
 

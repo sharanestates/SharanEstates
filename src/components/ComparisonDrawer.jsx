@@ -33,7 +33,7 @@ export default function ComparisonDrawer({ compareList, onToggleCompare }) {
               padding: '0.9rem 1.6rem',
               background: 'var(--text-dark)',
               color: '#FFF',
-              border: '1px solid rgba(211,185,138,0.3)',
+              border: '1px solid rgba(0, 0, 0,0.3)',
               borderRadius: '30px',
               cursor: 'pointer',
               boxShadow: '0 15px 35px rgba(0,0,0,0.18)',
@@ -60,7 +60,7 @@ export default function ComparisonDrawer({ compareList, onToggleCompare }) {
               background: 'rgba(255, 255, 255, 0.94)',
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(211, 185, 138, 0.25)',
+              border: '1px solid rgba(0, 0, 0, 0.25)',
               borderRadius: '24px',
               boxShadow: '0 25px 60px rgba(0, 0, 0, 0.12)',
               overflow: 'hidden',
@@ -71,7 +71,7 @@ export default function ComparisonDrawer({ compareList, onToggleCompare }) {
             {/* Drawer Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.2rem 1.8rem', borderBottom: '1px solid var(--border-color)', background: '#FAFAFA' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ background: 'rgba(211,185,138,0.1)', padding: '6px', borderRadius: '8px' }}>
+                <div style={{ background: 'rgba(0, 0, 0,0.1)', padding: '6px', borderRadius: '8px' }}>
                   <GitCompare size={20} color="var(--primary-dark)" />
                 </div>
                 <div>

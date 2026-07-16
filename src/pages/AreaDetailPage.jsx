@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import RevealSection from '../components/RevealSection';
 
 const areaDetailsData = {
   'downtown-dubai': {
@@ -282,13 +283,16 @@ export default function AreaDetailPage() {
     <div style={{ minHeight: '100vh', background: 'var(--bg-light)', paddingBottom: '5rem' }}>
       
       {/* ── HERO BANNER ── */}
-      <section style={{
-        position: 'relative',
-        height: '480px',
-        background: `url(${detail.image}) center/cover no-repeat`,
-        display: 'flex',
-        alignItems: 'flex-end',
-      }}>
+      <RevealSection>
+        <section style={{
+          position: 'relative',
+          height: '480px',
+          background: `url(${detail.image}) center/cover no-repeat`,
+          display: 'flex',
+          alignItems: 'flex-end',
+          paddingTop: '0',
+          paddingBottom: '0',
+        }}>
         {/* Shadow Overlay */}
         <div style={{
           position: 'absolute',
@@ -314,12 +318,14 @@ export default function AreaDetailPage() {
           </h1>
         </div>
       </section>
-
+      </RevealSection>
+      
       {/* ── DETAILS MAIN CONTENT ── */}
       <section className="container" style={{ padding: '3rem 1.5rem 2rem' }}>
         
         {/* Breadcrumb Back Button */}
-        <div style={{ marginBottom: '2.5rem' }}>
+        <RevealSection>
+          <div style={{ marginBottom: '2.5rem' }}>
           <Link 
             to="/area-guide" 
             style={{ 
@@ -334,13 +340,13 @@ export default function AreaDetailPage() {
               gap: '0.5rem',
               padding: '0.6rem 1.25rem',
               background: '#FFFFFF',
-              border: '1px solid rgba(211,185,138,0.4)',
+              border: '1px solid rgba(0, 0, 0,0.4)',
               borderRadius: '3px',
               transition: 'all 0.3s ease',
               boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
             }}
             onMouseEnter={e => { e.currentTarget.style.background = 'var(--text-dark)'; e.currentTarget.style.color = '#FFFFFF'; e.currentTarget.style.borderColor = 'var(--text-dark)'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.color = 'var(--primary-dark)'; e.currentTarget.style.borderColor = 'rgba(211,185,138,0.4)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.color = 'var(--primary-dark)'; e.currentTarget.style.borderColor = 'rgba(0, 0, 0,0.4)'; }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
@@ -348,6 +354,8 @@ export default function AreaDetailPage() {
             Back to Area Guide
           </Link>
         </div>
+        </RevealSection>
+
         <div style={{
           display: 'grid',
           gridTemplateColumns: '1fr 340px',
@@ -356,7 +364,8 @@ export default function AreaDetailPage() {
         }} className="property-grid">
           
           {/* Left Column: Description & Lifestyle */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+          <RevealSection style={{ width: '100%' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
             
             {/* Overview */}
             <div>
@@ -397,10 +406,12 @@ export default function AreaDetailPage() {
             </div>
 
           </div>
+          </RevealSection>
 
           {/* Right Column: Side Card Connectivity */}
-          <div className="classic-property-card" style={{ padding: '2rem', background: '#FFFFFF' }}>
-            <h3 style={{ fontSize: '0.82rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--text-dark)', fontWeight: 600, marginBottom: '1rem', borderBottom: '1px solid rgba(211,185,138,0.2)', paddingBottom: '0.5rem' }}>
+          <RevealSection delay={150} style={{ width: '100%' }}>
+            <div className="classic-property-card" style={{ padding: '2rem', background: '#FFFFFF' }}>
+            <h3 style={{ fontSize: '0.82rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--text-dark)', fontWeight: 600, marginBottom: '1rem', borderBottom: '1px solid rgba(0, 0, 0,0.2)', paddingBottom: '0.5rem' }}>
               Average Connectivity
             </h3>
             
@@ -423,7 +434,7 @@ export default function AreaDetailPage() {
               </div>
             </div>
 
-            <div style={{ marginTop: '2rem', borderTop: '1px solid rgba(211,185,138,0.2)', paddingTop: '1.5rem', textAlign: 'center' }}>
+            <div style={{ marginTop: '2rem', borderTop: '1px solid rgba(0, 0, 0,0.2)', paddingTop: '1.5rem', textAlign: 'center' }}>
               <h4 style={{ fontSize: '0.75rem', fontFamily: 'var(--font-serif)', color: 'var(--text-dark)', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
                 Interested in {detail.name}?
               </h4>
@@ -447,12 +458,14 @@ export default function AreaDetailPage() {
               </Link>
             </div>
           </div>
+        </RevealSection>
 
         </div>
       </section>
 
       {/* ── AREA PROPERTIES GRID ── */}
-      <section className="container" style={{ padding: '3rem 1.5rem' }}>
+      <RevealSection>
+        <section className="container" style={{ padding: '3rem 1.5rem' }}>
         <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', marginBottom: '0.75rem' }} />
         <h3 style={{ fontSize: '0.8rem', letterSpacing: '2.5px', textTransform: 'uppercase', color: 'var(--primary-dark)', fontWeight: 600, marginBottom: '1.5rem' }}>
           Available Properties in {detail.name}
@@ -461,7 +474,7 @@ export default function AreaDetailPage() {
         {loadingProperties ? (
           <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Loading properties in this community...</p>
         ) : properties.length === 0 ? (
-          <div style={{ padding: '2rem', background: '#FFFFFF', border: '1px solid rgba(211,185,138,0.15)', borderRadius: '4px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+          <div style={{ padding: '2rem', background: '#FFFFFF', border: '1px solid rgba(0, 0, 0,0.15)', borderRadius: '4px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
             There are currently no listed properties specifically located in {detail.name}. Explore other areas or contact our agents for off-market options.
           </div>
         ) : (
@@ -476,7 +489,7 @@ export default function AreaDetailPage() {
                   overflow: 'hidden',
                   display: 'flex',
                   flexDirection: 'column',
-                  border: '1px solid rgba(211,185,138,0.25)',
+                  border: '1px solid rgba(0, 0, 0,0.25)',
                   boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
                   transition: 'all 0.3s',
                 }}
@@ -508,6 +521,7 @@ export default function AreaDetailPage() {
           </div>
         )}
       </section>
+      </RevealSection>
 
     </div>
   );

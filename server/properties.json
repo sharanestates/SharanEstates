@@ -12,6 +12,7 @@
     "type": "ready",
     "location": "Emirates Hills",
     "status": "Available",
+    "starred": true,
     "floors": [
       {
         "id": 3,
@@ -78,6 +79,7 @@
     "type": "ready",
     "location": "Palm Jumeirah",
     "status": "Available",
+    "starred": true,
     "floors": [
       {
         "id": 2,

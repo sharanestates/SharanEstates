@@ -103,7 +103,7 @@ export default function InteractiveFloorPlan({ propertyType, floorsData }) {
           if (allSold) {
             bgColor = 'rgba(200, 200, 200, 0.3)';
           } else if (isSelected) {
-            bgColor = 'rgba(211, 185, 138, 0.8)';
+            bgColor = 'rgba(0, 0, 0, 0.8)';
             borderColor = 'var(--primary-dark)';
           } else if (isHovered) {
             bgColor = 'rgba(255, 255, 255, 0.8)';
@@ -147,7 +147,7 @@ export default function InteractiveFloorPlan({ propertyType, floorsData }) {
       </div>
 
       {/* Info Panel displaying flat details for selected level */}
-      <div style={{ flex: '1.2 1 340px', width: '100%', background: '#FFFFFF', borderRadius: '4px', padding: '2rem', border: '1px solid rgba(211, 185, 138, 0.3)', boxShadow: '0 10px 30px rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: '1.2 1 340px', width: '100%', background: '#FFFFFF', borderRadius: '4px', padding: '2rem', border: '1px solid rgba(0, 0, 0, 0.3)', boxShadow: '0 10px 30px rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column' }}>
         <AnimatePresence mode="wait">
           {selectedFloor ? (
             <motion.div

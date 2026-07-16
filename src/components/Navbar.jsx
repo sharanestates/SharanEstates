@@ -50,7 +50,7 @@ export default function Navbar() {
     transform: 'translateX(-50%)',
     background: 'rgba(255, 255, 255, 0.96)',
     backdropFilter: 'blur(15px)',
-    border: '1px solid rgba(211, 185, 138, 0.25)',
+    border: '1px solid rgba(0, 0, 0, 0.25)',
     borderRadius: '4px',
     padding: '0.5rem 0',
     minWidth: '180px',
@@ -77,12 +77,11 @@ export default function Navbar() {
   };
 
   const navBackground = shouldShowOpaque 
-    ? 'linear-gradient(90deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.98) 100%)' 
+    ? 'rgba(255, 255, 255, 0.96)' 
     : 'transparent';
-  const navPadding = shouldShowOpaque ? '0.3rem 4.5rem' : '0.75rem 4.5rem';
   const navBorderBottom = shouldShowOpaque 
-    ? '1px solid rgba(211, 185, 138, 0.22)' 
-    : '1px solid rgba(255, 255, 255, 0.08)';
+    ? '1px solid rgba(0, 0, 0, 0.08)' 
+    : 'none';
   const navShadow = shouldShowOpaque ? '0 8px 32px rgba(0, 0, 0, 0.04)' : 'none';
   const navBlur = shouldShowOpaque ? 'blur(15px)' : 'none';
 
@@ -99,13 +98,13 @@ export default function Navbar() {
   const buttonStyle = {
     background: shouldShowOpaque ? 'var(--text-dark)' : 'transparent',
     color: '#FFFFFF',
-    border: shouldShowOpaque ? '1px solid var(--text-dark)' : '1px solid rgba(255, 255, 255, 0.5)',
-    padding: '0.45rem 1.25rem',
-    borderRadius: '30px',
-    fontSize: '0.75rem',
+    border: shouldShowOpaque ? '1px solid var(--text-dark)' : '1px solid rgba(255, 255, 255, 0.8)',
+    padding: '0.7rem 1.6rem',
+    borderRadius: '2px',
+    fontSize: '0.82rem',
     fontWeight: 600,
     textTransform: 'uppercase',
-    letterSpacing: '1.2px',
+    letterSpacing: '1.5px',
     cursor: 'pointer',
     transition: 'all 0.3s ease',
   };
@@ -114,13 +113,15 @@ export default function Navbar() {
     <nav className="pill-nav" style={{ 
       zIndex: 1000,
       background: navBackground,
-      padding: navPadding,
       borderBottom: navBorderBottom,
       boxShadow: navShadow,
       backdropFilter: navBlur,
       WebkitBackdropFilter: navBlur,
       transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-      height: shouldShowOpaque ? '52px' : '68px',
+      paddingTop: shouldShowOpaque ? '0.4rem' : '0.8rem',
+      paddingBottom: shouldShowOpaque ? '0.4rem' : '0.8rem',
+      paddingLeft: 'clamp(1rem, 4vw, 3.5rem)',
+      paddingRight: 'clamp(1rem, 4vw, 3.5rem)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
@@ -130,65 +131,66 @@ export default function Navbar() {
       width: '100%'
     }}>
       <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-          <div style={{
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1.1rem',
+          border: shouldShowOpaque ? '1px solid var(--text-dark)' : '1px solid rgba(255, 255, 255, 0.8)',
+          padding: '0.7rem 1.4rem',
+          borderRadius: '2px',
+          color: shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF',
+          transition: 'all 0.4s ease',
+          backgroundColor: 'transparent'
+        }}
+        className="navbar-brand-logo"
+        onMouseOver={e => {
+          e.currentTarget.style.borderColor = '#FFFFFF';
+          e.currentTarget.style.background = shouldShowOpaque ? 'var(--text-dark)' : 'rgba(255, 255, 255, 0.08)';
+          e.currentTarget.style.color = shouldShowOpaque ? '#FFFFFF' : '#FFFFFF';
+        }}
+        onMouseOut={e => {
+          e.currentTarget.style.borderColor = shouldShowOpaque ? 'var(--text-dark)' : 'rgba(255, 255, 255, 0.8)';
+          e.currentTarget.style.background = 'transparent';
+          e.currentTarget.style.color = shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF';
+        }}
+        >
+          {/* Left Initials */}
+          <span style={{
             fontFamily: 'var(--font-serif)',
-            fontSize: '1.8rem',
-            fontWeight: 300,
-            color: 'var(--primary-color)',
+            fontSize: '1.6rem',
+            fontWeight: 600,
+            letterSpacing: '1.5px',
             lineHeight: 1,
-            letterSpacing: '-1.5px',
-            display: 'flex',
-            alignItems: 'center',
-            position: 'relative'
+            transition: 'color 0.4s ease'
           }}>
             SE
-            <span style={{
-              position: 'absolute',
-              right: '-6px',
-              top: '4px',
-              width: '4px',
-              height: '4px',
-              background: 'var(--primary-color)',
-              borderRadius: '50%'
-            }} />
-          </div>
+          </span>
+
+          {/* Vertical Divider */}
           <div style={{
-            borderLeft: shouldShowOpaque ? '1px solid rgba(0,0,0,0.1)' : '1px solid rgba(255, 255, 255, 0.2)',
-            paddingLeft: '0.8rem',
-            display: 'flex',
-            flexDirection: 'column',
-            lineHeight: 1.1,
-            transition: 'border-color 0.4s ease'
+            width: '1px',
+            height: '24px',
+            backgroundColor: shouldShowOpaque ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.35)',
+            transition: 'background-color 0.4s ease'
+          }} />
+
+          {/* Right Brand Name */}
+          <span style={{
+            fontFamily: 'var(--font-serif)',
+            fontSize: '1.1rem',
+            fontWeight: 600,
+            letterSpacing: '3.5px',
+            textTransform: 'uppercase',
+            lineHeight: 1,
+            transition: 'color 0.4s ease'
           }}>
-            <span style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: '1.1rem',
-              fontWeight: 500,
-              letterSpacing: '1px',
-              color: shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF',
-              textTransform: 'uppercase',
-              transition: 'color 0.4s ease'
-            }}>
-              Sharan
-            </span>
-            <span style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: '0.52rem',
-              fontWeight: 500,
-              letterSpacing: '2.5px',
-              color: shouldShowOpaque ? 'var(--text-muted)' : 'rgba(255, 255, 255, 0.7)',
-              textTransform: 'uppercase',
-              marginTop: '1px',
-              transition: 'color 0.4s ease'
-            }}>
-              Private Advisory
-            </span>
-          </div>
+            Sharan Estates
+          </span>
         </div>
       </Link>
-      
-      <ul className="nav-links desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', listStyle: 'none', margin: 0, padding: 0 }}>
+
+      {/* Desktop Navigation Links */}
+      <ul className="nav-links desktop-nav" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: '2rem', listStyle: 'none', margin: 0, padding: 0 }}>
         
         {/* Buy Dropdown */}
         <li 
@@ -233,19 +235,38 @@ export default function Navbar() {
 
       </ul>
 
+      {/* Register Interest CTA */}
       <div className="desktop-nav">
         <button 
           style={buttonStyle} 
           onClick={() => setIsModalOpen(true)}
-          onMouseOver={e => { e.currentTarget.style.background = 'var(--primary-color)'; e.currentTarget.style.color = 'var(--text-dark)'; e.currentTarget.style.borderColor = 'var(--primary-color)'; }}
-          onMouseOut={e => { e.currentTarget.style.background = shouldShowOpaque ? 'var(--text-dark)' : 'transparent'; e.currentTarget.style.color = '#FFFFFF'; e.currentTarget.style.borderColor = shouldShowOpaque ? 'var(--text-dark)' : 'rgba(255,255,255,0.5)'; }}
+          onMouseOver={e => { 
+            e.currentTarget.style.background = '#FFFFFF'; 
+            e.currentTarget.style.color = '#000000'; 
+            e.currentTarget.style.borderColor = shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF'; 
+          }}
+          onMouseOut={e => { 
+            e.currentTarget.style.background = shouldShowOpaque ? 'var(--text-dark)' : 'transparent'; 
+            e.currentTarget.style.color = '#FFFFFF'; 
+            e.currentTarget.style.borderColor = shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF'; 
+          }}
         >
           Register Interest
         </button>
       </div>
 
-      <button className="mobile-menu-btn" style={{ display: 'none', color: shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF' }} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-        {isMobileMenuOpen ? <X size={20} strokeWidth={1.25} /> : <Menu size={20} strokeWidth={1.25} />}
+      <button 
+        className="mobile-menu-btn" 
+        style={{ 
+          background: 'none', 
+          border: 'none', 
+          cursor: 'pointer',
+          padding: '0.5rem',
+          color: shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF' 
+        }} 
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+      >
+        {isMobileMenuOpen ? <X size={24} strokeWidth={1.25} /> : <Menu size={24} strokeWidth={1.25} />}
       </button>
 
       <div className={`mobile-nav-menu ${isMobileMenuOpen ? 'open' : ''}`}>

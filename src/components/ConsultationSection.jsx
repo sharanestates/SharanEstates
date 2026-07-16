@@ -5,7 +5,7 @@ export default function ConsultationSection() {
   const [showMobileForm, setShowMobileForm] = useState(false);
 
   return (
-    <section className="section consultation-section" style={{ background: 'var(--primary-light)', padding: '6rem 0' }}>
+    <section className="section consultation-section" style={{ background: 'var(--primary-light)', padding: '4.5rem 0' }}>
       <div className="container consultation-container consultation-card-mobile" style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem', alignItems: 'center', maxWidth: '1100px', margin: '0 auto' }}>
         
         {/* Left Side: Copy */}
@@ -102,7 +102,7 @@ export default function ConsultationSection() {
                 <ChevronDown size={16} color="#888" style={{ position: 'absolute', right: '1.2rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
               </div>
 
-              <button type="button" className="btn-solid" style={{ width: '100%', padding: '1.2rem', fontSize: '0.9rem', letterSpacing: '1.5px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', background: 'var(--primary-color)', color: 'var(--text-dark)' }}>
+              <button type="button" className="btn-solid" style={{ width: '100%', padding: '1.2rem', fontSize: '0.9rem', letterSpacing: '1.5px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}>
                 REQUEST ADVISORY INVITATION →
               </button>
             </form>

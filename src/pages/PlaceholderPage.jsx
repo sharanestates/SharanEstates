@@ -12,7 +12,7 @@ export default function PlaceholderPage({ title, description, email }) {
         </p>
         
         {email && (
-          <div style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '12px', border: '1px solid rgba(211, 185, 138, 0.3)', display: 'inline-block' }}>
+          <div style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '12px', border: '1px solid rgba(0, 0, 0, 0.3)', display: 'inline-block' }}>
             <h3 style={{ fontSize: '1.2rem', fontFamily: 'var(--font-serif)', color: 'var(--text-dark)', marginBottom: '0.5rem' }}>Get in Touch</h3>
             <a href={`mailto:${email}`} style={{ fontSize: '1.5rem', color: 'var(--primary-dark)', fontWeight: 600, textDecoration: 'none' }}>
               {email}

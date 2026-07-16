@@ -70,7 +70,7 @@ export default function ConsultancyForm() {
   };
 
   return (
-    <section id="consultancy" className="section" style={{ background: 'var(--bg-light)', padding: '7rem 0', borderTop: '1px solid rgba(211, 185, 138, 0.15)' }}>
+    <section id="consultancy" className="section" style={{ background: 'var(--bg-light)', padding: '7rem 0', borderTop: '1px solid rgba(0, 0, 0, 0.15)' }}>
       <div className="container" style={{ textAlign: isFormVisible ? 'left' : 'center' }}>
         
         {!isFormVisible ? (
@@ -96,7 +96,7 @@ export default function ConsultancyForm() {
                 fontSize: '0.85rem',
                 letterSpacing: '1px',
                 textTransform: 'uppercase',
-                boxShadow: '0 8px 20px rgba(211, 185, 138, 0.18)',
+                boxShadow: '0 8px 20px rgba(0, 0, 0, 0.18)',
                 transition: 'all 0.3s ease',
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -105,12 +105,12 @@ export default function ConsultancyForm() {
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 10px 25px rgba(211, 185, 138, 0.28)';
+                e.currentTarget.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.28)';
                 e.currentTarget.style.background = '#E5C790';
               }}
               onMouseOut={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 8px 20px rgba(211, 185, 138, 0.18)';
+                e.currentTarget.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.18)';
                 e.currentTarget.style.background = 'var(--primary-color)';
               }}
             >
@@ -170,7 +170,7 @@ export default function ConsultancyForm() {
             {/* Right Column: Booking Card */}
             <div style={{
               background: 'var(--bg-lighter)',
-              border: '1px solid rgba(211, 185, 138, 0.2)',
+              border: '1px solid rgba(0, 0, 0, 0.2)',
               borderRadius: '24px',
               padding: '2.5rem',
               boxShadow: '0 20px 50px rgba(0,0,0,0.04)',
@@ -317,7 +317,7 @@ export default function ConsultancyForm() {
                         letterSpacing: '1px',
                         textTransform: 'uppercase',
                         cursor: 'pointer',
-                        boxShadow: '0 8px 20px rgba(211, 185, 138, 0.2)',
+                        boxShadow: '0 8px 20px rgba(0, 0, 0, 0.2)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -327,12 +327,12 @@ export default function ConsultancyForm() {
                       }}
                       onMouseOver={(e) => {
                         e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 10px 22px rgba(211, 185, 138, 0.3)';
+                        e.currentTarget.style.boxShadow = '0 10px 22px rgba(0, 0, 0, 0.3)';
                         e.currentTarget.style.background = '#E5C790';
                       }}
                       onMouseOut={(e) => {
                         e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 8px 20px rgba(211, 185, 138, 0.2)';
+                        e.currentTarget.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.2)';
                         e.currentTarget.style.background = 'var(--primary-color)';
                       }}
                     >

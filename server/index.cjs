@@ -1215,6 +1215,7 @@ async function initDb() {
       await pool.query('ALTER TABLE properties ADD COLUMN IF NOT EXISTS property_type VARCHAR(255)');
       await pool.query('ALTER TABLE properties ADD COLUMN IF NOT EXISTS bedrooms_range VARCHAR(100)');
       await pool.query('ALTER TABLE properties ADD COLUMN IF NOT EXISTS dropbox_link VARCHAR(500)');
+      await pool.query('ALTER TABLE properties ADD COLUMN IF NOT EXISTS starred BOOLEAN DEFAULT false');
     } catch (alterErr) {
       console.warn('ALTER TABLE properties columns error:', alterErr.message);
     }
@@ -1243,8 +1244,8 @@ async function initDb() {
       for (const prop of fallbackProperties) {
         const sql = `
           INSERT INTO properties 
-          (title, price, image, description, beds, baths, size, category, type, location, status, floors, images, features, handover, payment_plan, property_type, bedrooms_range, dropbox_link) 
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+          (title, price, image, description, beds, baths, size, category, type, location, status, floors, images, features, handover, payment_plan, property_type, bedrooms_range, dropbox_link, starred) 
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
         `;
         const values = [
           prop.title,
@@ -1265,7 +1266,8 @@ async function initDb() {
           prop.payment_plan || '',
           prop.property_type || '',
           prop.bedrooms_range || '',
-          prop.dropbox_link || ''
+          prop.dropbox_link || '',
+          prop.starred === true || prop.starred === 'true'
         ];
         await pool.query(sql, values);
       }
@@ -1456,8 +1458,8 @@ app.post('/api/properties', authenticateToken, async (req, res) => {
   try {
     const sql = `
       INSERT INTO properties 
-      (title, price, image, description, beds, baths, size, category, type, location, status, dropbox_link, floors, images, features, handover, payment_plan, property_type, bedrooms_range) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) 
+      (title, price, image, description, beds, baths, size, category, type, location, status, dropbox_link, floors, images, features, handover, payment_plan, property_type, bedrooms_range, starred) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20) 
       RETURNING *
     `;
     const values = [
@@ -1479,7 +1481,8 @@ app.post('/api/properties', authenticateToken, async (req, res) => {
       handover || '',
       payment_plan || '',
       property_type || '',
-      bedrooms_range || ''
+      bedrooms_range || '',
+      req.body.starred === true || req.body.starred === 'true'
     ];
 
     const result = await pool.query(sql, values);
@@ -1513,6 +1516,7 @@ app.post('/api/properties', authenticateToken, async (req, res) => {
       payment_plan: payment_plan || '',
       property_type: property_type || '',
       bedrooms_range: bedrooms_range || '',
+      starred: req.body.starred === true || req.body.starred === 'true',
       created_at: new Date().toISOString()
     };
     
@@ -1537,8 +1541,8 @@ app.put('/api/properties/:id', authenticateToken, async (req, res) => {
       SET title = $1, price = $2, image = $3, description = $4, beds = $5, baths = $6, 
           size = $7, category = $8, type = $9, location = $10, status = $11, dropbox_link = $12, 
           floors = $13, images = $14, features = $15, handover = $16, payment_plan = $17, 
-          property_type = $18, bedrooms_range = $19 
-      WHERE id = $20 
+          property_type = $18, bedrooms_range = $19, starred = $20
+      WHERE id = $21 
       RETURNING *
     `;
     const values = [
@@ -1561,6 +1565,7 @@ app.put('/api/properties/:id', authenticateToken, async (req, res) => {
       payment_plan || '',
       property_type || '',
       bedrooms_range || '',
+      req.body.starred === true || req.body.starred === 'true',
       id
     ];
 
@@ -1596,7 +1601,8 @@ app.put('/api/properties/:id', authenticateToken, async (req, res) => {
       handover: handover || '',
       payment_plan: payment_plan || '',
       property_type: property_type || '',
-      bedrooms_range: bedrooms_range || ''
+      bedrooms_range: bedrooms_range || '',
+      starred: req.body.starred === true || req.body.starred === 'true'
     };
 
     fallbackProperties[index] = updatedProperty;

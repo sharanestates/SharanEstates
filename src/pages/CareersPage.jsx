@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import RevealSection from '../components/RevealSection';
 
 const jobOpenings = [
   {
@@ -147,12 +148,12 @@ function JobCard({ job, isOpen, onToggle, onApply, index }) {
       className="careers-job-card"
       style={{
         background: '#FFFFFF',
-        border: '1px solid rgba(211,185,138,0.25)',
+        border: '1px solid rgba(0, 0, 0,0.25)',
         borderRadius: '4px',
         overflow: 'hidden',
         transition: 'all 0.4s ease',
         boxShadow: isOpen ? '0 12px 35px rgba(0,0,0,0.08)' : '0 2px 8px rgba(0,0,0,0.03)',
-        borderColor: isOpen ? 'rgba(211,185,138,0.6)' : 'rgba(211,185,138,0.25)',
+        borderColor: isOpen ? 'rgba(0, 0, 0,0.6)' : 'rgba(0, 0, 0,0.25)',
         animation: `fadeSlideUp 0.5s ease ${index * 0.08}s both`,
       }}
     >
@@ -168,7 +169,7 @@ function JobCard({ job, isOpen, onToggle, onApply, index }) {
           gap: '1.5rem',
           transition: 'background 0.3s',
         }}
-        onMouseEnter={e => { if (!isOpen) e.currentTarget.style.background = 'rgba(249,246,240,0.5)'; }}
+        onMouseEnter={e => { if (!isOpen) e.currentTarget.style.background = 'rgba(0, 0, 0, 0.03)'; }}
         onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
       >
         <div style={{ flex: 1 }}>
@@ -188,9 +189,9 @@ function JobCard({ job, isOpen, onToggle, onApply, index }) {
           <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
             <span style={{
               padding: '0.2rem 0.7rem',
-              background: 'rgba(211,185,138,0.12)',
+              background: 'rgba(0, 0, 0,0.12)',
               color: 'var(--primary-dark)',
-              border: '1px solid rgba(211,185,138,0.25)',
+              border: '1px solid rgba(0, 0, 0,0.25)',
               borderRadius: '2px',
               fontSize: '0.62rem',
               fontWeight: 600,
@@ -240,7 +241,7 @@ function JobCard({ job, isOpen, onToggle, onApply, index }) {
             width: '28px',
             height: '28px',
             borderRadius: '50%',
-            border: '1px solid rgba(211,185,138,0.4)',
+            border: '1px solid rgba(0, 0, 0,0.4)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -261,7 +262,7 @@ function JobCard({ job, isOpen, onToggle, onApply, index }) {
         overflow: 'hidden',
         transition: 'max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
       }}>
-        <div style={{ padding: '0 2rem 2rem', borderTop: '1px solid rgba(211,185,138,0.15)' }}>
+        <div style={{ padding: '0 2rem 2rem', borderTop: '1px solid rgba(0, 0, 0,0.15)' }}>
           <p style={{
             color: 'var(--text-muted)',
             lineHeight: 1.8,
@@ -283,7 +284,7 @@ function JobCard({ job, isOpen, onToggle, onApply, index }) {
                 marginBottom: '1rem',
                 fontFamily: 'var(--font-sans)',
                 paddingBottom: '0.5rem',
-                borderBottom: '1px solid rgba(211,185,138,0.2)',
+                borderBottom: '1px solid rgba(0, 0, 0,0.2)',
               }}>
                 Requirements
               </h4>
@@ -310,7 +311,7 @@ function JobCard({ job, isOpen, onToggle, onApply, index }) {
                 marginBottom: '1rem',
                 fontFamily: 'var(--font-sans)',
                 paddingBottom: '0.5rem',
-                borderBottom: '1px solid rgba(211,185,138,0.2)',
+                borderBottom: '1px solid rgba(0, 0, 0,0.2)',
               }}>
                 What We Offer
               </h4>
@@ -329,7 +330,7 @@ function JobCard({ job, isOpen, onToggle, onApply, index }) {
             </div>
           </div>
 
-          <div style={{ marginTop: '1.75rem', paddingTop: '1.25rem', borderTop: '1px solid rgba(211,185,138,0.15)', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <div style={{ marginTop: '1.75rem', paddingTop: '1.25rem', borderTop: '1px solid rgba(0, 0, 0,0.15)', display: 'flex', gap: '1rem', alignItems: 'center' }}>
             <button
               onClick={() => onApply(job)}
               className="btn-solid"
@@ -371,7 +372,7 @@ function ApplyModal({ job, onClose }) {
   const inputStyle = {
     width: '100%',
     padding: '0.85rem 1rem',
-    border: '1px solid rgba(211,185,138,0.3)',
+    border: '1px solid rgba(0, 0, 0,0.3)',
     borderRadius: '3px',
     fontSize: '0.88rem',
     fontFamily: 'var(--font-sans)',
@@ -416,7 +417,7 @@ function ApplyModal({ job, onClose }) {
         boxShadow: '0 40px 80px rgba(0,0,0,0.3)',
         overflow: 'hidden',
         animation: 'slideUp 0.4s ease',
-        border: '1px solid rgba(211,185,138,0.2)',
+        border: '1px solid rgba(0, 0, 0,0.2)',
       }}>
         {/* Modal Header */}
         <div style={{
@@ -433,11 +434,11 @@ function ApplyModal({ job, onClose }) {
             left: 0,
             right: 0,
             height: '2px',
-            background: 'linear-gradient(90deg, var(--primary-dark), var(--primary-color), var(--primary-dark))',
+            background: 'linear-gradient(90deg, #333333, #FFFFFF, #333333)',
           }} />
           <div>
             <p style={{
-              color: 'var(--primary-color)',
+              color: '#CCCCCC',
               fontSize: '0.62rem',
               letterSpacing: '3px',
               textTransform: 'uppercase',
@@ -494,7 +495,7 @@ function ApplyModal({ job, onClose }) {
                     onChange={e => setForm({ ...form, [f.key]: e.target.value })}
                     style={inputStyle}
                     onFocus={e => e.currentTarget.style.borderColor = 'var(--primary-dark)'}
-                    onBlur={e => e.currentTarget.style.borderColor = 'rgba(211,185,138,0.3)'}
+                    onBlur={e => e.currentTarget.style.borderColor = 'rgba(0, 0, 0,0.3)'}
                   />
                 </div>
               ))}
@@ -523,7 +524,7 @@ function ApplyModal({ job, onClose }) {
                   onChange={e => setForm({ ...form, message: e.target.value })}
                   style={{ ...inputStyle, resize: 'vertical' }}
                   onFocus={e => e.currentTarget.style.borderColor = 'var(--primary-dark)'}
-                  onBlur={e => e.currentTarget.style.borderColor = 'rgba(211,185,138,0.3)'}
+                  onBlur={e => e.currentTarget.style.borderColor = 'rgba(0, 0, 0,0.3)'}
                 />
               </div>
               <button
@@ -553,7 +554,7 @@ function ApplyModal({ job, onClose }) {
                 width: '56px',
                 height: '56px',
                 borderRadius: '50%',
-                background: 'rgba(211,185,138,0.12)',
+                background: 'rgba(0, 0, 0,0.12)',
                 border: '2px solid var(--primary-dark)',
                 display: 'flex',
                 alignItems: 'center',
@@ -609,268 +610,118 @@ export default function CareersPage() {
       {activeJob && <ApplyModal job={activeJob} onClose={() => setActiveJob(null)} />}
 
       {/* ── HERO ── */}
-      <section style={{
-        position: 'relative',
-        minHeight: '520px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden',
-        background: 'var(--text-dark)',
-      }}>
-        {/* Subtle background decorations */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: 'radial-gradient(circle at 15% 50%, rgba(211,185,138,0.06) 0%, transparent 50%), radial-gradient(circle at 85% 30%, rgba(211,185,138,0.04) 0%, transparent 40%)',
-        }} />
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '600px',
-          height: '600px',
-          border: '1px solid rgba(211,185,138,0.06)',
-          borderRadius: '50%',
-          pointerEvents: 'none',
-        }} />
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '400px',
-          height: '400px',
-          border: '1px solid rgba(211,185,138,0.04)',
-          borderRadius: '50%',
-          pointerEvents: 'none',
-        }} />
-
-        <div style={{
+      <RevealSection>
+        <section style={{
           position: 'relative',
-          zIndex: 1,
-          textAlign: 'center',
-          padding: 'clamp(6rem, 12vw, 8rem) 1.5rem clamp(4rem, 8vw, 5rem)',
-          maxWidth: '760px',
+          minHeight: '520px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
+          background: 'var(--text-dark)',
         }}>
+          {/* Subtle background decorations */}
           <div style={{
-            width: '40px',
-            height: '1px',
-            background: 'var(--primary-color)',
-            margin: '0 auto 1.5rem',
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: 'radial-gradient(circle at 15% 50%, rgba(0, 0, 0,0.06) 0%, transparent 50%), radial-gradient(circle at 85% 30%, rgba(0, 0, 0,0.04) 0%, transparent 40%)',
           }} />
-          <p style={{
-            color: 'var(--primary-color)',
-            fontSize: '0.7rem',
-            letterSpacing: '4px',
-            textTransform: 'uppercase',
-            fontWeight: 600,
-            marginBottom: '1.5rem',
-          }}>
-            Careers at Sharan Estates
-          </p>
-          <h1 style={{
-            fontSize: 'clamp(1.8rem, 4.5vw, 3.2rem)',
-            color: '#FFFFFF',
-            fontFamily: 'var(--font-serif)',
-            letterSpacing: '3px',
-            textTransform: 'uppercase',
-            lineHeight: 1.15,
-            marginBottom: '1.75rem',
-            fontWeight: 300,
-          }}>
-            Shape the Future of<br />
-            <span style={{ color: 'var(--primary-color)' }}>Luxury Real Estate</span>
-          </h1>
-          <p style={{
-            color: 'rgba(255,255,255,0.5)',
-            fontSize: '0.95rem',
-            lineHeight: 1.8,
-            maxWidth: '520px',
-            margin: '0 auto 2.5rem',
-          }}>
-            Join a team of passionate professionals dedicated to delivering exceptional outcomes. Build your career with the finest properties in Dubai and beyond.
-          </p>
-          <a
-            href="#openings"
-            className="btn-solid"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.6rem',
-              padding: '0.9rem 2.2rem',
-              borderRadius: '3px',
-              fontSize: '0.72rem',
-              letterSpacing: '2px',
-              textDecoration: 'none',
-            }}
-          >
-            View Open Positions
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>
-            </svg>
-          </a>
-        </div>
-      </section>
-
-      {/* ── OUR CULTURE ── */}
-      <section style={{ padding: 'clamp(4rem, 8vw, 6rem) 1.5rem', maxWidth: '1100px', margin: '0 auto' }}>
-        {/* Section Header */}
-        <div style={{ textAlign: 'center', marginBottom: 'clamp(2.5rem, 5vw, 4rem)' }}>
           <div style={{
-            width: '40px',
-            height: '1px',
-            background: 'var(--primary-color)',
-            margin: '0 auto 1rem',
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '600px',
+            height: '600px',
+            border: '1px solid rgba(0, 0, 0,0.06)',
+            borderRadius: '50%',
+            pointerEvents: 'none',
           }} />
-          <p style={{
-            color: 'var(--primary-dark)',
-            fontSize: '0.68rem',
-            letterSpacing: '3.5px',
-            textTransform: 'uppercase',
-            fontWeight: 600,
-            marginBottom: '0.75rem',
-          }}>Our Culture</p>
-          <h2 style={{
-            fontSize: 'clamp(1.4rem, 3vw, 2rem)',
-            fontFamily: 'var(--font-serif)',
-            color: 'var(--text-dark)',
-            textTransform: 'uppercase',
-            letterSpacing: '2px',
-            fontWeight: 300,
-            marginBottom: '1rem',
-          }}>
-            Why Work With Us
-          </h2>
-          <p style={{
-            color: 'var(--text-muted)',
-            fontSize: '0.9rem',
-            lineHeight: 1.7,
-            maxWidth: '560px',
-            margin: '0 auto',
-          }}>
-            We foster an environment where ambition meets opportunity, and every team member contributes to our legacy of excellence.
-          </p>
-        </div>
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '400px',
+            height: '400px',
+            border: '1px solid rgba(0, 0, 0,0.04)',
+            borderRadius: '50%',
+            pointerEvents: 'none',
+          }} />
 
-        {/* Culture Cards Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '1.25rem',
-        }} className="culture-grid">
-          {cultureValues.map((item, i) => (
-            <div
-              key={i}
-              className="classic-property-card"
+          <div style={{
+            position: 'relative',
+            zIndex: 1,
+            textAlign: 'center',
+            padding: 'clamp(6rem, 12vw, 8rem) 1.5rem clamp(4rem, 8vw, 5rem)',
+            maxWidth: '760px',
+          }}>
+            <div style={{
+              width: '40px',
+              height: '1px',
+              background: '#FFFFFF',
+              margin: '0 auto 1.5rem',
+            }} />
+            <p style={{
+              color: '#FFFFFF',
+              fontSize: '0.7rem',
+              letterSpacing: '4px',
+              textTransform: 'uppercase',
+              fontWeight: 600,
+              marginBottom: '1.5rem',
+            }}>
+              Careers at Sharan Estates
+            </p>
+            <h1 style={{
+              fontSize: 'clamp(1.8rem, 4.5vw, 3.2rem)',
+              color: '#FFFFFF',
+              fontFamily: 'var(--font-serif)',
+              letterSpacing: '3px',
+              textTransform: 'uppercase',
+              lineHeight: 1.15,
+              marginBottom: '1.75rem',
+              fontWeight: 300,
+            }}>
+              Shape the Future of<br />
+              <span style={{ color: '#FFFFFF' }}>Luxury Real Estate</span>
+            </h1>
+            <p style={{
+              color: 'rgba(255,255,255,0.5)',
+              fontSize: '0.95rem',
+              lineHeight: 1.8,
+              maxWidth: '520px',
+              margin: '0 auto 2.5rem',
+            }}>
+              Join a team of passionate professionals dedicated to delivering exceptional outcomes. Build your career with the finest properties in Dubai and beyond.
+            </p>
+            <a
+              href="#openings"
+              className="btn-solid"
               style={{
-                padding: '2rem 1.75rem',
-                textAlign: 'center',
-                display: 'flex',
-                flexDirection: 'column',
+                display: 'inline-flex',
                 alignItems: 'center',
-                animation: `fadeSlideUp 0.6s ease ${i * 0.1}s both`,
+                gap: '0.6rem',
+                padding: '0.9rem 2.2rem',
+                borderRadius: '3px',
+                fontSize: '0.72rem',
+                letterSpacing: '2px',
+                textDecoration: 'none',
               }}
             >
-              {/* Icon Container */}
-              <div style={{
-                width: '52px',
-                height: '52px',
-                borderRadius: '50%',
-                background: 'rgba(211,185,138,0.08)',
-                border: '1px solid rgba(211,185,138,0.2)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: '1.25rem',
-                color: 'var(--primary-dark)',
-                transition: 'all 0.4s',
-              }}>
-                {item.icon}
-              </div>
+              View Open Positions
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>
+              </svg>
+            </a>
+          </div>
+        </section>
+      </RevealSection>
 
-              <h3 style={{
-                fontSize: '0.85rem',
-                fontFamily: 'var(--font-serif)',
-                color: 'var(--text-dark)',
-                fontWeight: 300,
-                letterSpacing: '1.5px',
-                textTransform: 'uppercase',
-                marginBottom: '0.75rem',
-              }}>
-                {item.title}
-              </h3>
-
-              <div style={{
-                width: '24px',
-                height: '1px',
-                background: 'var(--primary-color)',
-                marginBottom: '0.75rem',
-              }} />
-
-              <p style={{
-                fontSize: '0.8rem',
-                color: 'var(--text-muted)',
-                lineHeight: 1.7,
-              }}>
-                {item.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Divider Stats Bar ── */}
-      <section style={{
-        background: 'var(--text-dark)',
-        padding: '2.5rem 1.5rem',
-      }}>
-        <div style={{
-          maxWidth: '1000px',
-          margin: '0 auto',
-          display: 'flex',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '2rem',
-        }}>
-          {[
-            { value: '5+', label: 'Open Positions' },
-            { value: '30+', label: 'Nationalities' },
-            { value: '100%', label: 'Visa Sponsorship' },
-            { value: '∞', label: 'Growth Potential' },
-          ].map((stat, i) => (
-            <div key={i} style={{ textAlign: 'center', minWidth: '120px' }}>
-              <div style={{
-                fontSize: 'clamp(1.6rem, 3vw, 2.2rem)',
-                fontWeight: 300,
-                color: 'var(--primary-color)',
-                fontFamily: 'var(--font-serif)',
-                letterSpacing: '2px',
-                marginBottom: '0.25rem',
-              }}>
-                {stat.value}
-              </div>
-              <div style={{
-                fontSize: '0.62rem',
-                color: 'rgba(255,255,255,0.45)',
-                textTransform: 'uppercase',
-                letterSpacing: '2px',
-                fontWeight: 600,
-              }}>
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── OPEN POSITIONS ── */}
-      <section id="openings" style={{ padding: 'clamp(4rem, 8vw, 6rem) 1.5rem' }}>
-        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+      {/* ── OUR CULTURE ── */}
+      <RevealSection>
+        <section style={{ padding: '3rem 1.5rem', maxWidth: '1100px', margin: '0 auto' }}>
           {/* Section Header */}
-          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(2.5rem, 5vw, 4rem)' }}>
             <div style={{
               width: '40px',
               height: '1px',
@@ -884,7 +735,7 @@ export default function CareersPage() {
               textTransform: 'uppercase',
               fontWeight: 600,
               marginBottom: '0.75rem',
-            }}>Now Hiring</p>
+            }}>Our Culture</p>
             <h2 style={{
               fontSize: 'clamp(1.4rem, 3vw, 2rem)',
               fontFamily: 'var(--font-serif)',
@@ -892,152 +743,310 @@ export default function CareersPage() {
               textTransform: 'uppercase',
               letterSpacing: '2px',
               fontWeight: 300,
-              marginBottom: '1.5rem',
+              marginBottom: '1rem',
             }}>
-              Open Positions
+              Why Work With Us
             </h2>
-
-            {/* Department Filter Pills */}
-            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-              {departments.map(dept => (
-                <button
-                  key={dept}
-                  onClick={() => setActiveFilter(dept)}
-                  style={{
-                    padding: '0.45rem 1.2rem',
-                    border: '1px solid',
-                    borderColor: activeFilter === dept ? 'var(--text-dark)' : 'rgba(211,185,138,0.35)',
-                    borderRadius: '2px',
-                    background: activeFilter === dept ? 'var(--text-dark)' : 'transparent',
-                    color: activeFilter === dept ? '#fff' : 'var(--text-muted)',
-                    fontSize: '0.68rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    transition: 'all 0.3s',
-                    letterSpacing: '1.5px',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  {dept}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Job Cards List */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {filtered.map((job, i) => (
-              <JobCard
-                key={job.id}
-                job={job}
-                index={i}
-                isOpen={expandedId === job.id}
-                onToggle={() => setExpandedId(expandedId === job.id ? null : job.id)}
-                onApply={setActiveJob}
-              />
-            ))}
-          </div>
-
-          {filtered.length === 0 && (
-            <div style={{
-              textAlign: 'center',
-              padding: '3rem',
+            <p style={{
               color: 'var(--text-muted)',
               fontSize: '0.9rem',
+              lineHeight: 1.7,
+              maxWidth: '560px',
+              margin: '0 auto',
             }}>
-              No positions currently open in this department. Check back soon or send an open application below.
-            </div>
-          )}
+              We foster an environment where ambition meets opportunity, and every team member contributes to our legacy of excellence.
+            </p>
+          </div>
 
-          {/* Open Application CTA */}
+          {/* Culture Cards Grid */}
           <div style={{
-            marginTop: '3rem',
-            background: 'var(--text-dark)',
-            borderRadius: '4px',
-            padding: '3rem 2.5rem',
-            textAlign: 'center',
-            position: 'relative',
-            overflow: 'hidden',
-          }}>
-            {/* Subtle decorative circles */}
-            <div style={{
-              position: 'absolute',
-              top: '-30px',
-              right: '-30px',
-              width: '120px',
-              height: '120px',
-              border: '1px solid rgba(211,185,138,0.08)',
-              borderRadius: '50%',
-              pointerEvents: 'none',
-            }} />
-            <div style={{
-              position: 'absolute',
-              bottom: '-20px',
-              left: '-20px',
-              width: '80px',
-              height: '80px',
-              border: '1px solid rgba(211,185,138,0.06)',
-              borderRadius: '50%',
-              pointerEvents: 'none',
-            }} />
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '1.25rem',
+          }} className="culture-grid">
+            {cultureValues.map((item, i) => (
+              <div
+                key={i}
+                className="classic-property-card"
+                style={{
+                  padding: '2rem 1.75rem',
+                  textAlign: 'center',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  animation: `fadeSlideUp 0.6s ease ${i * 0.1}s both`,
+                }}
+              >
+                {/* Icon Container */}
+                <div style={{
+                  width: '52px',
+                  height: '52px',
+                  borderRadius: '50%',
+                  background: 'rgba(0, 0, 0,0.08)',
+                  border: '1px solid rgba(0, 0, 0,0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '1.25rem',
+                  color: 'var(--primary-dark)',
+                  transition: 'all 0.4s',
+                }}>
+                  {item.icon}
+                </div>
 
-            <div style={{ position: 'relative', zIndex: 1 }}>
-              <p style={{
-                color: 'var(--primary-color)',
-                fontSize: '0.65rem',
-                letterSpacing: '3.5px',
-                textTransform: 'uppercase',
-                fontWeight: 600,
-                marginBottom: '0.75rem',
-              }}>Don't See Your Role?</p>
-              <h3 style={{
-                color: '#fff',
-                fontFamily: 'var(--font-serif)',
-                fontSize: '1.3rem',
-                marginBottom: '0.75rem',
-                fontWeight: 300,
-                letterSpacing: '2px',
-                textTransform: 'uppercase',
-              }}>Send an Open Application</h3>
+                <h3 style={{
+                  fontSize: '0.85rem',
+                  fontFamily: 'var(--font-serif)',
+                  color: 'var(--text-dark)',
+                  fontWeight: 300,
+                  letterSpacing: '1.5px',
+                  textTransform: 'uppercase',
+                  marginBottom: '0.75rem',
+                }}>
+                  {item.title}
+                </h3>
+
+                <div style={{
+                  width: '24px',
+                  height: '1px',
+                  background: 'var(--primary-color)',
+                  marginBottom: '0.75rem',
+                }} />
+
+                <p style={{
+                  fontSize: '0.8rem',
+                  color: 'var(--text-muted)',
+                  lineHeight: 1.7,
+                }}>
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+      </RevealSection>
+
+      {/* ── Divider Stats Bar ── */}
+      <RevealSection>
+        <section style={{
+          background: 'var(--text-dark)',
+          padding: '2.5rem 1.5rem',
+        }}>
+          <div style={{
+            maxWidth: '1000px',
+            margin: '0 auto',
+            display: 'flex',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '2rem',
+          }}>
+            {[
+              { value: '5+', label: 'Open Positions' },
+              { value: '30+', label: 'Nationalities' },
+              { value: '100%', label: 'Visa Sponsorship' },
+              { value: '∞', label: 'Growth Potential' },
+            ].map((stat, i) => (
+              <div key={i} style={{ textAlign: 'center', minWidth: '120px' }}>
+                <div style={{
+                  fontSize: 'clamp(1.6rem, 3vw, 2.2rem)',
+                  fontWeight: 300,
+                  color: '#FFFFFF',
+                  fontFamily: 'var(--font-serif)',
+                  letterSpacing: '2px',
+                  marginBottom: '0.25rem',
+                }}>
+                  {stat.value}
+                </div>
+                <div style={{
+                  fontSize: '0.62rem',
+                  color: 'rgba(255,255,255,0.45)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '2px',
+                  fontWeight: 600,
+                }}>
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </RevealSection>
+
+      {/* ── OPEN POSITIONS ── */}
+      <RevealSection>
+        <section id="openings" style={{ padding: '3rem 1.5rem' }}>
+          <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+            {/* Section Header */}
+            <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
               <div style={{
-                width: '30px',
+                width: '40px',
                 height: '1px',
                 background: 'var(--primary-color)',
                 margin: '0 auto 1rem',
               }} />
               <p style={{
-                color: 'rgba(255,255,255,0.45)',
-                fontSize: '0.88rem',
-                lineHeight: 1.75,
-                marginBottom: '1.75rem',
-                maxWidth: '440px',
-                margin: '0 auto 1.75rem',
+                color: 'var(--primary-dark)',
+                fontSize: '0.68rem',
+                letterSpacing: '3.5px',
+                textTransform: 'uppercase',
+                fontWeight: 600,
+                marginBottom: '0.75rem',
+              }}>Now Hiring</p>
+              <h2 style={{
+                fontSize: 'clamp(1.4rem, 3vw, 2rem)',
+                fontFamily: 'var(--font-serif)',
+                color: 'var(--text-dark)',
+                textTransform: 'uppercase',
+                letterSpacing: '2px',
+                fontWeight: 300,
+                marginBottom: '1.5rem',
               }}>
-                We're always seeking exceptional talent. Share your CV and tell us how you can contribute to the Sharan Estates vision.
-              </p>
-              <a
-                href="mailto:careers@sharanestates.com"
-                className="btn-solid"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.6rem',
-                  padding: '0.85rem 2.2rem',
-                  borderRadius: '3px',
-                  fontSize: '0.72rem',
+                Open Positions
+              </h2>
+
+              {/* Department Filter Pills */}
+              <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                {departments.map(dept => (
+                  <button
+                    key={dept}
+                    onClick={() => setActiveFilter(dept)}
+                    style={{
+                      padding: '0.45rem 1.2rem',
+                      border: '1px solid',
+                      borderColor: activeFilter === dept ? 'var(--text-dark)' : 'rgba(0, 0, 0,0.35)',
+                      borderRadius: '2px',
+                      background: activeFilter === dept ? 'var(--text-dark)' : 'transparent',
+                      color: activeFilter === dept ? '#fff' : 'var(--text-muted)',
+                      fontSize: '0.68rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      transition: 'all 0.3s',
+                      letterSpacing: '1.5px',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    {dept}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Job Cards List */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {filtered.map((job, i) => (
+                <JobCard
+                  key={job.id}
+                  job={job}
+                  index={i}
+                  isOpen={expandedId === job.id}
+                  onToggle={() => setExpandedId(expandedId === job.id ? null : job.id)}
+                  onApply={setActiveJob}
+                />
+              ))}
+            </div>
+
+            {filtered.length === 0 && (
+              <div style={{
+                textAlign: 'center',
+                padding: '3rem',
+                color: 'var(--text-muted)',
+                fontSize: '0.9rem',
+              }}>
+                No positions currently open in this department. Check back soon or send an open application below.
+              </div>
+            )}
+
+            {/* Open Application CTA */}
+            <div style={{
+              marginTop: '3rem',
+              background: 'var(--text-dark)',
+              borderRadius: '4px',
+              padding: '3rem 2.5rem',
+              textAlign: 'center',
+              position: 'relative',
+              overflow: 'hidden',
+            }}>
+              {/* Subtle decorative circles */}
+              <div style={{
+                position: 'absolute',
+                top: '-30px',
+                right: '-30px',
+                width: '120px',
+                height: '120px',
+                border: '1px solid rgba(0, 0, 0,0.08)',
+                borderRadius: '50%',
+                pointerEvents: 'none',
+              }} />
+              <div style={{
+                position: 'absolute',
+                bottom: '-20px',
+                left: '-20px',
+                width: '80px',
+                height: '80px',
+                border: '1px solid rgba(0, 0, 0,0.06)',
+                borderRadius: '50%',
+                pointerEvents: 'none',
+              }} />
+
+              <div style={{ position: 'relative', zIndex: 1 }}>
+                <p style={{
+                  color: '#FFFFFF',
+                  fontSize: '0.65rem',
+                  letterSpacing: '3.5px',
+                  textTransform: 'uppercase',
+                  fontWeight: 600,
+                  marginBottom: '0.75rem',
+                }}>Don't See Your Role?</p>
+                <h3 style={{
+                  color: '#fff',
+                  fontFamily: 'var(--font-serif)',
+                  fontSize: '1.3rem',
+                  marginBottom: '0.75rem',
+                  fontWeight: 300,
                   letterSpacing: '2px',
-                  textDecoration: 'none',
-                }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-                </svg>
-                careers@sharanestates.com
-              </a>
+                  textTransform: 'uppercase',
+                }}>Send an Open Application</h3>
+                <div style={{
+                  width: '30px',
+                  height: '1px',
+                  background: '#FFFFFF',
+                  margin: '0 auto 1rem',
+                }} />
+                <p style={{
+                  color: 'rgba(255,255,255,0.45)',
+                  fontSize: '0.88rem',
+                  lineHeight: 1.75,
+                  marginBottom: '1.75rem',
+                  maxWidth: '440px',
+                  margin: '0 auto 1.75rem',
+                }}>
+                  We're always seeking exceptional talent. Share your CV and tell us how you can contribute to the Sharan Estates vision.
+                </p>
+                <a
+                  href="mailto:careers@sharanestates.com"
+                  className="btn-solid"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.6rem',
+                    padding: '0.85rem 2.2rem',
+                    borderRadius: '3px',
+                    fontSize: '0.72rem',
+                    letterSpacing: '2px',
+                    textDecoration: 'none',
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                  careers@sharanestates.com
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </RevealSection>
 
       <style>{`
         @keyframes fadeSlideUp {
@@ -1059,7 +1068,7 @@ export default function CareersPage() {
           to { opacity: 1; transform: translateY(0); }
         }
         .careers-job-card:hover {
-          border-color: rgba(211,185,138,0.5) !important;
+          border-color: rgba(0, 0, 0,0.5) !important;
           box-shadow: 0 8px 25px rgba(0,0,0,0.06) !important;
         }
         @media (max-width: 768px) {

@@ -20,7 +20,7 @@ export default function Hero() {
   return (
     <section className="section" style={{ alignItems: 'center' }}>
       <div style={{ textAlign: 'center' }}>
-        <h1 className="hero-title" ref={titleRef}>
+        <h1 className="hero-title" ref={titleRef} style={{ fontFamily: 'var(--font-logo)' }}>
           Sharan Estates
         </h1>
         <p className="hero-subtitle">Redefining Luxury Living</p>

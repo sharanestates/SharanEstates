@@ -34,7 +34,8 @@ export default function AdminDashboard() {
     handover: '',
     payment_plan: '',
     property_type: '',
-    bedrooms_range: ''
+    bedrooms_range: '',
+    starred: false
   });
 
   // State for dragging status & reference to file input
@@ -163,7 +164,8 @@ export default function AdminDashboard() {
       handover: '',
       payment_plan: '',
       property_type: '',
-      bedrooms_range: ''
+      bedrooms_range: '',
+      starred: false
     });
     setFlatForms({});
     setNewLevel({ id: '', name: '' });
@@ -194,7 +196,8 @@ export default function AdminDashboard() {
       handover: prop.handover || '',
       payment_plan: prop.payment_plan || '',
       property_type: prop.property_type || '',
-      bedrooms_range: prop.bedrooms_range || ''
+      bedrooms_range: prop.bedrooms_range || '',
+      starred: prop.starred === true || prop.starred === 'true'
     });
     setFlatForms({});
     setNewLevel({ id: '', name: '' });
@@ -556,7 +559,7 @@ export default function AdminDashboard() {
           </div>
           <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Pending Follow-ups</span>
-            <strong style={{ fontSize: '2.2rem', marginTop: '0.5rem', color: '#B59B6A' }}>{totalPendingInquiries}</strong>
+            <strong style={{ fontSize: '2.2rem', marginTop: '0.5rem', color: '#1A1A1A' }}>{totalPendingInquiries}</strong>
           </div>
         </div>
 
@@ -652,7 +655,10 @@ export default function AdminDashboard() {
                               <td style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                 <img src={prop.image} alt={prop.title} style={{ width: '50px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={(e) => { e.target.src = '/listing_villa.webp' }} />
                                 <div>
-                                  <div style={{ fontWeight: 600, color: 'var(--text-dark)' }}>{prop.title}</div>
+                                  <div style={{ fontWeight: 600, color: 'var(--text-dark)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                    {prop.title}
+                                    {prop.starred && <span style={{ color: '#000000', fontSize: '1.1rem' }} title="Starred Property">★</span>}
+                                  </div>
                                   <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                                     🛏️ {prop.beds} Beds | 🚿 {prop.baths} Baths{prop.size ? ` | 📏 ${prop.size}` : ''} | 🏢 {totalFlats} Total Flats
                                   </div>
@@ -926,7 +932,7 @@ export default function AdminDashboard() {
                     onClick={() => fileInputRef.current.click()}
                     style={{
                       border: isDragging ? '2px dashed var(--primary-color)' : '2px dashed var(--border-color)',
-                      background: isDragging ? 'rgba(211, 185, 138, 0.08)' : '#fafafa',
+                      background: isDragging ? 'rgba(0, 0, 0, 0.08)' : '#fafafa',
                       padding: '1.5rem',
                       borderRadius: '12px',
                       textAlign: 'center',
@@ -1119,6 +1125,17 @@ export default function AdminDashboard() {
                       style={inputStyle}
                     />
                   </div>
+                </div>
+
+                <div style={{ marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <input 
+                    type="checkbox" 
+                    id="starred"
+                    checked={propertyForm.starred || false} 
+                    onChange={(e) => setPropertyForm({...propertyForm, starred: e.target.checked})}
+                    style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                  />
+                  <label htmlFor="starred" style={{ fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', userSelect: 'none' }}>Star / Feature this Property (Show in Highlights on Home page)</label>
                 </div>
 
                 <div style={{ marginBottom: '1.2rem' }}>

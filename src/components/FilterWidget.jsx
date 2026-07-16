@@ -65,7 +65,7 @@ export default function FilterWidget() {
           background: '#FFFFFF', 
           borderRadius: '3px', 
           overflow: 'hidden', 
-          border: '1px solid rgba(211,185,138,0.3)', 
+          border: '1px solid rgba(0, 0, 0,0.3)', 
           height: '52px',
           boxShadow: '0 4px 15px rgba(0,0,0,0.02)'
         }}>
@@ -129,15 +129,15 @@ export default function FilterWidget() {
           <h4 style={{ fontSize: '1.15rem', fontWeight: 400, color: 'var(--text-dark)', margin: 0, fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>AED 300M+</h4>
           <p style={{ fontSize: '0.58rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.3rem', fontWeight: 600 }}>In Sales Closed</p>
         </div>
-        <div style={{ padding: '0.2rem 0', textAlign: 'center', borderLeft: '1px solid rgba(211,185,138,0.2)' }} className="border-left-none-mobile">
+        <div style={{ padding: '0.2rem 0', textAlign: 'center', borderLeft: '1px solid rgba(0, 0, 0,0.2)' }} className="border-left-none-mobile">
           <h4 style={{ fontSize: '1.15rem', fontWeight: 400, color: 'var(--text-dark)', margin: 0, fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>Exclusive</h4>
           <p style={{ fontSize: '0.58rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.3rem', fontWeight: 600 }}>Private Listings</p>
         </div>
-        <div style={{ padding: '0.2rem 0', textAlign: 'center', borderLeft: '1px solid rgba(211,185,138,0.2)' }} className="border-left-none-mobile">
+        <div style={{ padding: '0.2rem 0', textAlign: 'center', borderLeft: '1px solid rgba(0, 0, 0,0.2)' }} className="border-left-none-mobile">
           <h4 style={{ fontSize: '1.15rem', fontWeight: 400, color: 'var(--text-dark)', margin: 0, fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>Dual-City</h4>
           <p style={{ fontSize: '0.58rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.3rem', fontWeight: 600 }}>Dubai & Abu Dhabi</p>
         </div>
-        <div style={{ padding: '0.2rem 0', textAlign: 'center', borderLeft: '1px solid rgba(211,185,138,0.2)' }} className="border-left-none-mobile">
+        <div style={{ padding: '0.2rem 0', textAlign: 'center', borderLeft: '1px solid rgba(0, 0, 0,0.2)' }} className="border-left-none-mobile">
           <h4 style={{ fontSize: '1.15rem', fontWeight: 400, color: 'var(--text-dark)', margin: 0, fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>Advisory</h4>
           <p style={{ fontSize: '0.58rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.3rem', fontWeight: 600 }}>Private Strategy</p>
         </div>

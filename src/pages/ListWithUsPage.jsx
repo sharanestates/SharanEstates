@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import RevealSection from '../components/RevealSection';
 
 export default function ListWithUsPage() {
   const [form, setForm] = useState({
@@ -30,7 +31,7 @@ export default function ListWithUsPage() {
   const inputStyle = {
     width: '100%',
     padding: '0.85rem 1rem',
-    border: '1px solid rgba(211,185,138,0.3)',
+    border: '1px solid rgba(0, 0, 0,0.3)',
     borderRadius: '3px',
     fontSize: '0.88rem',
     fontFamily: 'var(--font-sans)',
@@ -55,208 +56,97 @@ export default function ListWithUsPage() {
     <div style={{ minHeight: '100vh', background: 'var(--bg-light)' }}>
       
       {/* ── HERO ── */}
-      <section style={{
-        position: 'relative',
-        minHeight: '520px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden',
-        background: 'var(--text-dark)',
-      }}>
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: 'radial-gradient(circle at 15% 55%, rgba(211,185,138,0.06) 0%, transparent 50%), radial-gradient(circle at 85% 25%, rgba(211,185,138,0.04) 0%, transparent 40%)',
-        }} />
-        <div style={{
-          position: 'absolute',
-          top: '50%', left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '700px', height: '700px',
-          border: '1px solid rgba(211,185,138,0.05)',
-          borderRadius: '50%',
-          pointerEvents: 'none',
-        }} />
-
-        <div style={{
+      <RevealSection>
+        <section style={{
           position: 'relative',
-          zIndex: 1,
-          textAlign: 'center',
-          padding: 'clamp(7rem, 14vw, 9rem) 1.5rem clamp(4rem, 8vw, 5rem)',
-          maxWidth: '780px',
+          minHeight: '520px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
+          background: 'var(--text-dark)',
         }}>
-          <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', margin: '0 auto 1.5rem' }} />
-          <p style={{
-            color: 'var(--primary-color)',
-            fontSize: '0.7rem',
-            letterSpacing: '4px',
-            textTransform: 'uppercase',
-            fontWeight: 600,
-            marginBottom: '1.5rem',
-          }}>
-            List Your Property
-          </p>
-          <h1 style={{
-            fontSize: 'clamp(1.8rem, 4.5vw, 3.2rem)',
-            color: '#FFFFFF',
-            fontFamily: 'var(--font-serif)',
-            letterSpacing: '3px',
-            textTransform: 'uppercase',
-            lineHeight: 1.15,
-            marginBottom: '1.75rem',
-            fontWeight: 300,
-          }}>
-            Showcase Your Home to<br />
-            <span style={{ color: 'var(--primary-color)' }}>Our Elite Global Network</span>
-          </h1>
-          <p style={{
-            color: 'rgba(255,255,255,0.45)',
-            fontSize: '0.95rem',
-            lineHeight: 1.8,
-            maxWidth: '540px',
-            margin: '0 auto 2.5rem',
-          }}>
-            Get maximum value for your luxury asset. Benefit from high-end media production, data-driven valuations, and targeted marketing campaigns.
-          </p>
-          <a
-            href="#listing-form"
-            className="btn-solid"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.6rem',
-              padding: '0.9rem 2.2rem',
-              borderRadius: '3px',
-              fontSize: '0.72rem',
-              letterSpacing: '2px',
-              textDecoration: 'none',
-            }}
-          >
-            Start Listing Process
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>
-            </svg>
-          </a>
-        </div>
-      </section>
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: 'radial-gradient(circle at 15% 55%, rgba(0, 0, 0,0.06) 0%, transparent 50%), radial-gradient(circle at 85% 25%, rgba(0, 0, 0,0.04) 0%, transparent 40%)',
+          }} />
+          <div style={{
+            position: 'absolute',
+            top: '50%', left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '700px', height: '700px',
+            border: '1px solid rgba(0, 0, 0,0.05)',
+            borderRadius: '50%',
+            pointerEvents: 'none',
+          }} />
 
-      {/* ── BENEFITS SECTION ── */}
-      <section style={{ padding: 'clamp(4rem, 8vw, 6rem) 1.5rem', maxWidth: '1100px', margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 'clamp(3rem, 6vw, 4.5rem)' }}>
-          <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', margin: '0 auto 1rem' }} />
-          <p style={{
-            color: 'var(--primary-dark)',
-            fontSize: '0.68rem',
-            letterSpacing: '3.5px',
-            textTransform: 'uppercase',
-            fontWeight: 600,
-            marginBottom: '0.75rem',
-          }}>Why Sharan Estates</p>
-          <h2 style={{
-            fontSize: 'clamp(1.4rem, 3vw, 2rem)',
-            fontFamily: 'var(--font-serif)',
-            color: 'var(--text-dark)',
-            textTransform: 'uppercase',
-            letterSpacing: '2px',
-            fontWeight: 300,
-            marginBottom: '1rem',
+          <div style={{
+            position: 'relative',
+            zIndex: 1,
+            textAlign: 'center',
+            padding: 'clamp(7rem, 14vw, 9rem) 1.5rem clamp(4rem, 8vw, 5rem)',
+            maxWidth: '780px',
           }}>
-            The Sharan Estates Advantage
-          </h2>
-          <p style={{
-            color: 'var(--text-muted)',
-            fontSize: '0.9rem',
-            lineHeight: 1.7,
-            maxWidth: '560px',
-            margin: '0 auto',
-          }}>
-            We combine high-touch personal advisory with cutting-edge marketing technologies to achieve premium results for our sellers.
-          </p>
-        </div>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '1.5rem',
-        }} className="benefits-grid">
-          {[
-            {
-              title: 'HNW Global Network',
-              desc: 'Your property is showcased directly to our exclusive, pre-qualified database of active local and international cash buyers.',
-              icon: (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                </svg>
-              )
-            },
-            {
-              title: 'Premium Media Production',
-              desc: 'We produce cinema-grade walkthroughs, drone footage, and architectural photography to showcase your property in its best light.',
-              icon: (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
-                </svg>
-              )
-            },
-            {
-              title: '3D & PropTech Marketing',
-              desc: 'Allow buyers to explore interactive 3D structures and virtual layouts of your property, securing higher conversion rates.',
-              icon: (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
-                </svg>
-              )
-            }
-          ].map((benefit, idx) => (
-            <div
-              key={idx}
-              className="classic-property-card"
+            <div style={{ width: '40px', height: '1px', background: '#FFFFFF', margin: '0 auto 1.5rem' }} />
+            <p style={{
+              color: '#FFFFFF',
+              fontSize: '0.7rem',
+              letterSpacing: '4px',
+              textTransform: 'uppercase',
+              fontWeight: 600,
+              marginBottom: '1.5rem',
+            }}>
+              List Your Property
+            </p>
+            <h1 style={{
+              fontSize: 'clamp(1.8rem, 4.5vw, 3.2rem)',
+              color: '#FFFFFF',
+              fontFamily: 'var(--font-serif)',
+              letterSpacing: '3px',
+              textTransform: 'uppercase',
+              lineHeight: 1.15,
+              marginBottom: '1.75rem',
+              fontWeight: 300,
+            }}>
+              Showcase Your Home to<br />
+              <span style={{ color: '#FFFFFF' }}>Our Elite Global Network</span>
+            </h1>
+            <p style={{
+              color: 'rgba(255,255,255,0.45)',
+              fontSize: '0.95rem',
+              lineHeight: 1.8,
+              maxWidth: '540px',
+              margin: '0 auto 2.5rem',
+            }}>
+              Get maximum value for your luxury asset. Benefit from high-end media production, data-driven valuations, and targeted marketing campaigns.
+            </p>
+            <a
+              href="#listing-form"
+              className="btn-solid"
               style={{
-                padding: '2.5rem 2rem',
-                textAlign: 'center',
-                display: 'flex',
-                flexDirection: 'column',
+                display: 'inline-flex',
                 alignItems: 'center',
+                gap: '0.6rem',
+                padding: '0.9rem 2.2rem',
+                borderRadius: '3px',
+                fontSize: '0.72rem',
+                letterSpacing: '2px',
+                textDecoration: 'none',
               }}
             >
-              <div style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '50%',
-                background: 'rgba(211,185,138,0.08)',
-                border: '1px solid rgba(211,185,138,0.2)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: '1.25rem',
-                color: 'var(--primary-dark)',
-              }}>
-                {benefit.icon}
-              </div>
-              <h3 style={{
-                fontSize: '0.85rem',
-                fontFamily: 'var(--font-serif)',
-                color: 'var(--text-dark)',
-                fontWeight: 300,
-                letterSpacing: '1.5px',
-                textTransform: 'uppercase',
-                marginBottom: '0.75rem',
-              }}>
-                {benefit.title}
-              </h3>
-              <div style={{ width: '20px', height: '1px', background: 'var(--primary-color)', marginBottom: '0.75rem' }} />
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.7 }}>
-                {benefit.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
+              Start Listing Process
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>
+              </svg>
+            </a>
+          </div>
+        </section>
+      </RevealSection>
 
-      {/* ── THE PROCESS SECTION ── */}
-      <section style={{ background: '#FFFFFF', padding: 'clamp(4rem, 8vw, 6rem) 1.5rem', borderTop: '1px solid rgba(211,185,138,0.15)', borderBottom: '1px solid rgba(211,185,138,0.15)' }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+      {/* ── BENEFITS SECTION ── */}
+      <RevealSection>
+        <section style={{ padding: '3rem 1.5rem', maxWidth: '1100px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 'clamp(3rem, 6vw, 4.5rem)' }}>
             <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', margin: '0 auto 1rem' }} />
             <p style={{
@@ -266,7 +156,7 @@ export default function ListWithUsPage() {
               textTransform: 'uppercase',
               fontWeight: 600,
               marginBottom: '0.75rem',
-            }}>Step-by-Step</p>
+            }}>Why Sharan Estates</p>
             <h2 style={{
               fontSize: 'clamp(1.4rem, 3vw, 2rem)',
               fontFamily: 'var(--font-serif)',
@@ -276,62 +166,180 @@ export default function ListWithUsPage() {
               fontWeight: 300,
               marginBottom: '1rem',
             }}>
-              Our Listing Journey
+              The Sharan Estates Advantage
             </h2>
+            <p style={{
+              color: 'var(--text-muted)',
+              fontSize: '0.9rem',
+              lineHeight: 1.7,
+              maxWidth: '560px',
+              margin: '0 auto',
+            }}>
+              We combine high-touch personal advisory with cutting-edge marketing technologies to achieve premium results for our sellers.
+            </p>
           </div>
 
           <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            gap: '2rem',
-            flexWrap: 'wrap',
-          }} className="process-container">
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '1.5rem',
+          }} className="benefits-grid">
             {[
-              { step: '01', title: 'Consultation & Valuation', desc: 'We conduct a detailed market analysis to recommend a competitive, optimized list price.' },
-              { step: '02', title: 'Media Production', desc: 'Our creative team captures high-definition cinematic tours, drone shots, and images.' },
-              { step: '03', title: 'Bespoke Marketing', desc: 'We launch targeted campaigns across local real estate portals, social channels, and print.' },
-              { step: '04', title: 'Sale & Closure', desc: 'We manage all buyer viewings, handle negotiations, and coordinate contract signatures.' }
-            ].map((proc, idx) => (
-              <div key={idx} style={{ flex: '1 1 220px', position: 'relative' }}>
+              {
+                title: 'HNW Global Network',
+                desc: 'Your property is showcased directly to our exclusive, pre-qualified database of active local and international cash buyers.',
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                  </svg>
+                )
+              },
+              {
+                title: 'Premium Media Production',
+                desc: 'We produce cinema-grade walkthroughs, drone footage, and architectural photography to showcase your property in its best light.',
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
+                  </svg>
+                )
+              },
+              {
+                title: '3D & PropTech Marketing',
+                desc: 'Allow buyers to explore interactive 3D structures and virtual layouts of your property, securing higher conversion rates.',
+                icon: (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+                  </svg>
+                )
+              }
+            ].map((benefit, idx) => (
+              <div
+                key={idx}
+                className="classic-property-card"
+                style={{
+                  padding: '2.5rem 2rem',
+                  textAlign: 'center',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                }}
+              >
                 <div style={{
-                  fontSize: '2.5rem',
-                  fontFamily: 'var(--font-serif)',
-                  color: 'rgba(211,185,138,0.18)',
-                  fontWeight: 700,
-                  lineHeight: 1,
-                  marginBottom: '0.5rem',
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  background: 'rgba(0, 0, 0,0.08)',
+                  border: '1px solid rgba(0, 0, 0,0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '1.25rem',
+                  color: 'var(--primary-dark)',
                 }}>
-                  {proc.step}
+                  {benefit.icon}
                 </div>
                 <h3 style={{
-                  fontSize: '0.82rem',
+                  fontSize: '0.85rem',
                   fontFamily: 'var(--font-serif)',
                   color: 'var(--text-dark)',
-                  fontWeight: 600,
-                  letterSpacing: '1px',
+                  fontWeight: 300,
+                  letterSpacing: '1.5px',
                   textTransform: 'uppercase',
-                  marginBottom: '0.5rem',
+                  marginBottom: '0.75rem',
                 }}>
-                  {proc.title}
+                  {benefit.title}
                 </h3>
-                <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                  {proc.desc}
+                <div style={{ width: '20px', height: '1px', background: 'var(--primary-color)', marginBottom: '0.75rem' }} />
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.7 }}>
+                  {benefit.desc}
                 </p>
               </div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
+      </RevealSection>
+
+      {/* ── THE PROCESS SECTION ── */}
+      <RevealSection>
+        <section style={{ background: '#FFFFFF', padding: '3rem 1.5rem', borderTop: '1px solid rgba(0, 0, 0,0.15)', borderBottom: '1px solid rgba(0, 0, 0,0.15)' }}>
+          <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: 'clamp(3rem, 6vw, 4.5rem)' }}>
+              <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', margin: '0 auto 1rem' }} />
+              <p style={{
+                color: 'var(--primary-dark)',
+                fontSize: '0.68rem',
+                letterSpacing: '3.5px',
+                textTransform: 'uppercase',
+                fontWeight: 600,
+                marginBottom: '0.75rem',
+              }}>Step-by-Step</p>
+              <h2 style={{
+                fontSize: 'clamp(1.4rem, 3vw, 2rem)',
+                fontFamily: 'var(--font-serif)',
+                color: 'var(--text-dark)',
+                textTransform: 'uppercase',
+                letterSpacing: '2px',
+                fontWeight: 300,
+                marginBottom: '1rem',
+              }}>
+                Our Listing Journey
+              </h2>
+            </div>
+
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              gap: '2rem',
+              flexWrap: 'wrap',
+            }} className="process-container">
+              {[
+                { step: '01', title: 'Consultation & Valuation', desc: 'We conduct a detailed market analysis to recommend a competitive, optimized list price.' },
+                { step: '02', title: 'Media Production', desc: 'Our creative team captures high-definition cinematic tours, drone shots, and images.' },
+                { step: '03', title: 'Bespoke Marketing', desc: 'We launch targeted campaigns across local real estate portals, social channels, and print.' },
+                { step: '04', title: 'Sale & Closure', desc: 'We manage all buyer viewings, handle negotiations, and coordinate contract signatures.' }
+              ].map((proc, idx) => (
+                <div key={idx} style={{ flex: '1 1 220px', position: 'relative' }}>
+                  <div style={{
+                    fontSize: '2.5rem',
+                    fontFamily: 'var(--font-serif)',
+                    color: 'rgba(0, 0, 0,0.18)',
+                    fontWeight: 700,
+                    lineHeight: 1,
+                    marginBottom: '0.5rem',
+                  }}>
+                    {proc.step}
+                  </div>
+                  <h3 style={{
+                    fontSize: '0.82rem',
+                    fontFamily: 'var(--font-serif)',
+                    color: 'var(--text-dark)',
+                    fontWeight: 600,
+                    letterSpacing: '1px',
+                    textTransform: 'uppercase',
+                    marginBottom: '0.5rem',
+                  }}>
+                    {proc.title}
+                  </h3>
+                  <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                    {proc.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </RevealSection>
 
       {/* ── REGISTRATION FORM ── */}
-      <section id="listing-form" style={{ padding: 'clamp(4rem, 8vw, 6rem) 1.5rem' }}>
+      <RevealSection>
+        <section id="listing-form" style={{ padding: '3rem 1.5rem' }}>
         <div style={{
           maxWidth: '620px',
           margin: '0 auto',
           background: '#FFFFFF',
           borderRadius: '4px',
           boxShadow: '0 30px 60px rgba(0,0,0,0.06)',
-          border: '1px solid rgba(211,185,138,0.25)',
+          border: '1px solid rgba(0, 0, 0,0.25)',
           overflow: 'hidden',
         }}>
           {/* Header */}
@@ -344,10 +352,10 @@ export default function ListWithUsPage() {
               position: 'absolute',
               bottom: 0, left: 0, right: 0,
               height: '2px',
-              background: 'linear-gradient(90deg, var(--primary-dark), var(--primary-color), var(--primary-dark))',
+              background: 'linear-gradient(90deg, #333333, #FFFFFF, #333333)',
             }} />
             <p style={{
-              color: 'var(--primary-color)',
+              color: '#CCCCCC',
               fontSize: '0.62rem',
               letterSpacing: '3px',
               textTransform: 'uppercase',
@@ -374,7 +382,7 @@ export default function ListWithUsPage() {
                   fontSize: '0.72rem',
                   letterSpacing: '2px',
                   color: 'var(--primary-dark)',
-                  borderBottom: '1px solid rgba(211,185,138,0.15)',
+                  borderBottom: '1px solid rgba(0, 0, 0,0.15)',
                   paddingBottom: '0.35rem',
                   marginBottom: '0.5rem',
                 }}>Owner Details</h4>
@@ -421,7 +429,7 @@ export default function ListWithUsPage() {
                   fontSize: '0.72rem',
                   letterSpacing: '2px',
                   color: 'var(--primary-dark)',
-                  borderBottom: '1px solid rgba(211,185,138,0.15)',
+                  borderBottom: '1px solid rgba(0, 0, 0,0.15)',
                   paddingBottom: '0.35rem',
                   marginTop: '0.8rem',
                   marginBottom: '0.5rem',
@@ -524,7 +532,7 @@ export default function ListWithUsPage() {
                   width: '56px',
                   height: '56px',
                   borderRadius: '50%',
-                  background: 'rgba(211,185,138,0.12)',
+                  background: 'rgba(0, 0, 0,0.12)',
                   border: '2px solid var(--primary-dark)',
                   display: 'flex',
                   alignItems: 'center',
@@ -559,6 +567,7 @@ export default function ListWithUsPage() {
           </div>
         </div>
       </section>
+    </RevealSection>
 
       <style>{`
         @media (max-width: 768px) {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import RevealSection from '../components/RevealSection';
 
 const areas = [
   {
@@ -128,124 +129,125 @@ function AreaCard({ area, index }) {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <Link to={`/area-guide/${area.id}`} style={{ textDecoration: 'none', display: 'block' }}>
-      <div
-        className="area-guide-card"
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        style={{
-          position: 'relative',
-          borderRadius: '4px',
-          overflow: 'hidden',
-          aspectRatio: '4 / 3',
-          cursor: 'pointer',
-          animation: `fadeSlideUp 0.6s ease ${index * 0.06}s both`,
-          boxShadow: hovered ? '0 20px 50px rgba(0,0,0,0.2)' : '0 4px 15px rgba(0,0,0,0.08)',
-          transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-          transform: hovered ? 'translateY(-6px)' : 'translateY(0)',
-        }}
-      >
-        {/* Image */}
-        <img
-          src={area.image}
-          alt={area.name}
+    <RevealSection delay={index * 40} style={{ width: '100%' }}>
+      <Link to={`/area-guide/${area.id}`} style={{ textDecoration: 'none', display: 'block' }}>
+        <div
+          className="area-guide-card"
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
           style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            transition: 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)',
-            transform: hovered ? 'scale(1.08)' : 'scale(1)',
-          }}
-        />
-
-        {/* Dark gradient overlay */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: hovered
-            ? 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.15) 100%)'
-            : 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 50%, transparent 100%)',
-          transition: 'background 0.5s',
-        }} />
-
-        {/* Content */}
-        <div style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: hovered ? '1.75rem' : '1.25rem',
-          transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-        }}>
-          {/* Tagline - only shows on hover */}
-          <p style={{
-            color: 'var(--primary-color)',
-            fontSize: '0.6rem',
-            letterSpacing: '2.5px',
-            textTransform: 'uppercase',
-            fontWeight: 600,
-            marginBottom: '0.35rem',
-            opacity: hovered ? 1 : 0,
-            transform: hovered ? 'translateY(0)' : 'translateY(10px)',
-            transition: 'all 0.4s ease 0.1s',
-          }}>
-            {area.tagline}
-          </p>
-
-          {/* Area Name */}
-          <h3 style={{
-            color: '#FFFFFF',
-            fontSize: hovered ? '1.1rem' : '0.95rem',
-            fontFamily: 'var(--font-serif)',
-            fontWeight: 300,
-            letterSpacing: '2px',
-            textTransform: 'uppercase',
-            margin: 0,
-            transition: 'all 0.4s',
-            marginBottom: hovered ? '0.6rem' : '0',
-          }}>
-            {area.name}
-          </h3>
-
-          {/* Extra info on hover */}
-          <div style={{
+            position: 'relative',
+            borderRadius: '4px',
             overflow: 'hidden',
-            maxHeight: hovered ? '80px' : '0',
-            opacity: hovered ? 1 : 0,
+            aspectRatio: '4 / 3',
+            cursor: 'pointer',
+            boxShadow: hovered ? '0 20px 50px rgba(0,0,0,0.2)' : '0 4px 15px rgba(0,0,0,0.08)',
+            transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+            transform: hovered ? 'translateY(-6px)' : 'translateY(0)',
+          }}
+        >
+          {/* Image */}
+          <img
+            src={area.image}
+            alt={area.name}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              transition: 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)',
+              transform: hovered ? 'scale(1.08)' : 'scale(1)',
+            }}
+          />
+
+          {/* Dark gradient overlay */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: hovered
+              ? 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.15) 100%)'
+              : 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 50%, transparent 100%)',
+            transition: 'background 0.5s',
+          }} />
+
+          {/* Content */}
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            padding: hovered ? '1.75rem' : '1.25rem',
             transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
           }}>
-            <div style={{
-              display: 'flex',
-              gap: '1rem',
-              alignItems: 'center',
-              marginBottom: '0.5rem',
-            }}>
-              <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.6)', letterSpacing: '0.5px' }}>
-                {area.propertyTypes}
-              </span>
-              <span style={{ fontSize: '0.65rem', color: 'var(--primary-color)', fontWeight: 600, letterSpacing: '1px' }}>
-                From {area.priceFrom}
-              </span>
-            </div>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
+            {/* Tagline - only shows on hover */}
+            <p style={{
               color: 'var(--primary-color)',
-              fontSize: '0.72rem',
-              fontWeight: 600,
-              letterSpacing: '1.5px',
+              fontSize: '0.6rem',
+              letterSpacing: '2.5px',
               textTransform: 'uppercase',
+              fontWeight: 600,
+              marginBottom: '0.35rem',
+              opacity: hovered ? 1 : 0,
+              transform: hovered ? 'translateY(0)' : 'translateY(10px)',
+              transition: 'all 0.4s ease 0.1s',
             }}>
-              Explore Area
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-              </svg>
+              {area.tagline}
+            </p>
+
+            {/* Area Name */}
+            <h3 style={{
+              color: '#FFFFFF',
+              fontSize: hovered ? '1.1rem' : '0.95rem',
+              fontFamily: 'var(--font-serif)',
+              fontWeight: 300,
+              letterSpacing: '2px',
+              textTransform: 'uppercase',
+              margin: 0,
+              transition: 'all 0.4s',
+              marginBottom: hovered ? '0.6rem' : '0',
+            }}>
+              {area.name}
+            </h3>
+
+            {/* Extra info on hover */}
+            <div style={{
+              overflow: 'hidden',
+              maxHeight: hovered ? '80px' : '0',
+              opacity: hovered ? 1 : 0,
+              transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+            }}>
+              <div style={{
+                display: 'flex',
+                gap: '1rem',
+                alignItems: 'center',
+                marginBottom: '0.5rem',
+              }}>
+                <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.6)', letterSpacing: '0.5px' }}>
+                  {area.propertyTypes}
+                </span>
+                <span style={{ fontSize: '0.65rem', color: 'var(--primary-color)', fontWeight: 600, letterSpacing: '1px' }}>
+                  From {area.priceFrom}
+                </span>
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                color: 'var(--primary-color)',
+                fontSize: '0.72rem',
+                fontWeight: 600,
+                letterSpacing: '1.5px',
+                textTransform: 'uppercase',
+              }}>
+                Explore Area
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+    </RevealSection>
   );
 }
 
@@ -280,27 +282,30 @@ export default function AreaGuidePage() {
     <div style={{ minHeight: '100vh', background: 'var(--bg-light)' }}>
 
       {/* ── HERO ── */}
-      <section style={{
-        position: 'relative',
-        minHeight: '540px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden',
-        background: 'var(--text-dark)',
-      }}>
+      <RevealSection>
+        <section style={{
+          position: 'relative',
+          minHeight: '540px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
+          background: 'var(--text-dark)',
+          paddingTop: '0',
+          paddingBottom: '0',
+        }}>
         {/* Subtle decorative elements */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: 'radial-gradient(circle at 20% 60%, rgba(211,185,138,0.06) 0%, transparent 50%), radial-gradient(circle at 80% 25%, rgba(211,185,138,0.04) 0%, transparent 40%)',
+          backgroundImage: 'radial-gradient(circle at 20% 60%, rgba(0, 0, 0,0.06) 0%, transparent 50%), radial-gradient(circle at 80% 25%, rgba(0, 0, 0,0.04) 0%, transparent 40%)',
         }} />
         <div style={{
           position: 'absolute',
           top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',
           width: '700px', height: '700px',
-          border: '1px solid rgba(211,185,138,0.05)',
+          border: '1px solid rgba(0, 0, 0,0.05)',
           borderRadius: '50%',
           pointerEvents: 'none',
         }} />
@@ -368,7 +373,7 @@ export default function AreaGuidePage() {
                 width: '100%',
                 padding: '0.9rem 1.2rem 0.9rem 3rem',
                 background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(211,185,138,0.2)',
+                border: '1px solid rgba(0, 0, 0,0.2)',
                 borderRadius: '3px',
                 color: '#fff',
                 fontSize: '0.85rem',
@@ -379,17 +384,19 @@ export default function AreaGuidePage() {
                 letterSpacing: '0.5px',
               }}
               onFocus={e => { e.currentTarget.style.borderColor = 'var(--primary-color)'; e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
-              onBlur={e => { e.currentTarget.style.borderColor = 'rgba(211,185,138,0.2)'; e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
+              onBlur={e => { e.currentTarget.style.borderColor = 'rgba(0, 0, 0,0.2)'; e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
             />
           </div>
         </div>
       </section>
+      </RevealSection>
 
       {/* ── INTRO + STATS ── */}
-      <section style={{
-        background: '#FFFFFF',
-        borderBottom: '1px solid rgba(211,185,138,0.15)',
-      }}>
+      <RevealSection>
+        <section style={{
+          background: '#FFFFFF',
+          borderBottom: '1px solid rgba(0, 0, 0,0.15)',
+        }}>
         <div style={{
           maxWidth: '1100px',
           margin: '0 auto',
@@ -430,17 +437,19 @@ export default function AreaGuidePage() {
           ))}
         </div>
       </section>
+      </RevealSection>
 
       {/* ── FEATURED AREAS GRID ── */}
       <section style={{ padding: 'clamp(4rem, 8vw, 6rem) 1.5rem' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           {/* Section Header */}
-          <div style={{ marginBottom: '2.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '2rem' }}>
-              <div>
-                <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', marginBottom: '1rem' }} />
-                <p style={{
-                  color: 'var(--primary-dark)',
+          <RevealSection>
+            <div style={{ marginBottom: '2.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '2rem' }}>
+                <div>
+                  <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', marginBottom: '1rem' }} />
+                  <p style={{
+                    color: 'var(--primary-dark)',
                   fontSize: '0.68rem',
                   letterSpacing: '3.5px',
                   textTransform: 'uppercase',
@@ -469,7 +478,7 @@ export default function AreaGuidePage() {
                     style={{
                       padding: '0.4rem 1.1rem',
                       border: '1px solid',
-                      borderColor: activeCategory === cat ? 'var(--text-dark)' : 'rgba(211,185,138,0.3)',
+                      borderColor: activeCategory === cat ? 'var(--text-dark)' : 'rgba(0, 0, 0,0.3)',
                       borderRadius: '2px',
                       background: activeCategory === cat ? 'var(--text-dark)' : 'transparent',
                       color: activeCategory === cat ? '#fff' : 'var(--text-muted)',
@@ -487,6 +496,7 @@ export default function AreaGuidePage() {
               </div>
             </div>
           </div>
+        </RevealSection>
 
           {/* Area Cards Grid */}
           <div style={{
@@ -508,10 +518,11 @@ export default function AreaGuidePage() {
       </section>
 
       {/* ── INTRO TEXT ── */}
-      <section style={{
-        background: 'var(--text-dark)',
-        padding: 'clamp(3.5rem, 7vw, 5rem) 1.5rem',
-      }}>
+      <RevealSection>
+        <section style={{
+          background: 'var(--text-dark)',
+          padding: 'clamp(3.5rem, 7vw, 5rem) 1.5rem',
+        }}>
         <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
           <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', margin: '0 auto 1.5rem' }} />
           <h2 style={{
@@ -570,6 +581,7 @@ export default function AreaGuidePage() {
           </Link>
         </div>
       </section>
+      </RevealSection>
 
       <style>{`
         @keyframes fadeSlideUp {

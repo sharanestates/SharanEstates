@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
+import RevealSection from '../components/RevealSection';
 
 export default function Listings() {
   const { type, category } = useParams();
@@ -56,7 +57,7 @@ export default function Listings() {
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
-    border: '1px solid rgba(211,185,138,0.25)',
+    border: '1px solid rgba(0, 0, 0,0.25)',
     boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
     transition: 'transform 0.2s, box-shadow 0.2s',
     cursor: 'pointer',
@@ -64,7 +65,8 @@ export default function Listings() {
 
   return (
     <div style={{ paddingTop: '7rem', minHeight: '100vh', background: 'var(--bg-light)', paddingBottom: '5rem' }}>
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 1.5rem' }}>
+      <RevealSection>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 1.5rem' }}>
 
         {/* Page Header */}
         <div style={{ marginBottom: '2.5rem', textAlign: 'center' }}>
@@ -84,7 +86,7 @@ export default function Listings() {
         {/* Loading State */}
         {loading && (
           <div style={{ textAlign: 'center', padding: '5rem 1rem', color: 'var(--text-muted)' }}>
-            <div style={{ width: '36px', height: '36px', border: '3px solid rgba(211,185,138,0.3)', borderTopColor: 'var(--primary-dark)', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 1rem' }} />
+            <div style={{ width: '36px', height: '36px', border: '3px solid rgba(0, 0, 0,0.3)', borderTopColor: 'var(--primary-dark)', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 1rem' }} />
             <p>Loading properties...</p>
           </div>
         )}
@@ -143,7 +145,7 @@ export default function Listings() {
                       {prop.title}
                     </h3>
                     {/* Metadata table */}
-                    <div style={{ borderTop: '1px solid rgba(211,185,138,0.2)', paddingTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.18rem' }}>
+                    <div style={{ borderTop: '1px solid rgba(0, 0, 0,0.2)', paddingTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.18rem' }}>
                       {(prop.property_type || prop.category) && (
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem' }}>
                           <span style={{ color: 'var(--text-muted)' }}>Type</span>
@@ -176,7 +178,7 @@ export default function Listings() {
                 <div style={{ display: 'flex', gap: '0.4rem', padding: '0.5rem 0.9rem 0.85rem', marginTop: 'auto' }}>
                   <a
                     href="tel:+971000000000"
-                    style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem', padding: '0.42rem 0', background: 'var(--bg-light)', border: '1px solid rgba(211,185,138,0.3)', borderRadius: '3px', color: 'var(--text-dark)', fontSize: '0.67rem', fontWeight: 600, textDecoration: 'none', letterSpacing: '0.5px' }}
+                    style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem', padding: '0.42rem 0', background: 'var(--bg-light)', border: '1px solid rgba(0, 0, 0,0.3)', borderRadius: '3px', color: 'var(--text-dark)', fontSize: '0.67rem', fontWeight: 600, textDecoration: 'none', letterSpacing: '0.5px' }}
                   >
                     📞 Call
                   </a>
@@ -229,6 +231,7 @@ export default function Listings() {
           </div>
         )}
       </div>
+    </RevealSection>
 
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import Tilt from 'react-parallax-tilt';
 import FilterWidget from '../components/FilterWidget';
 import InvestmentAnalytics from '../components/InvestmentAnalytics';
 import Properties from '../components/Properties';
 import ConsultationSection from '../components/ConsultationSection';
+import RevealSection from '../components/RevealSection';
 
 const bgImages = [
   '/dubai_luxury_1.jpg',
@@ -28,11 +28,46 @@ export default function Home() {
   const [tenure, setTenure] = useState(20);
   const [currentSlide, setCurrentSlide] = useState(0);
 
+  const [properties, setProperties] = useState([]);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % bgImages.length);
     }, 6500); // 6.5 seconds interval for slow cinematic feel
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
+    fetch(`${API_BASE}/properties?limit=100`)
+      .then(res => res.json())
+      .then(data => {
+        const propsArray = data.data || (Array.isArray(data) ? data : []);
+        setProperties(propsArray);
+      })
+      .catch(err => console.error("Failed to fetch properties:", err));
+  }, []);
+
+  const slideshowRef = useRef(null);
+  const heroCardRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerWidth <= 768) {
+        if (slideshowRef.current) slideshowRef.current.style.transform = 'none';
+        if (heroCardRef.current) heroCardRef.current.style.transform = 'none';
+        return;
+      }
+      const scrolled = window.scrollY;
+      if (slideshowRef.current) {
+        slideshowRef.current.style.transform = `translate3d(0, ${scrolled * 0.28}px, 0)`;
+      }
+      if (heroCardRef.current) {
+        heroCardRef.current.style.transform = `translate3d(0, -${scrolled * 0.08}px, 0)`;
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const principal = Math.max(0, propertyValue - downPayment);
@@ -45,268 +80,251 @@ export default function Home() {
   return (
     <div>
       {/* Hero Section */}
-      <section style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: '6rem', paddingBottom: '4rem' }}>
+      <section className="hero-section-wrapper">
         
-        {/* Background Layer (Slideshow) */}
-        <div className="hero-overlay"></div>
-        <div className="cinematic-vignette"></div>
-        <div className="cinematic-bg-container">
-          <div className="parallax-wrapper">
-            {bgImages.map((img, idx) => (
-              <div 
-                key={img} 
-                className={`cinematic-slide ${idx === currentSlide ? 'active' : ''} ${idx % 2 === 0 ? 'zoom-in' : 'zoom-out'}`}
-                style={{ backgroundImage: `url(${img})`, opacity: idx === currentSlide ? 1 : 0 }}
-              />
-            ))}
+        {/* Full Viewport Background Slideshow (Whole Landing Page Screen) */}
+        <div ref={slideshowRef} className="hero-slideshow-container">
+          <div className="hero-overlay"></div>
+          <div className="cinematic-vignette"></div>
+          {bgImages.map((img, idx) => (
+            <div 
+              key={img} 
+              className={`cinematic-slide ${idx === currentSlide ? 'active' : ''} ${idx % 2 === 0 ? 'zoom-in' : 'zoom-out'}`}
+              style={{ backgroundImage: `url(${img})`, opacity: idx === currentSlide ? 1 : 0 }}
+            />
+          ))}
+        </div>
+
+        {/* Content Container on Top of Slideshow */}
+        <div className="hero-content-container">
+          <div className="container" style={{ width: '100%', display: 'flex', justifyContent: 'flex-start' }}>
+            
+            {/* Frosted Glass Content Card */}
+            <div 
+              ref={heroCardRef}
+              className="hero-frosted-card reveal-animate"
+            >
+              <p className="hero-subtitle">
+                Curated Dubai Portfolio
+              </p>
+              <h1 className="hero-title">
+                Shaping Dubai's Finest Living
+              </h1>
+              <p className="hero-description">
+                Welcome to Sharan Estates. We curate exceptional residential properties, waterfront estates, and private off-market penthouses for discerning global investors.
+              </p>
+
+              {/* Credibility Stats Block */}
+              <div className="hero-stats-grid">
+                <div>
+                  <h4 className="hero-stat-value">AED 300M+</h4>
+                  <p className="hero-stat-label">In Sales Closed</p>
+                </div>
+                <div>
+                  <h4 className="hero-stat-value">Exclusive</h4>
+                  <p className="hero-stat-label">Private Listings</p>
+                </div>
+                <div>
+                  <h4 className="hero-stat-value">Dual-City</h4>
+                  <p className="hero-stat-label">Dubai & Abu Dhabi</p>
+                </div>
+                <div>
+                  <h4 className="hero-stat-value">Bespoke</h4>
+                  <p className="hero-stat-label">Advisory Services</p>
+                </div>
+              </div>
+
+            </div>
           </div>
         </div>
-        
-        <div className="container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', zIndex: 1, padding: '0 2rem', gap: '2rem' }}>
-          
-          {/* Headline — floating, no card */}
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ 
-              color: 'var(--primary-color)', 
-              fontSize: '0.8rem', 
-              letterSpacing: '5px', 
-              fontWeight: 600, 
-              textTransform: 'uppercase', 
-              marginBottom: '1.25rem', 
-              textShadow: '0 2px 10px rgba(0,0,0,0.5)',
-              fontFamily: 'var(--font-sans)'
-            }}>
-              Private Real Estate Advisory
-            </p>
-            <h1 style={{ 
-              fontSize: 'clamp(2.5rem, 5.5vw, 5.2rem)', 
-              color: '#FFFFFF', 
-              lineHeight: 1.1, 
-              fontWeight: 300, 
-              fontFamily: 'var(--font-serif)', 
-              letterSpacing: '1px',
-              textTransform: 'uppercase',
-              textShadow: '0 2px 20px rgba(0,0,0,0.6)' 
-            }}>
-              Curated Luxury Real Estate
-            </h1>
-          </div>
 
-          <div className="p-mobile hero-card-mobile" style={{
-            maxWidth: '780px', width: '100%',
-            background: 'rgba(255, 255, 255, 0.08)', /* highly transparent white glass */
-            backdropFilter: 'blur(3px)',
-            WebkitBackdropFilter: 'blur(3px)',
-            border: '1px solid rgba(255, 255, 255, 0.18)', /* extremely thin white glass border */
-            borderRadius: '4px',
-            padding: '2.5rem 3.5rem',
-            boxShadow: '0 15px 35px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '1.8rem'
-          }}>
-
-            {/* Description */}
-            <p className="hide-on-mobile" style={{ fontSize: '0.9rem', color: '#FFFFFF', lineHeight: 1.8, textAlign: 'center', maxWidth: '640px', fontWeight: 400, margin: 0, letterSpacing: '0.2px', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
-              Welcome to Sharan Estates. We curate exceptional residential properties, waterfront estates, and private off-market penthouses for discerning global investors.
-            </p>
-
-            {/* Redesigned CTAs */}
-            <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', justifyContent: 'center', margin: '0.5rem 0' }}>
-              <Link to="/listings/off-plan" style={{
-                background: '#FFFFFF',
-                color: 'var(--text-dark)',
-                padding: '0.75rem 2rem',
-                borderRadius: '30px',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '1.5px',
-                textDecoration: 'none',
-                transition: 'all 0.3s ease',
-                boxShadow: '0 4px 15px rgba(0,0,0,0.08)'
-              }}
-              onMouseOver={e => { e.currentTarget.style.background = 'var(--primary-color)'; e.currentTarget.style.color = 'var(--text-dark)'; }}
-              onMouseOut={e => { e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.color = 'var(--text-dark)'; }}
-              >
-                Explore Portfolio
-              </Link>
-              <button onClick={() => {
-                const element = document.getElementById('consultation');
-                if (element) element.scrollIntoView({ behavior: 'smooth' });
-              }} style={{
-                background: 'transparent',
-                color: '#FFFFFF',
-                padding: '0.75rem 2rem',
-                borderRadius: '30px',
-                border: '1px solid rgba(255, 255, 255, 0.4)',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '1.5px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseOver={e => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'; e.currentTarget.style.borderColor = '#FFFFFF'; }}
-              onMouseOut={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)'; }}
-              >
-                Private Advisory
-              </button>
-            </div>
-
-            {/* Credibility Stats Block */}
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(4, 1fr)', 
-              gap: '0.5rem', 
-              width: '100%',
-              paddingTop: '1.5rem', 
-              borderTop: '1px solid rgba(255, 255, 255, 0.15)' 
-            }} className="grid-2-mobile">
-              <div style={{ padding: '0.2rem 0', textAlign: 'center' }}>
-                <h4 style={{ fontSize: '1.2rem', fontWeight: 300, color: '#FFFFFF', margin: 0, fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>AED 300M+</h4>
-                <p style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.3rem', fontWeight: 600 }}>In Sales Closed</p>
-              </div>
-              <div style={{ padding: '0.2rem 0', textAlign: 'center', borderLeft: '1px solid rgba(255, 255, 255, 0.15)' }} className="border-left-none-mobile">
-                <h4 style={{ fontSize: '1.2rem', fontWeight: 300, color: '#FFFFFF', margin: 0, fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>Exclusive</h4>
-                <p style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.3rem', fontWeight: 600 }}>Private Listings</p>
-              </div>
-              <div style={{ padding: '0.2rem 0', textAlign: 'center', borderLeft: '1px solid rgba(255, 255, 255, 0.15)' }} className="border-left-none-mobile">
-                <h4 style={{ fontSize: '1.2rem', fontWeight: 300, color: '#FFFFFF', margin: 0, fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>Dual-City</h4>
-                <p style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.3rem', fontWeight: 600 }}>Dubai & Abu Dhabi</p>
-              </div>
-              <div style={{ padding: '0.2rem 0', textAlign: 'center', borderLeft: '1px solid rgba(255, 255, 255, 0.15)' }} className="border-left-none-mobile">
-                <h4 style={{ fontSize: '1.2rem', fontWeight: 300, color: '#FFFFFF', margin: 0, fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>Advisory</h4>
-                <p style={{ fontSize: '0.58rem', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.3rem', fontWeight: 600 }}>Private Strategy</p>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
       </section>
 
       {/* About Us Teaser Section */}
-      <section className="section" style={{ background: 'var(--primary-light)', padding: '3.8rem 0', textAlign: 'center' }}>
-        <div className="container">
-          <p style={{ color: 'var(--primary-dark)', fontSize: '0.85rem', letterSpacing: '4px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1.25rem' }}>
-            The Standard of Excellence
-          </p>
-          <h2 style={{ fontSize: '2.5rem', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', marginBottom: '3rem', letterSpacing: '1px' }}>
-            Redefining Luxury Real Estate
-          </h2>
-          <Link to="/about" className="btn-classic" style={{ 
-            background: 'transparent', 
-            color: 'var(--text-dark)', 
-            border: '1px solid var(--text-dark)',
-            padding: '1rem 2.8rem',
-            borderRadius: '0',
-            textDecoration: 'none',
-            fontSize: '0.78rem',
-            fontWeight: 600,
-            textTransform: 'uppercase',
-            letterSpacing: '2px',
-            fontFamily: 'var(--font-sans)',
-            cursor: 'pointer',
-            transition: 'all 0.4s ease',
-            display: 'inline-block',
-            position: 'relative'
-          }}
-            onMouseOver={(e) => { e.target.style.background = 'var(--text-dark)'; e.target.style.color = '#FFF'; }}
-            onMouseOut={(e) => { e.target.style.background = 'transparent'; e.target.style.color = 'var(--text-dark)'; }}
-          >Discover Our Story</Link>
-        </div>
-      </section>
+      <RevealSection>
+        <section className="section" style={{ background: 'var(--primary-light)', padding: '4.5rem 0', borderBottom: '1px solid var(--border-color)', position: 'relative' }}>
+          <div className="container" style={{ maxWidth: '960px', margin: '0 auto', textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', letterSpacing: '5px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1.5rem' }}>
+              The Standard of Excellence
+            </p>
+            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', marginBottom: '2.5rem', letterSpacing: '1px', lineHeight: 1.3, fontWeight: 300 }}>
+              "Architecture should speak of its time and place, but yearn for timelessness."
+            </h2>
+            <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', lineHeight: 1.85, maxWidth: '680px', margin: '0 auto 3rem', fontWeight: 400 }}>
+              Sharan Estates represents a bespoke approach to real estate advisory. We serve high-net-worth clients globally, providing unparalleled access to Dubai's most prestigious residences.
+            </p>
+            <Link to="/about" className="btn-classic" style={{ 
+              background: 'transparent', 
+              color: 'var(--text-dark)', 
+              border: '1px solid var(--text-dark)',
+              padding: '1.1rem 3.2rem',
+              borderRadius: '0',
+              textDecoration: 'none',
+              fontSize: '0.82rem',
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              letterSpacing: '2px',
+              fontFamily: 'var(--font-sans)',
+              cursor: 'pointer',
+              transition: 'all 0.4s ease',
+              display: 'inline-block'
+            }}
+              onMouseOver={(e) => { e.target.style.background = 'var(--text-dark)'; e.target.style.color = '#FFF'; }}
+              onMouseOut={(e) => { e.target.style.background = 'transparent'; e.target.style.color = 'var(--text-dark)'; }}
+            >Discover Our Story</Link>
+          </div>
+        </section>
+      </RevealSection>
 
       {/* Featured Properties Portfolio */}
       <Properties />
 
-      {/* Interactive Cost Calculator & 3D Building Scanner Section */}
-      <section id="calculator" className="section advisory-section" style={{ background: 'var(--bg-lighter)', padding: '8.5rem 0' }}>
-        <div className="container">
-          <div className="advisory-heading-container" style={{ textAlign: 'center', marginBottom: '4.5rem' }}>
-            <h2 style={{ fontSize: '2.5rem', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', marginBottom: '1rem', letterSpacing: '1px' }}>Advisory Tools</h2>
-            <p className="hide-on-mobile" style={{ color: 'var(--text-muted)', fontSize: '0.95rem', maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}>
-              Plan your next investment with our mortgage cost estimator and explore residential units dynamically using our 3D Building Scanner.
-            </p>
-          </div>
+      {/* Curated Editorial Highlights (Starred Catalogs) */}
+      {(() => {
+        const starredProperties = properties.filter(p => p.starred);
+        const displayProperties = starredProperties.length > 0 
+          ? starredProperties.slice(0, 3) 
+          : properties.slice(0, 3);
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', justifyContent: 'center', alignItems: 'stretch', maxWidth: '1050px', margin: '0 auto' }}>
-            
-            {/* Left side: Investment Estimator Mortgage Calculator */}
-            <div style={{ flex: '1 1 500px', display: 'flex' }}>
-              <div style={{ width: '100%', display: 'flex' }}>
-                <div className="classic-property-card" style={{ padding: '2rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderRadius: '4px' }}>
-                  
-                  <div>
-                    <h3 style={{ fontSize: '1.5rem', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', marginBottom: '0.5rem' }}>Investment Estimator</h3>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '2rem' }}>Calculate estimated monthly mortgage values dynamically based on property price.</p>
-                    
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.8rem', marginBottom: '2rem' }}>
-                      <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                          <label style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.85rem' }}>Property Value (AED)</label>
-                          <span style={{ color: 'var(--primary-dark)', fontWeight: 'bold' }}>AED {propertyValue.toLocaleString()}</span>
-                        </div>
-                        <input type="range" min="100000" max="5000000" step="50000" value={propertyValue} onChange={(e) => setPropertyValue(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary-color)' }} />
-                      </div>
+        return displayProperties.length > 0 && (
+          <RevealSection>
+            <section style={{ background: '#FFFFFF', padding: '4.5rem 0', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)' }}>
+              <div className="container">
+                <div style={{ textAlign: 'center', marginBottom: '4.5rem' }}>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.82rem', letterSpacing: '5px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1.25rem' }}>
+                    Curated Highlights
+                  </p>
+                  <h2 style={{ fontSize: '2.6rem', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: 300 }}>
+                    Editorial Selections
+                  </h2>
+                  <div style={{ width: '40px', height: '1px', background: 'var(--text-dark)', margin: '1.5rem auto 0' }} />
+                </div>
 
-                      <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                          <label style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.85rem' }}>Down Payment (AED)</label>
-                          <span style={{ color: 'var(--primary-dark)', fontWeight: 'bold' }}>AED {downPayment.toLocaleString()}</span>
-                        </div>
-                        <input type="range" min="0" max={propertyValue} step="10000" value={downPayment} onChange={(e) => setDownPayment(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary-color)' }} />
-                      </div>
-
-                      <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-                        <div style={{ flex: 1, minWidth: '140px' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                            <label style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.85rem' }}>Interest Rate (%)</label>
-                            <span style={{ color: 'var(--primary-dark)', fontWeight: 'bold', fontSize: '0.85rem' }}>{interestRate}%</span>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2.5rem', justifyContent: 'center' }}>
+                  {displayProperties.map((prop) => (
+                    <div key={prop.id} style={{ flex: '1 1 320px', maxWidth: '380px', display: 'flex' }}>
+                      <Link to={`/property/${prop.id}`} style={{ textDecoration: 'none', width: '100%', display: 'flex', flexDirection: 'column' }}>
+                        <div className="classic-property-card" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%' }}>
+                          <div style={{ height: '280px', background: `url(${prop.image}) center/cover`, position: 'relative' }}>
+                            <div style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(0, 0, 0, 0.85)', color: '#FFFFFF', padding: '0.4rem 0.9rem', fontSize: '0.68rem', fontWeight: 600, letterSpacing: '1.5px', textTransform: 'uppercase', borderRadius: '2px', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                              <span style={{ color: '#eab308' }}>★</span> Starred
+                            </div>
+                            <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', background: '#FFFFFF', color: '#000000', padding: '0.35rem 0.75rem', fontSize: '0.65rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', border: '1px solid rgba(0,0,0,0.15)', borderRadius: '2px' }}>
+                              {prop.location}
+                            </div>
                           </div>
-                          <input type="range" min="1" max="10" step="0.1" value={interestRate} onChange={(e) => setInterestRate(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary-color)' }} />
-                        </div>
-                        <div style={{ flex: 1, minWidth: '140px' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                            <label style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.85rem' }}>Tenure</label>
-                            <span style={{ color: 'var(--primary-dark)', fontWeight: 'bold', fontSize: '0.85rem' }}>{tenure} Yrs</span>
+                          <div style={{ padding: '1.8rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                            <h3 style={{ color: 'var(--text-dark)', fontSize: '1.35rem', marginBottom: '0.65rem', fontFamily: 'var(--font-serif)', letterSpacing: '0.5px', fontWeight: 300 }}>{prop.title}</h3>
+                            <p style={{ color: 'var(--text-muted)', lineHeight: 1.65, flex: 1, fontSize: '0.88rem', marginBottom: '1.8rem' }}>{prop.description ? (prop.description.substring(0, 120) + '...') : ''}</p>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', borderTop: '1px solid rgba(0,0,0,0.08)', paddingTop: '1.25rem' }}>
+                              <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+                                🛏️ {prop.beds} Beds | 🚿 {prop.baths} Baths
+                              </span>
+                              <span style={{ color: 'var(--text-dark)', fontWeight: 700, fontSize: '1.15rem' }}>
+                                {prop.price}
+                              </span>
+                            </div>
                           </div>
-                          <input type="range" min="5" max="30" step="1" value={tenure} onChange={(e) => setTenure(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary-color)' }} />
                         </div>
-                      </div>
+                      </Link>
                     </div>
-                  </div>
-
-                  {/* Calculated EMI Display */}
-                  <div className="emi-card-mobile" style={{ background: 'var(--text-dark)', color: '#FFF', borderRadius: '4px', padding: '1.8rem', textAlign: 'center' }}>
-                    <h3 className="emi-title-mobile" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Estimated Monthly Cost</h3>
-                    <div className="emi-value-mobile" style={{ fontSize: '2.2rem', fontWeight: 600, color: 'var(--primary-color)', marginBottom: '0.5rem', fontFamily: 'var(--font-serif)' }}>
-                      AED {Math.round(emi).toLocaleString()}
-                    </div>
-                    <p className="emi-desc-mobile" style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', margin: 0 }}>
-                      Principal Loan: AED ${(propertyValue - downPayment > 0 ? propertyValue - downPayment : 0).toLocaleString()}
-                    </p>
-                  </div>
-
+                  ))}
                 </div>
               </div>
+            </section>
+          </RevealSection>
+        );
+      })()}
+
+      {/* Interactive Cost Calculator & 3D Building Scanner Section */}
+      <RevealSection>
+        <section id="calculator" className="section advisory-section" style={{ background: 'var(--bg-lighter)', padding: '4.5rem 0' }}>
+          <div className="container">
+            <div className="advisory-heading-container" style={{ textAlign: 'center', marginBottom: '4.5rem' }}>
+              <h2 style={{ fontSize: '2.6rem', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', marginBottom: '1rem', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: 300 }}>Advisory Tools</h2>
+              <p className="hide-on-mobile" style={{ color: 'var(--text-muted)', fontSize: '0.95rem', maxWidth: '600px', margin: '0 auto', lineHeight: 1.65 }}>
+                Plan your next investment with our mortgage cost estimator and explore residential units dynamically using our 3D Building Scanner.
+              </p>
             </div>
 
-            {/* Right side: Investment Analytics Card */}
-            <div className="hide-on-mobile" style={{ flex: '1 1 500px', display: 'flex', justifyContent: 'center', alignItems: 'stretch' }}>
-              <div style={{ width: '100%', display: 'flex' }}>
-                <InvestmentAnalytics />
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', justifyContent: 'center', alignItems: 'stretch', maxWidth: '1050px', margin: '0 auto' }}>
+              
+              {/* Left side: Investment Estimator Mortgage Calculator */}
+              <div style={{ flex: '1 1 500px', display: 'flex' }} className="w-full-mobile">
+                <div style={{ width: '100%', display: 'flex' }}>
+                  <div className="classic-property-card" style={{ padding: '2.5rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderRadius: '4px' }}>
+                    
+                    <div>
+                      <h3 style={{ fontSize: '1.6rem', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', marginBottom: '0.5rem', fontWeight: 300, textTransform: 'uppercase', letterSpacing: '1px' }}>Investment Estimator</h3>
+                      <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginBottom: '2.5rem' }}>Calculate estimated monthly mortgage values dynamically based on property price.</p>
+                      
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', marginBottom: '2.5rem' }}>
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                            <label style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.85rem' }}>Property Value (AED)</label>
+                            <span style={{ color: 'var(--primary-dark)', fontWeight: 'bold' }}>AED {propertyValue.toLocaleString()}</span>
+                          </div>
+                          <input type="range" min="100000" max="5000000" step="50000" value={propertyValue} onChange={(e) => setPropertyValue(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary-color)' }} />
+                        </div>
+
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                            <label style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.85rem' }}>Down Payment (AED)</label>
+                            <span style={{ color: 'var(--primary-dark)', fontWeight: 'bold' }}>AED {downPayment.toLocaleString()}</span>
+                          </div>
+                          <input type="range" min="0" max={propertyValue} step="10000" value={downPayment} onChange={(e) => setDownPayment(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary-color)' }} />
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+                          <div style={{ flex: 1, minWidth: '140px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                              <label style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.85rem' }}>Interest Rate (%)</label>
+                              <span style={{ color: 'var(--primary-dark)', fontWeight: 'bold', fontSize: '0.85rem' }}>{interestRate}%</span>
+                            </div>
+                            <input type="range" min="1" max="10" step="0.1" value={interestRate} onChange={(e) => setInterestRate(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary-color)' }} />
+                          </div>
+                          <div style={{ flex: 1, minWidth: '140px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                              <label style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.85rem' }}>Tenure</label>
+                              <span style={{ color: 'var(--primary-dark)', fontWeight: 'bold', fontSize: '0.85rem' }}>{tenure} Yrs</span>
+                            </div>
+                            <input type="range" min="5" max="30" step="1" value={tenure} onChange={(e) => setDownPayment(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary-color)' }} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Calculated EMI Display */}
+                    <div className="emi-card-mobile" style={{ background: 'var(--text-dark)', color: '#FFF', borderRadius: '4px', padding: '2rem', textAlign: 'center' }}>
+                      <h3 className="emi-title-mobile" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', marginBottom: '0.65rem', textTransform: 'uppercase', letterSpacing: '1.5px' }}>Estimated Monthly Cost</h3>
+                      <div className="emi-value-mobile" style={{ fontSize: '2.4rem', fontWeight: 600, color: '#FFFFFF', marginBottom: '0.65rem', fontFamily: 'var(--font-serif)', letterSpacing: '1px' }}>
+                        AED {Math.round(emi).toLocaleString()}
+                      </div>
+                      <p className="emi-desc-mobile" style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.82rem', margin: 0 }}>
+                        Principal Loan: AED {(propertyValue - downPayment > 0 ? propertyValue - downPayment : 0).toLocaleString()}
+                      </p>
+                    </div>
+
+                  </div>
+                </div>
               </div>
-            </div>
 
+              {/* Right side: Investment Analytics Card */}
+              <div className="hide-on-mobile" style={{ flex: '1 1 500px', display: 'flex', justifyContent: 'center', alignItems: 'stretch' }}>
+                <div style={{ width: '100%', display: 'flex' }}>
+                  <InvestmentAnalytics />
+                </div>
+              </div>
+
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </RevealSection>
 
       {/* Bespoke Advisory Consultation Section */}
-      <ConsultationSection />
+      <RevealSection>
+        <ConsultationSection />
+      </RevealSection>
 
     </div>
   );

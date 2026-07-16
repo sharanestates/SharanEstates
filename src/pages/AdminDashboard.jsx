@@ -822,7 +822,7 @@ export default function AdminDashboard() {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1.5rem' }}>
           <div>
-            <h1 style={{ fontSize: '2.8rem', fontFamily: 'var(--font-serif)', color: 'var(--text-dark)' }}>Admin Console</h1>
+            <h1 className="admin-title" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-dark)' }}>Admin Console</h1>
             <p style={{ color: 'var(--text-muted)' }}>Manage your luxury property listings and respond to client inquiries.</p>
           </div>
           <button onClick={handleLogout} className="btn-solid" style={{ background: '#737373' }}>
@@ -845,7 +845,7 @@ export default function AdminDashboard() {
         )}
 
         {/* Stats Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+        <div className="admin-stats-grid" style={{ display: 'grid', gap: '1.5rem', marginBottom: '3rem' }}>
           <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Total Properties</span>
             <strong style={{ fontSize: '2.2rem', marginTop: '0.5rem', color: 'var(--text-dark)' }}>{totalProperties}</strong>
@@ -865,7 +865,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="tab-container" style={{ marginBottom: '2rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', display: 'flex', gap: '2rem' }}>
+        <div className="admin-tabs">
           <span 
             className={`tab ${activeTab === 'ready-listings' ? 'active' : ''}`} 
             onClick={() => { setActiveTab('ready-listings'); setSearchQuery(''); }}
@@ -949,7 +949,7 @@ export default function AdminDashboard() {
                   )}
                 </div>
 
-                <div className="glass-panel" style={{ overflowX: 'auto', padding: '1rem' }}>
+                <div className="glass-panel admin-table-container" style={{ padding: '1rem' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                     <thead>
                       <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
@@ -1068,7 +1068,7 @@ export default function AdminDashboard() {
                 <h3 style={{ fontSize: '1.5rem', fontFamily: 'var(--font-serif)', marginBottom: '0.5rem' }}>Property Inquiries ({propertyInquiries.length})</h3>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Inquiries from clients interested in specific property types.</p>
                 
-                <div className="glass-panel" style={{ overflowX: 'auto', padding: '1rem', marginBottom: '3rem' }}>
+                <div className="glass-panel admin-table-container" style={{ padding: '1rem', marginBottom: '3rem' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                     <thead>
                       <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
@@ -1140,7 +1140,7 @@ export default function AdminDashboard() {
                 <h3 style={{ fontSize: '1.5rem', fontFamily: 'var(--font-serif)', marginBottom: '0.5rem' }}>Consultation Requests ({consultationInquiries.length})</h3>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Private advisor booking requests from the portfolio consultation form.</p>
                 
-                <div className="glass-panel" style={{ overflowX: 'auto', padding: '1rem' }}>
+                <div className="glass-panel admin-table-container" style={{ padding: '1rem' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                     <thead>
                       <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
@@ -1229,7 +1229,7 @@ export default function AdminDashboard() {
                 </div>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Create, edit, and manage blog articles. Upload images, PDFs, and Word documents as attachments.</p>
 
-                <div className="glass-panel" style={{ overflowX: 'auto', padding: '1rem' }}>
+                <div className="glass-panel admin-table-container" style={{ padding: '1rem' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                     <thead>
                       <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
@@ -1308,11 +1308,7 @@ export default function AdminDashboard() {
             padding: '1rem'
           }} onClick={() => setIsFormOpen(false)}>
             <div 
-              className="glass-panel" 
-              style={{
-                background: '#FFFFFF', padding: '2.5rem', width: '100%', maxWidth: '600px',
-                maxHeight: '90vh', overflowY: 'auto', position: 'relative'
-              }}
+              className="glass-panel admin-modal-content" 
               onClick={(e) => e.stopPropagation()}
             >
               <button 
@@ -1730,11 +1726,7 @@ export default function AdminDashboard() {
             padding: '1rem'
           }} onClick={() => setIsBlogFormOpen(false)}>
             <div
-              className="glass-panel"
-              style={{
-                background: '#FFFFFF', padding: '2.5rem', width: '100%', maxWidth: '640px',
-                maxHeight: '90vh', overflowY: 'auto', position: 'relative'
-              }}
+              className="glass-panel admin-modal-content"
               onClick={(e) => e.stopPropagation()}
             >
               <button
@@ -1917,11 +1909,7 @@ export default function AdminDashboard() {
             padding: '1rem'
           }} onClick={() => setIsUploadOptionOpen(false)}>
             <div
-              className="glass-panel"
-              style={{
-                background: '#FFFFFF', padding: '2.5rem', width: '100%', maxWidth: '500px',
-                position: 'relative'
-              }}
+              className="glass-panel admin-modal-content"
               onClick={(e) => e.stopPropagation()}
             >
               <button

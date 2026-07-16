@@ -1306,3 +1306,90 @@ html.lenis body {
     color: var(--text-muted) !important;
   }
 }
+
+/* ═══════════════════════════════════════════
+   ADMIN DASHBOARD RESPONSIVENESS OVERRIDES
+   ═══════════════════════════════════════════ */
+
+/* Admin Header & Title */
+.admin-title {
+  font-size: clamp(1.8rem, 5vw, 2.8rem) !important;
+}
+
+/* Stats grid */
+.admin-stats-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+}
+@media (max-width: 600px) {
+  .admin-stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+}
+
+/* Tabs Navigation scrollable on mobile */
+.admin-tabs {
+  display: flex !important;
+  gap: 1.5rem !important;
+  overflow-x: auto !important;
+  white-space: nowrap !important;
+  scrollbar-width: none !important; /* Firefox */
+  -webkit-overflow-scrolling: touch !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  margin-bottom: 2rem !important;
+  padding-bottom: 0.5rem !important;
+}
+.admin-tabs::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Opera */
+}
+.admin-tabs .tab {
+  flex-shrink: 0 !important;
+}
+
+/* Table updates */
+.admin-table-container {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+.admin-table-container table {
+  width: 100% !important;
+  min-width: 750px !important; /* Force minimum width to prevent cells from squeezing on mobile */
+}
+
+/* Form Modals Responsive Sizing */
+.admin-modal-content {
+  background: #FFFFFF !important;
+  padding: 2.5rem !important;
+  width: 100% !important;
+  max-width: 600px !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+  position: relative !important;
+  border-radius: 12px !important;
+}
+
+@media (max-width: 600px) {
+  .admin-modal-content {
+    padding: 1.5rem 1.2rem !important;
+    max-height: 95vh !important;
+    border-radius: 8px !important;
+  }
+  .admin-modal-content h2, 
+  .admin-modal-content h3 {
+    font-size: 1.6rem !important;
+    margin-bottom: 1rem !important;
+  }
+}
+
+/* Helper flex layout for form rows */
+.admin-form-row {
+  display: flex !important;
+  gap: 1rem !important;
+  margin-bottom: 1.2rem !important;
+  flex-wrap: wrap !important;
+}
+.admin-form-row > div {
+  flex: 1 !important;
+  min-width: 200px !important;
+}
+

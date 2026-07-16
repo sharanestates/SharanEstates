@@ -127,7 +127,7 @@ export default function FilterWidget() {
       }} className="grid-2-mobile">
         <div style={{ padding: '0.2rem 0', textAlign: 'center' }}>
           <h4 style={{ fontSize: '1.15rem', fontWeight: 400, color: 'var(--text-dark)', margin: 0, fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>AED 300M+</h4>
-          <p style={{ fontSize: '0.58rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.3rem', fontWeight: 600 }}>In Sales Closed</p>
+          <p style={{ fontSize: '0.58rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.3rem', fontWeight: 600 }}>In Transactions</p>
         </div>
         <div style={{ padding: '0.2rem 0', textAlign: 'center', borderLeft: '1px solid rgba(0, 0, 0,0.2)' }} className="border-left-none-mobile">
           <h4 style={{ fontSize: '1.15rem', fontWeight: 400, color: 'var(--text-dark)', margin: 0, fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>Exclusive</h4>

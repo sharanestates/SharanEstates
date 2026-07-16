@@ -60,6 +60,90 @@ export default function AdminDashboard() {
 
   const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
 
+  // AI Document scanning states & refs
+  const [scanningDoc, setScanningDoc] = useState(false);
+  const docUploadInputRef = useRef(null);
+  const isLakshay = localStorage.getItem('adminUser') === 'Lakshay';
+
+  const handleUploadDoc = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Reset value so the same file can be scanned again
+    e.target.value = '';
+
+    setScanningDoc(true);
+    setError('');
+
+    try {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        try {
+          const payload = {
+            fileData: reader.result,
+            fileName: file.name,
+            mimeType: file.type
+          };
+
+          const res = await fetch(`${API_BASE}/properties/upload-doc`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify(payload)
+          });
+
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Failed to scan document');
+
+          // Populate the form with AI extracted details!
+          setPropertyForm({
+            title: data.title || '',
+            price: data.price || '',
+            image: data.image || '',
+            description: data.description || '',
+            beds: data.beds || 0,
+            baths: data.baths || 0,
+            size: data.size || '',
+            category: data.category || 'villas',
+            type: data.type || 'buy',
+            location: data.location || 'Prime District',
+            status: data.status || 'Available',
+            dropbox_link: data.dropbox_link || '',
+            floors: data.floors || [],
+            imagesInput: Array.isArray(data.images) ? data.images.join('\n') : '',
+            featuresInput: Array.isArray(data.features) ? data.features.join('\n') : '',
+            handover: data.handover || '',
+            payment_plan: data.payment_plan || '',
+            property_type: data.property_type || '',
+            bedrooms_range: data.bedrooms_range || '',
+            starred: false
+          });
+
+          setFlatForms({});
+          setNewLevel({ id: '', name: '' });
+          setFormType('create');
+          setEditingId(null);
+          setIsFormOpen(true);
+
+          showSuccess(`AI successfully scanned "${file.name}"! Review the details below.`);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setScanningDoc(false);
+        }
+      };
+
+      reader.onerror = () => {
+        setError('Failed to read file contents.');
+        setScanningDoc(false);
+      };
+
+      reader.readAsDataURL(file);
+    } catch (err) {
+      setError(err.message);
+      setScanningDoc(false);
+    }
+  };
+
   // Sanitizes levels/floors configuration to guarantee it is always a parsed Array
   const sanitizeFloorsArray = (data) => {
     if (!data) return [];
@@ -776,9 +860,28 @@ export default function AdminDashboard() {
                     />
                     <span style={{ position: 'absolute', left: '0.9rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1rem', opacity: 0.5 }}>🔍</span>
                   </div>
-                  <button onClick={handleOpenCreateForm} className="btn-solid">
-                    + ADD PROPERTY
-                  </button>
+                  {isLakshay && (
+                    <div style={{ display: 'flex', gap: '0.8rem' }}>
+                      <button onClick={handleOpenCreateForm} className="btn-solid">
+                        + ADD PROPERTY
+                      </button>
+                      <button 
+                        onClick={() => docUploadInputRef.current?.click()} 
+                        className="btn-solid" 
+                        disabled={scanningDoc}
+                        style={{ background: '#059669', borderColor: '#059669', opacity: scanningDoc ? 0.7 : 1 }}
+                      >
+                        {scanningDoc ? 'SCANNING...' : '⚡ UPLOAD PROPERTY'}
+                      </button>
+                      <input 
+                        ref={docUploadInputRef} 
+                        type="file" 
+                        accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*" 
+                        onChange={handleUploadDoc} 
+                        style={{ display: 'none' }} 
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className="glass-panel" style={{ overflowX: 'auto', padding: '1rem' }}>
@@ -1055,7 +1158,9 @@ export default function AdminDashboard() {
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                   <h3 style={{ fontSize: '1.5rem', fontFamily: 'var(--font-serif)' }}>Blog Management</h3>
-                  <button onClick={handleOpenBlogCreate} className="btn-solid" style={{ fontSize: '0.85rem', padding: '0.6rem 1.5rem' }}>+ New Blog Post</button>
+                  {isLakshay && (
+                    <button onClick={handleOpenBlogCreate} className="btn-solid" style={{ fontSize: '0.85rem', padding: '0.6rem 1.5rem' }}>+ New Blog Post</button>
+                  )}
                 </div>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Create, edit, and manage blog articles. Upload images, PDFs, and Word documents as attachments.</p>
 

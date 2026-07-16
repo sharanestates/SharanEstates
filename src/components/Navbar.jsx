@@ -33,6 +33,17 @@ export default function Navbar() {
 
   const shouldShowOpaque = isScrolled || !isHomePage;
 
+  const handleLogoClick = (e) => {
+    if (location.pathname === '/') {
+      e.preventDefault();
+      if (window.lenis) {
+        window.lenis.scrollTo(0, { duration: 1.4 });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  };
+
   const toggleMobileMenu = (menu) => {
     if (menu === 'buy') {
       setMobileBuyOpen(!mobileBuyOpen);
@@ -130,7 +141,7 @@ export default function Navbar() {
       left: 0,
       width: '100%'
     }}>
-      <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+      <Link to="/" onClick={handleLogoClick} style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
         <div style={{
           display: 'flex',
           alignItems: 'center',

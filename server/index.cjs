@@ -1487,11 +1487,8 @@ app.get('/api/properties/:id', async (req, res) => {
 
 // AI Document Parsing & Scanning Route (Admin Only)
 app.post('/api/properties/upload-doc', authenticateToken, async (req, res) => {
-  const { fileData, fileName, mimeType } = req.body;
-  if (!fileData || !mimeType) {
-    return res.status(400).json({ error: 'File data and mimeType are required' });
-  }
-
+  let { fileData, fileName, mimeType, dropboxUrl } = req.body;
+  
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return res.status(400).json({ 
@@ -1500,43 +1497,135 @@ app.post('/api/properties/upload-doc', authenticateToken, async (req, res) => {
   }
 
   try {
-    const fileBuffer = Buffer.from(fileData.split(',')[1] || fileData, 'base64');
+    let fileBuffer;
+    let isZipArchive = false;
     let extractedText = '';
     let extractedImages = [];
 
-    // 1. Extract content from the document based on MimeType
-    if (mimeType === 'application/pdf') {
-      const pdfData = await pdfParse(fileBuffer);
-      extractedText = pdfData.text || '';
-    } else if (
-      mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-      mimeType === 'application/msword'
-    ) {
-      // Extract text from Word Docx
-      const result = await mammoth.extractRawText({ buffer: fileBuffer });
-      extractedText = result.value || '';
-
-      // Extract embedded images from Word Docx zip structure (word/media/*)
-      try {
-        const zip = new AdmZip(fileBuffer);
-        const zipEntries = zip.getEntries();
-        zipEntries.forEach(entry => {
-          if (entry.entryName.startsWith('word/media/')) {
-            const data = entry.getData();
-            const base64 = data.toString('base64');
-            const ext = path.extname(entry.entryName).toLowerCase().replace('.', '');
-            const mime = ext === 'png' ? 'image/png' : (ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : 'image/png');
-            extractedImages.push(`data:${mime};base64,${base64}`);
-          }
-        });
-      } catch (zipErr) {
-        console.warn('Could not extract images from docx archive:', zipErr.message);
+    // 1. Download file from Dropbox link if provided
+    if (dropboxUrl) {
+      console.log('Downloading Dropbox marketing pack:', dropboxUrl);
+      
+      // Force direct download parameter
+      let directUrl = dropboxUrl.trim()
+        .replace('www.dropbox.com', 'dl.dropboxusercontent.com')
+        .replace('?dl=0', '?dl=1');
+      if (!directUrl.includes('?dl=1') && !directUrl.includes('?raw=1')) {
+        directUrl += (directUrl.includes('?') ? '&' : '?') + 'dl=1';
       }
-    } else if (mimeType.startsWith('image/')) {
-      // For images, we can send the image directly to Gemini multimodally
-      extractedText = ''; // Handled multimodally below
+
+      const dlRes = await fetch(directUrl);
+      if (!dlRes.ok) {
+        throw new Error(`Failed to download from Dropbox link (HTTP ${dlRes.status})`);
+      }
+
+      const arrayBuffer = await dlRes.arrayBuffer();
+      fileBuffer = Buffer.from(arrayBuffer);
+      fileName = path.basename(dropboxUrl.split('?')[0]);
+
+      // Check if it's a ZIP archive (Dropbox folders download as zip)
+      // ZIP signature is PK\x03\x04
+      if (fileBuffer.length > 4 && fileBuffer.readUInt32LE(0) === 0x04034b50) {
+        isZipArchive = true;
+        mimeType = 'application/zip';
+      } else {
+        // Guess mimeType from content-type header or file extension
+        const contentTypeHeader = dlRes.headers.get('content-type') || '';
+        if (contentTypeHeader && !contentTypeHeader.includes('octet-stream')) {
+          mimeType = contentTypeHeader.split(';')[0].trim();
+        } else {
+          const ext = path.extname(fileName).toLowerCase();
+          if (ext === '.pdf') mimeType = 'application/pdf';
+          else if (ext === '.docx') mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+          else if (ext === '.doc') mimeType = 'application/msword';
+          else if (['.png', '.jpg', '.jpeg', '.webp'].includes(ext)) mimeType = `image/${ext.replace('.', '')}`;
+          else mimeType = 'application/pdf'; // fallback
+        }
+      }
     } else {
-      return res.status(400).json({ error: 'Unsupported file format. Please upload PDF, Docx, or Image files.' });
+      if (!fileData || !mimeType) {
+        return res.status(400).json({ error: 'File data/mimeType or dropboxUrl is required' });
+      }
+      fileBuffer = Buffer.from(fileData.split(',')[1] || fileData, 'base64');
+    }
+
+    // 2. Parse Content based on container type (ZIP or Single File)
+    if (isZipArchive) {
+      console.log('Parsing Dropbox ZIP folder archive...');
+      const zip = new AdmZip(fileBuffer);
+      const zipEntries = zip.getEntries();
+      
+      let docTextParts = [];
+
+      for (const entry of zipEntries) {
+        // Skip system directories and hidden macOS files
+        if (entry.entryName.includes('__MACOSX') || entry.isDirectory) continue;
+
+        const entryExt = path.extname(entry.entryName).toLowerCase();
+        const buffer = entry.getData();
+
+        // If it's a PDF brochure
+        if (entryExt === '.pdf') {
+          console.log('Extracting text from PDF in ZIP:', entry.entryName);
+          const parsed = await pdfParse(buffer);
+          if (parsed.text) docTextParts.push(parsed.text);
+        }
+        // If it's a Word doc
+        else if (entryExt === '.docx') {
+          console.log('Extracting text from DOCX in ZIP:', entry.entryName);
+          const parsed = await mammoth.extractRawText({ buffer });
+          if (parsed.value) docTextParts.push(parsed.value);
+        }
+        // If it's an image
+        else if (['.png', '.jpg', '.jpeg', '.webp'].includes(entryExt)) {
+          console.log('Extracting photo from ZIP:', entry.entryName);
+          const base64 = buffer.toString('base64');
+          const mime = entryExt === '.png' ? 'image/png' : (entryExt === '.webp' ? 'image/webp' : 'image/jpeg');
+          extractedImages.push(`data:${mime};base64,${base64}`);
+        }
+      }
+
+      extractedText = docTextParts.join('\n\n');
+      
+      // If we extracted no text but have images, let's pass a description indicating images only
+      if (!extractedText && extractedImages.length > 0) {
+        extractedText = "This folder contains multiple property images. Extract project details if any title exists in files.";
+      }
+    } else {
+      // Single file parsing (PDF / DOCX / Image)
+      if (mimeType === 'application/pdf') {
+        const pdfData = await pdfParse(fileBuffer);
+        extractedText = pdfData.text || '';
+      } else if (
+        mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+        mimeType === 'application/msword'
+      ) {
+        const result = await mammoth.extractRawText({ buffer: fileBuffer });
+        extractedText = result.value || '';
+
+        // Extract embedded images from Word Docx zip structure (word/media/*)
+        try {
+          const zip = new AdmZip(fileBuffer);
+          const zipEntries = zip.getEntries();
+          zipEntries.forEach(entry => {
+            if (entry.entryName.startsWith('word/media/')) {
+              const data = entry.getData();
+              const base64 = data.toString('base64');
+              const ext = path.extname(entry.entryName).toLowerCase().replace('.', '');
+              const mime = ext === 'png' ? 'image/png' : (ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : 'image/png');
+              extractedImages.push(`data:${mime};base64,${base64}`);
+            }
+          });
+        } catch (zipErr) {
+          console.warn('Could not extract images from docx:', zipErr.message);
+        }
+      } else if (mimeType.startsWith('image/')) {
+        extractedText = ''; // Handled multimodally below
+        // Save the image itself as the base64 input
+        fileData = `data:${mimeType};base64,${fileBuffer.toString('base64')}`;
+      } else {
+        return res.status(400).json({ error: 'Unsupported file format. Please upload PDF, Docx, or Image files.' });
+      }
     }
 
     // 2. Prepare Gemini request payload
@@ -1636,6 +1725,11 @@ app.post('/api/properties/upload-doc', authenticateToken, async (req, res) => {
     } else {
       propertyDetails.image = '';
       propertyDetails.images = [];
+    }
+
+    // Set Dropbox link if provided
+    if (dropboxUrl) {
+      propertyDetails.dropbox_link = dropboxUrl;
     }
 
     res.json(propertyDetails);

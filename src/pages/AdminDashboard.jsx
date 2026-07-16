@@ -65,6 +65,71 @@ export default function AdminDashboard() {
   const docUploadInputRef = useRef(null);
   const isLakshay = localStorage.getItem('adminUser') === 'Lakshay';
 
+  const [isUploadOptionOpen, setIsUploadOptionOpen] = useState(false);
+  const [dropboxInputUrl, setDropboxInputUrl] = useState('');
+
+  const handleScanDropboxUrl = async (e) => {
+    if (e) e.preventDefault();
+    if (!dropboxInputUrl.trim()) {
+      alert('Please enter a valid Dropbox link.');
+      return;
+    }
+
+    setScanningDoc(true);
+    setError('');
+    setIsUploadOptionOpen(false);
+
+    try {
+      const res = await fetch(`${API_BASE}/properties/upload-doc`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({
+          dropboxUrl: dropboxInputUrl.trim()
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to scan Dropbox campaign');
+
+      // Populate the form with AI extracted details!
+      setPropertyForm({
+        title: data.title || '',
+        price: data.price || '',
+        image: data.image || '',
+        description: data.description || '',
+        beds: data.beds || 0,
+        baths: data.baths || 0,
+        size: data.size || '',
+        category: data.category || 'villas',
+        type: data.type || 'buy',
+        location: data.location || 'Prime District',
+        status: data.status || 'Available',
+        dropbox_link: data.dropbox_link || dropboxInputUrl.trim(),
+        floors: data.floors || [],
+        imagesInput: Array.isArray(data.images) ? data.images.join('\n') : '',
+        featuresInput: Array.isArray(data.features) ? data.features.join('\n') : '',
+        handover: data.handover || '',
+        payment_plan: data.payment_plan || '',
+        property_type: data.property_type || '',
+        bedrooms_range: data.bedrooms_range || '',
+        starred: false
+      });
+
+      setFlatForms({});
+      setNewLevel({ id: '', name: '' });
+      setFormType('create');
+      setEditingId(null);
+      setIsFormOpen(true);
+      setDropboxInputUrl('');
+
+      showSuccess(`AI successfully scanned your Dropbox campaign! Review details below.`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setScanningDoc(false);
+    }
+  };
+
   const handleUploadDoc = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -866,7 +931,7 @@ export default function AdminDashboard() {
                         + ADD PROPERTY
                       </button>
                       <button 
-                        onClick={() => docUploadInputRef.current?.click()} 
+                        onClick={() => setIsUploadOptionOpen(true)} 
                         className="btn-solid" 
                         disabled={scanningDoc}
                         style={{ background: '#059669', borderColor: '#059669', opacity: scanningDoc ? 0.7 : 1 }}
@@ -1837,6 +1902,91 @@ export default function AdminDashboard() {
 
                 <button type="submit" className="btn-solid" style={{ width: '100%', padding: '1rem', borderRadius: '8px', fontSize: '1rem', fontWeight: 600 }}>
                   {blogFormType === 'create' ? 'PUBLISH BLOG' : 'SAVE CHANGES'}
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* ═══════ AI UPLOAD PROPERTY OPTION MODAL ═══════ */}
+        {isUploadOptionOpen && (
+          <div style={{
+            position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh',
+            background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(5px)',
+            zIndex: 1100, display: 'flex', justifyContent: 'center', alignItems: 'center',
+            padding: '1rem'
+          }} onClick={() => setIsUploadOptionOpen(false)}>
+            <div
+              className="glass-panel"
+              style={{
+                background: '#FFFFFF', padding: '2.5rem', width: '100%', maxWidth: '500px',
+                position: 'relative'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setIsUploadOptionOpen(false)}
+                style={{ position: 'absolute', top: '1rem', right: '1.5rem', background: 'transparent', border: 'none', fontSize: '2rem', cursor: 'pointer', color: 'var(--text-muted)' }}
+              >
+                &times;
+              </button>
+
+              <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.6rem', marginBottom: '1.5rem', color: 'var(--text-dark)' }}>
+                AI Property Scanner
+              </h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginBottom: '2rem', lineHeight: 1.5 }}>
+                Choose whether you want to scan a local brochure/document from your device, or paste a Dropbox link to a shared folder or PDF.
+              </p>
+
+              {/* Option 1: Local File */}
+              <div style={{ marginBottom: '2rem' }}>
+                <h4 style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.75rem', color: 'var(--text-dark)' }}>Option 1: Upload Local Document</h4>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsUploadOptionOpen(false);
+                    docUploadInputRef.current?.click();
+                  }}
+                  style={{
+                    width: '100%', padding: '1rem', background: 'var(--bg-light)',
+                    border: '1px dashed var(--border-color)', borderRadius: '8px',
+                    fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-dark)',
+                    cursor: 'pointer', transition: 'all 0.2s', textAlign: 'center'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.background = '#f0f0f0'}
+                  onMouseOut={(e) => e.currentTarget.style.background = 'var(--bg-light)'}
+                >
+                  📁 Select PDF, Word Document, or Image
+                </button>
+              </div>
+
+              {/* Divider */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+                <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>or</span>
+                <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
+              </div>
+
+              {/* Option 2: Dropbox Link */}
+              <form onSubmit={handleScanDropboxUrl}>
+                <h4 style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.75rem', color: 'var(--text-dark)' }}>Option 2: Paste Dropbox Link</h4>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem', marginBottom: '0.5rem' }}>
+                  Provide a link to a folder or file. Folders will be scanned for PDFs, DOCX documents, and images.
+                </p>
+                <input
+                  type="url"
+                  required
+                  placeholder="https://www.dropbox.com/sh/... or https://www.dropbox.com/scl/fo/..."
+                  value={dropboxInputUrl}
+                  onChange={(e) => setDropboxInputUrl(e.target.value)}
+                  style={{ ...inputStyle, marginBottom: '1.2rem' }}
+                />
+                <button
+                  type="submit"
+                  className="btn-solid"
+                  style={{ width: '100%', padding: '0.85rem', borderRadius: '8px', fontSize: '0.9rem', fontWeight: 600, background: '#059669', borderColor: '#059669' }}
+                >
+                  ⚡ Start AI Scan from Dropbox
                 </button>
               </form>
             </div>

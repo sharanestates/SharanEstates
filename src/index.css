@@ -1121,11 +1121,17 @@ html.lenis body {
   }
 
   .pill-nav .navbar-brand-logo {
-    color: var(--text-dark) !important;
-    border-color: var(--text-dark) !important;
-    background-color: transparent !important;
-    padding: 0.5rem 0.8rem !important;
-    gap: 0 !important;
+    background-color: var(--text-dark) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    padding: 0 !important;
+    width: 44px !important;
+    height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 2px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
   }
 
   .logo-divider-desktop {
@@ -1137,11 +1143,17 @@ html.lenis body {
   }
 
   .pill-nav .navbar-brand-logo span {
-    color: var(--text-dark) !important;
+    color: #FFFFFF !important;
+    font-size: 1.35rem !important;
+    letter-spacing: 0.5px !important;
+    margin-right: -0.5px !important;
+    font-family: var(--font-serif) !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
   }
 
   .pill-nav .navbar-brand-logo div {
-    background-color: rgba(0, 0, 0, 0.15) !important;
+    display: none !important;
   }
 
   .pill-nav .mobile-menu-btn,

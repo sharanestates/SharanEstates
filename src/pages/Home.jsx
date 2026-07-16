@@ -11,15 +11,7 @@ const bgImages = [
   '/dubai_luxury_1.webp',
   '/dubai_luxury_2.webp',
   '/dubai_luxury_3.webp',
-  '/dubai_luxury_4.webp',
-  '/dubai_luxury_5.webp',
-  '/dubai_luxury_6.webp',
-  '/dubai_luxury_7.webp',
-  '/dubai_luxury_8.webp',
-  '/exclusive_villa.webp',
-  '/luxury_facade.webp',
-  '/luxury_community.webp',
-  '/luxury_villa_garden.webp'
+  '/dubai_luxury_4.webp'
 ];
 
 export default function Home() {
@@ -102,10 +94,6 @@ export default function Home() {
               />
             ))}
           </div>
-          {/* Mobile-only brand name overlay over the slideshow */}
-          <div className="mobile-hero-brand-overlay">
-            Sharan Estates
-          </div>
         </div>
 
         {/* Content Container on Top of Slideshow */}
@@ -121,19 +109,19 @@ export default function Home() {
                 Curated Dubai Portfolio
               </p>
               <h1 className="hero-title">
-                Shaping Dubai's Finest Living
+                Representing Exceptional Real Estate
               </h1>
               <p className="hero-description">
-                Welcome to Sharan Estates. We curate exceptional residential properties, waterfront estates, and private off-market penthouses for discerning global investors.
+                Sharan Estates represents some of Dubai’s most distinguished residences and investment opportunities, providing discreet, informed guidance to homeowners and investors around the world.
               </p>
 
               {/* Action CTA Buttons */}
               <div className="hero-cta-buttons">
                 <Link to="/listings/off-plan" className="hero-cta-btn btn-solid">
-                  Buy Off-Plan
+                  Explore Off-Plan
                 </Link>
                 <Link to="/listings/ready" className="hero-cta-btn btn-outline">
-                  Buy Ready Property
+                  Explore Ready Property
                 </Link>
               </div>
 

@@ -510,14 +510,70 @@ h4, h5, h6 { font-size: 0.9rem !important; line-height: 1.5 !important; }
   .pill-nav {
     width: 100%;
     padding: 0.6rem 2rem;
+    background: #FFFFFF !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    padding-top: 0.7rem !important;
+    padding-bottom: 0.7rem !important;
   }
   
-  .nav-links {
-    gap: 1.5rem;
+  .desktop-nav {
+    display: none !important;
   }
-  
-  .nav-links a, .nav-links div {
-    font-size: 0.8rem;
+
+  .mobile-menu-btn {
+    display: flex !important;
+  }
+
+  .mobile-nav-menu {
+    width: calc(100% - 4rem) !important;
+    left: 2rem !important;
+    right: 2rem !important;
+    border-radius: 12px !important;
+  }
+
+  /* Monogram Logo Styles for Tablet & Mobile */
+  .pill-nav .navbar-brand-logo {
+    background-color: var(--text-dark) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    padding: 0 !important;
+    width: 44px !important;
+    height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 2px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  }
+
+  .logo-divider-desktop {
+    display: none !important;
+  }
+
+  .logo-text-desktop {
+    display: none !important;
+  }
+
+  .pill-nav .navbar-brand-logo span {
+    color: #FFFFFF !important;
+    font-size: 1.35rem !important;
+    letter-spacing: 0.5px !important;
+    margin-right: -0.5px !important;
+    font-family: var(--font-serif) !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+  }
+
+  .pill-nav .navbar-brand-logo div {
+    display: none !important;
+  }
+
+  .pill-nav .mobile-menu-btn,
+  .pill-nav .mobile-menu-btn svg {
+    color: var(--text-dark) !important;
   }
 }
 
@@ -528,25 +584,13 @@ h4, h5, h6 { font-size: 0.9rem !important; line-height: 1.5 !important; }
   }
 
   .pill-nav {
-    padding: 0.5rem 1.25rem;
-    width: 100%;
-    top: 0;
-  }
-
-  /* Hide regular nav links on mobile, show hamburger (implemented in component) */
-  .desktop-nav {
-    display: none !important;
-  }
-
-  .mobile-menu-btn {
-    display: flex !important;
+    padding: 0.5rem 1.25rem !important;
   }
 
   .mobile-nav-menu {
     width: calc(100% - 2rem) !important;
     left: 1rem !important;
     right: 1rem !important;
-    border-radius: 12px !important;
   }
 
   .hero-split-media {
@@ -1149,58 +1193,6 @@ html.lenis body {
 }
 
 @media (max-width: 768px) {
-  /* Force White Navbar and Black Brand Logo/Toggle visibility on Mobile */
-  .pill-nav {
-    background: #FFFFFF !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    padding-top: 0.7rem !important;
-    padding-bottom: 0.7rem !important;
-  }
-
-  .pill-nav .navbar-brand-logo {
-    background-color: var(--text-dark) !important;
-    color: #FFFFFF !important;
-    border: none !important;
-    padding: 0 !important;
-    width: 44px !important;
-    height: 44px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border-radius: 2px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
-  }
-
-  .logo-divider-desktop {
-    display: none !important;
-  }
-
-  .logo-text-desktop {
-    display: none !important;
-  }
-
-  .pill-nav .navbar-brand-logo span {
-    color: #FFFFFF !important;
-    font-size: 1.35rem !important;
-    letter-spacing: 0.5px !important;
-    margin-right: -0.5px !important;
-    font-family: var(--font-serif) !important;
-    font-weight: 600 !important;
-    line-height: 1 !important;
-  }
-
-  .pill-nav .navbar-brand-logo div {
-    display: none !important;
-  }
-
-  .pill-nav .mobile-menu-btn,
-  .pill-nav .mobile-menu-btn svg {
-    color: var(--text-dark) !important;
-  }
-
   .hero-section-wrapper {
     display: flex;
     flex-direction: column;

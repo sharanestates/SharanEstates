@@ -112,7 +112,7 @@ export default function Home() {
                 Representing Exceptional Real Estate
               </h1>
               <p className="hero-description">
-                Sharan Estates represents some of Dubai’s most distinguished residences and investment opportunities, providing discreet, informed guidance to homeowners and investors around the world.
+                Sharan Estates curates Dubai’s most distinguished residences and premier investment portfolios, delivering discreet, bespoke guidance to homeowners and private investors worldwide.
               </p>
 
               {/* Action CTA Buttons */}

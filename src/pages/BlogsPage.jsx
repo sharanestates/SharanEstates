@@ -2,70 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import RevealSection from '../components/RevealSection';
 
-const blogPosts = [
-  {
-    id: 1,
-    title: 'Dubai Real Estate Market Report: Q2 2025 Insights',
-    category: 'Market Trends',
-    date: 'June 28, 2025',
-    readTime: '8 min read',
-    image: '/blogs/blog_market_trends.webp',
-    excerpt: 'Transaction volumes hit record highs as off-plan sales surge 42% year-over-year. We break down the numbers behind Dubai\'s unstoppable real estate momentum and what it means for investors.',
-    featured: true,
-  },
-  {
-    id: 2,
-    title: 'Why Dubai Remains the World\'s Top Destination for Property Investment',
-    category: 'Investment',
-    date: 'June 15, 2025',
-    readTime: '6 min read',
-    image: '/blogs/blog_investment.webp',
-    excerpt: 'From zero income tax to Golden Visas, Dubai offers a compelling mix of lifestyle and financial returns. Discover why global HNW investors are allocating more capital to the emirate.',
-    featured: true,
-  },
-  {
-    id: 3,
-    title: 'UAE Golden Visa Through Property: Complete Guide 2025',
-    category: 'Guides',
-    date: 'May 30, 2025',
-    readTime: '10 min read',
-    image: '/blogs/blog_golden_visa.webp',
-    excerpt: 'Everything you need to know about obtaining the UAE 10-year Golden Visa through real estate investment — eligibility, requirements, benefits, and step-by-step process.',
-    featured: false,
-  },
-  {
-    id: 4,
-    title: 'The Architecture Shaping Dubai\'s Next Skyline',
-    category: 'Architecture',
-    date: 'May 18, 2025',
-    readTime: '7 min read',
-    image: '/blogs/blog_architecture.webp',
-    excerpt: 'From parametric facades to sustainable supertalls, we explore the design language defining Dubai\'s next generation of landmark developments and the architects behind them.',
-    featured: false,
-  },
-  {
-    id: 5,
-    title: 'Off-Plan vs Ready: Making the Right Investment Choice',
-    category: 'Investment',
-    date: 'April 28, 2025',
-    readTime: '9 min read',
-    image: '/blogs/blog_offplan.webp',
-    excerpt: 'Understanding the trade-offs between off-plan and ready properties in Dubai\'s current market. Capital appreciation, payment plans, and risk factors compared side by side.',
-    featured: false,
-  },
-  {
-    id: 6,
-    title: 'Living the Dubai Dream: A Guide to Luxury Lifestyle Communities',
-    category: 'Lifestyle',
-    date: 'April 10, 2025',
-    readTime: '5 min read',
-    image: '/blogs/blog_lifestyle.webp',
-    excerpt: 'From infinity pools to private beaches, Dubai\'s residential communities offer unmatched lifestyle amenities. Explore the top destinations for those seeking the ultimate in modern living.',
-    featured: false,
-  },
-];
-
-const categories = ['All', 'Market Trends', 'Investment', 'Guides', 'Architecture', 'Lifestyle'];
+const defaultCategories = ['All', 'Market Trends', 'Investment', 'Guides', 'Architecture', 'Lifestyle', 'News'];
 
 function FeaturedCard({ post, index }) {
   const [hovered, setHovered] = useState(false);
@@ -300,17 +237,29 @@ function BlogListCard({ post, index }) {
 export default function BlogsPage() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [blogPosts, setBlogPosts] = useState([]);
+
+  const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    // Fetch blogs from API
+    fetch(`${API_BASE}/blogs`)
+      .then(res => res.ok ? res.json() : [])
+      .then(data => setBlogPosts(Array.isArray(data) ? data : []))
+      .catch(() => setBlogPosts([]));
   }, []);
+
+  // Build dynamic categories from fetched data + defaults
+  const blogCategories = [...new Set(blogPosts.map(p => p.category).filter(Boolean))];
+  const categories = ['All', ...new Set([...defaultCategories.slice(1), ...blogCategories])];
 
   const filtered = blogPosts.filter(post => {
     const matchesCategory = activeCategory === 'All' || post.category === activeCategory;
     const matchesSearch = !searchQuery ||
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.category.toLowerCase().includes(searchQuery.toLowerCase());
+      (post.excerpt || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (post.category || '').toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
@@ -575,7 +524,7 @@ export default function BlogsPage() {
                 flex: 1,
                 padding: '0.85rem 1.2rem',
                 background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(0, 0, 0,0.2)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
                 borderRadius: '3px',
                 color: '#fff',
                 fontSize: '0.85rem',
@@ -585,7 +534,7 @@ export default function BlogsPage() {
                 transition: 'border-color 0.3s',
               }}
               onFocus={e => e.currentTarget.style.borderColor = 'var(--primary-color)'}
-              onBlur={e => e.currentTarget.style.borderColor = 'rgba(0, 0, 0,0.2)'}
+              onBlur={e => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
             />
             <button
               className="btn-solid"

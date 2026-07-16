@@ -1192,6 +1192,32 @@ try {
   console.warn('Failed to load inquiries.json disk cache:', e.message);
 }
 
+// Blogs fallback data
+const blogsJsonPath = path.join(__dirname, 'blogs.json');
+let fallbackBlogs = [];
+
+function saveBlogsToDisk() {
+  try {
+    fs.writeFileSync(blogsJsonPath, JSON.stringify(fallbackBlogs, null, 2), 'utf8');
+  } catch (err) {
+    console.error('Failed to write blogs to disk:', err.message);
+  }
+}
+
+// Load blogs from disk cache if exists
+try {
+  if (fs.existsSync(blogsJsonPath)) {
+    const data = fs.readFileSync(blogsJsonPath, 'utf8');
+    const parsed = JSON.parse(data);
+    if (Array.isArray(parsed)) {
+      fallbackBlogs = parsed;
+      console.log(`Loaded ${fallbackBlogs.length} blogs from blogs.json disk cache.`);
+    }
+  }
+} catch (e) {
+  console.warn('Failed to load blogs.json disk cache:', e.message);
+}
+
 
 // Initialize Database Tables
 async function initDb() {
@@ -1740,17 +1766,135 @@ app.delete('/api/inquiries/:id', authenticateToken, async (req, res) => {
   }
 });
 
+// ═══════════════════════════════════════════
+//  BLOG ENDPOINTS
+// ═══════════════════════════════════════════
 
-// Start Server and Init Database (Only if not running in Vercel Serverless environment)
-if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
-  app.listen(PORT, async () => {
-    console.log(`Server is running on port ${PORT}`);
-    await initDb();
+// Get All Blogs (Public)
+app.get('/api/blogs', async (req, res) => {
+  const { category } = req.query;
+  try {
+    let blogs = [...fallbackBlogs].sort((a, b) => b.id - a.id);
+    if (category) {
+      blogs = blogs.filter(b => b.category.toLowerCase() === category.toLowerCase());
+    }
+    res.json(blogs);
+  } catch (err) {
+    console.warn('Fetch blogs failed:', err.message);
+    res.status(500).json({ error: 'Failed to fetch blogs' });
+  }
+});
+
+// Get Single Blog (Public)
+app.get('/api/blogs/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const blog = fallbackBlogs.find(b => b.id.toString() === id);
+    if (!blog) {
+      return res.status(404).json({ error: 'Blog not found' });
+    }
+    res.json(blog);
+  } catch (err) {
+    console.warn('Fetch blog failed:', err.message);
+    res.status(500).json({ error: 'Failed to fetch blog' });
+  }
+});
+
+// Create Blog (Admin Only)
+app.post('/api/blogs', authenticateToken, async (req, res) => {
+  const { title, category, readTime, image, excerpt, content, featured, attachments } = req.body;
+  try {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    const newBlog = {
+      id: Math.max(...fallbackBlogs.map(b => b.id), 0) + 1,
+      title: title || 'Untitled Blog',
+      category: category || 'General',
+      date: dateStr,
+      readTime: readTime || '5 min read',
+      image: image || '',
+      excerpt: excerpt || '',
+      content: content || '',
+      featured: featured || false,
+      attachments: attachments || []
+    };
+    fallbackBlogs.push(newBlog);
+    saveBlogsToDisk();
+    res.status(201).json(newBlog);
+  } catch (err) {
+    console.error('Create blog failed:', err.message);
+    res.status(500).json({ error: 'Failed to create blog' });
+  }
+});
+
+// Update Blog (Admin Only)
+app.put('/api/blogs/:id', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const index = fallbackBlogs.findIndex(b => b.id.toString() === id);
+    if (index === -1) {
+      return res.status(404).json({ error: 'Blog not found' });
+    }
+    const updatedBlog = { ...fallbackBlogs[index], ...req.body, id: fallbackBlogs[index].id };
+    fallbackBlogs[index] = updatedBlog;
+    saveBlogsToDisk();
+    res.json(updatedBlog);
+  } catch (err) {
+    console.error('Update blog failed:', err.message);
+    res.status(500).json({ error: 'Failed to update blog' });
+  }
+});
+
+// Delete Blog (Admin Only)
+app.delete('/api/blogs/:id', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const index = fallbackBlogs.findIndex(b => b.id.toString() === id);
+    if (index === -1) {
+      return res.status(404).json({ error: 'Blog not found' });
+    }
+    const deleted = fallbackBlogs.splice(index, 1)[0];
+    saveBlogsToDisk();
+    res.json({ message: 'Blog deleted successfully', deletedBlog: deleted });
+  } catch (err) {
+    console.error('Delete blog failed:', err.message);
+    res.status(500).json({ error: 'Failed to delete blog' });
+  }
+});
+
+
+// ═══════════════════════════════════════════
+//  SERVE FRONTEND (Production - Render)
+// ═══════════════════════════════════════════
+// In production, serve the Vite-built React app from /dist
+if (process.env.NODE_ENV === 'production') {
+  const distPath = path.join(__dirname, '..', 'dist');
+  
+  // Serve static files from the Vite build output
+  app.use(express.static(distPath));
+
+  // For any non-API route, send the React app's index.html (SPA client-side routing)
+  app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api')) {
+      res.sendFile(path.join(distPath, 'index.html'));
+    }
   });
-} else {
-  // Try to initialize the DB asynchronously on cold start
-  initDb().catch(console.error);
 }
 
-// Export for Vercel Serverless Functions
+// Start Server and Init Database
+const startServer = async () => {
+  try {
+    await initDb();
+  } catch (err) {
+    console.warn('Database init warning (fallback active):', err.message);
+  }
+};
+
+// Always listen — works on both local dev and Render
+app.listen(PORT, async () => {
+  console.log(`Server is running on port ${PORT}`);
+  await startServer();
+});
+
+// Export for Vercel Serverless Functions (backwards compatibility)
 module.exports = app;

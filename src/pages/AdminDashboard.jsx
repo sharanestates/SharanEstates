@@ -3,13 +3,25 @@ import AdminLogin from './AdminLogin';
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [activeTab, setActiveTab] = useState('ready-listings'); // 'ready-listings', 'offplan-listings' or 'inquiries'
+  const [activeTab, setActiveTab] = useState('ready-listings'); // 'ready-listings', 'offplan-listings', 'inquiries', or 'blogs'
   const [searchQuery, setSearchQuery] = useState('');
   const [properties, setProperties] = useState([]);
   const [inquiries, setInquiries] = useState([]);
+  const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+
+  // Blog form states
+  const [isBlogFormOpen, setIsBlogFormOpen] = useState(false);
+  const [blogFormType, setBlogFormType] = useState('create');
+  const [editingBlogId, setEditingBlogId] = useState(null);
+  const [blogForm, setBlogForm] = useState({
+    title: '', category: 'Market Trends', readTime: '5 min read',
+    image: '', excerpt: '', content: '', featured: false, attachments: []
+  });
+  const blogFileInputRef = useRef(null);
+  const blogAttachmentInputRef = useRef(null);
 
   // Form states for Property modal/form
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -123,6 +135,17 @@ export default function AdminDashboard() {
       }
       const inqData = await inqRes.json();
       setInquiries(inqData);
+
+      // Fetch Blogs
+      try {
+        const blogsRes = await fetch(`${API_BASE}/blogs`);
+        if (blogsRes.ok) {
+          const blogsData = await blogsRes.json();
+          setBlogs(Array.isArray(blogsData) ? blogsData : []);
+        }
+      } catch (blogErr) {
+        console.warn('Failed to fetch blogs:', blogErr.message);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -511,6 +534,104 @@ export default function AdminDashboard() {
     }
   };
 
+  // ═══════════════════════════════════════════
+  //  BLOG CRUD HANDLERS
+  // ═══════════════════════════════════════════
+  const handleOpenBlogCreate = () => {
+    setBlogForm({ title: '', category: 'Market Trends', readTime: '5 min read', image: '', excerpt: '', content: '', featured: false, attachments: [] });
+    setBlogFormType('create');
+    setEditingBlogId(null);
+    setIsBlogFormOpen(true);
+  };
+
+  const handleOpenBlogEdit = (blog) => {
+    setBlogForm({
+      title: blog.title || '', category: blog.category || 'General', readTime: blog.readTime || '5 min read',
+      image: blog.image || '', excerpt: blog.excerpt || '', content: blog.content || '',
+      featured: blog.featured || false, attachments: blog.attachments || []
+    });
+    setEditingBlogId(blog.id);
+    setBlogFormType('edit');
+    setIsBlogFormOpen(true);
+  };
+
+  const handleBlogImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { alert('Please upload an image file.'); return; }
+    if (file.size > 2 * 1024 * 1024) { alert('Image must be under 2MB.'); return; }
+    const reader = new FileReader();
+    reader.onloadend = () => setBlogForm(prev => ({ ...prev, image: reader.result }));
+    reader.readAsDataURL(file);
+  };
+
+  const handleBlogAttachments = (e) => {
+    const files = Array.from(e.target.files);
+    const allowed = ['image/', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const validFiles = files.filter(f => allowed.some(t => f.type.startsWith(t)));
+    if (validFiles.length === 0) { alert('Please upload images, PDFs, or Word documents.'); return; }
+
+    validFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setBlogForm(prev => ({
+          ...prev,
+          attachments: [...(prev.attachments || []), { name: file.name, type: file.type, size: file.size, data: reader.result }]
+        }));
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleRemoveAttachment = (index) => {
+    setBlogForm(prev => ({ ...prev, attachments: prev.attachments.filter((_, i) => i !== index) }));
+  };
+
+  const handleBlogSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const url = blogFormType === 'create' ? `${API_BASE}/blogs` : `${API_BASE}/blogs/${editingBlogId}`;
+      const method = blogFormType === 'create' ? 'POST' : 'PUT';
+      const res = await fetch(url, { method, headers: getHeaders(), body: JSON.stringify(blogForm) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to save blog');
+      showSuccess(`Blog "${data.title}" ${blogFormType === 'create' ? 'published' : 'updated'} successfully.`);
+      setIsBlogFormOpen(false);
+      fetchData();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleBlogDelete = async (id, title) => {
+    if (!window.confirm(`Delete blog "${title}"? This cannot be undone.`)) return;
+    setError('');
+    try {
+      const res = await fetch(`${API_BASE}/blogs/${id}`, { method: 'DELETE', headers: getHeaders() });
+      if (!res.ok) { const data = await res.json(); throw new Error(data.error || 'Failed to delete blog'); }
+      showSuccess(`Blog "${title}" deleted.`);
+      fetchData();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleToggleBlogFeatured = async (blog) => {
+    setError('');
+    try {
+      const res = await fetch(`${API_BASE}/blogs/${blog.id}`, {
+        method: 'PUT', headers: getHeaders(),
+        body: JSON.stringify({ ...blog, featured: !blog.featured })
+      });
+      if (!res.ok) { const data = await res.json(); throw new Error(data.error || 'Failed to update blog'); }
+      showSuccess(`Blog "${blog.title}" ${!blog.featured ? 'featured' : 'unfeatured'}.`);
+      fetchData();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   if (!isAuthenticated) {
     return <AdminLogin onLoginSuccess={checkAuth} />;
   }
@@ -616,6 +737,13 @@ export default function AdminDashboard() {
             style={{ fontSize: '1rem', paddingBottom: '0.8rem', cursor: 'pointer', borderBottom: activeTab === 'inquiries' ? '2px solid var(--primary-dark)' : 'none', fontWeight: activeTab === 'inquiries' ? 600 : 400 }}
           >
             Client Inquiries ({totalPendingInquiries})
+          </span>
+          <span 
+            className={`tab ${activeTab === 'blogs' ? 'active' : ''}`} 
+            onClick={() => { setActiveTab('blogs'); setSearchQuery(''); }}
+            style={{ fontSize: '1rem', paddingBottom: '0.8rem', cursor: 'pointer', borderBottom: activeTab === 'blogs' ? '2px solid var(--primary-dark)' : 'none', fontWeight: activeTab === 'blogs' ? 600 : 400 }}
+          >
+            Blog Posts ({blogs.length})
           </span>
         </div>
 
@@ -915,6 +1043,82 @@ export default function AdminDashboard() {
                             </tr>
                           );
                         })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* ═══════ BLOGS TAB ═══════ */}
+            {activeTab === 'blogs' && (
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                  <h3 style={{ fontSize: '1.5rem', fontFamily: 'var(--font-serif)' }}>Blog Management</h3>
+                  <button onClick={handleOpenBlogCreate} className="btn-solid" style={{ fontSize: '0.85rem', padding: '0.6rem 1.5rem' }}>+ New Blog Post</button>
+                </div>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Create, edit, and manage blog articles. Upload images, PDFs, and Word documents as attachments.</p>
+
+                <div className="glass-panel" style={{ overflowX: 'auto', padding: '1rem' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
+                        <th style={{ padding: '1rem' }}>Title</th>
+                        <th style={{ padding: '1rem' }}>Category</th>
+                        <th style={{ padding: '1rem' }}>Date</th>
+                        <th style={{ padding: '1rem', textAlign: 'center' }}>Featured</th>
+                        <th style={{ padding: '1rem', textAlign: 'center' }}>Files</th>
+                        <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {blogs.length === 0 ? (
+                        <tr><td colSpan="6" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No blog posts found. Click "+ New Blog Post" to create one.</td></tr>
+                      ) : (
+                        blogs.map((blog) => (
+                          <tr key={blog.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
+                            <td style={{ padding: '1rem', maxWidth: '300px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                {blog.image && (
+                                  <img src={blog.image} alt="" style={{ width: '45px', height: '45px', objectFit: 'cover', borderRadius: '6px', flexShrink: 0 }} />
+                                )}
+                                <div>
+                                  <div style={{ fontWeight: 600, color: 'var(--text-dark)', lineHeight: 1.3 }}>{blog.title}</div>
+                                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '2px' }}>{blog.readTime}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td style={{ padding: '1rem' }}>
+                              <span style={{ background: '#f0f0f0', padding: '0.25rem 0.6rem', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 500 }}>{blog.category}</span>
+                            </td>
+                            <td style={{ padding: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>{blog.date}</td>
+                            <td style={{ padding: '1rem', textAlign: 'center' }}>
+                              <div
+                                onClick={() => handleToggleBlogFeatured(blog)}
+                                style={{
+                                  width: '42px', height: '22px', borderRadius: '11px', cursor: 'pointer',
+                                  background: blog.featured ? 'var(--primary-dark)' : '#d1d5db',
+                                  position: 'relative', transition: 'background 0.3s', display: 'inline-block'
+                                }}
+                              >
+                                <div style={{
+                                  width: '18px', height: '18px', borderRadius: '50%', background: '#fff',
+                                  position: 'absolute', top: '2px', left: blog.featured ? '22px' : '2px',
+                                  transition: 'left 0.3s', boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+                                }} />
+                              </div>
+                            </td>
+                            <td style={{ padding: '1rem', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                              {(blog.attachments || []).length > 0 ? `${blog.attachments.length} file${blog.attachments.length > 1 ? 's' : ''}` : '—'}
+                            </td>
+                            <td style={{ padding: '1rem', textAlign: 'right' }}>
+                              <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                                <button onClick={() => handleOpenBlogEdit(blog)} style={{ background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-dark)', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}>Edit</button>
+                                <button onClick={() => handleBlogDelete(blog.id, blog.title)} style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}>Delete</button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
                       )}
                     </tbody>
                   </table>
@@ -1341,6 +1545,193 @@ export default function AdminDashboard() {
 
                 <button type="submit" className="btn-solid" style={{ width: '100%', padding: '1rem', borderRadius: '8px', fontSize: '1rem', fontWeight: 600 }}>
                   {formType === 'create' ? 'PUBLISH LISTING' : 'SAVE CHANGES'}
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* ═══════ Blog Create/Edit Modal ═══════ */}
+        {isBlogFormOpen && (
+          <div style={{
+            position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh',
+            background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(5px)',
+            zIndex: 1100, display: 'flex', justifyContent: 'center', alignItems: 'center',
+            padding: '1rem'
+          }} onClick={() => setIsBlogFormOpen(false)}>
+            <div
+              className="glass-panel"
+              style={{
+                background: '#FFFFFF', padding: '2.5rem', width: '100%', maxWidth: '640px',
+                maxHeight: '90vh', overflowY: 'auto', position: 'relative'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setIsBlogFormOpen(false)}
+                style={{ position: 'absolute', top: '1rem', right: '1.5rem', background: 'transparent', border: 'none', fontSize: '2rem', cursor: 'pointer', color: 'var(--text-muted)' }}
+              >
+                &times;
+              </button>
+
+              <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', marginBottom: '1.5rem' }}>
+                {blogFormType === 'create' ? 'New Blog Post' : 'Edit Blog Post'}
+              </h2>
+
+              <form onSubmit={handleBlogSubmit}>
+                {/* Title */}
+                <div style={{ marginBottom: '1.2rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Title</label>
+                  <input
+                    type="text" required
+                    value={blogForm.title}
+                    onChange={(e) => setBlogForm(prev => ({ ...prev, title: e.target.value }))}
+                    style={inputStyle}
+                    placeholder="Enter blog title..."
+                  />
+                </div>
+
+                {/* Category + Read Time */}
+                <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.2rem', flexWrap: 'wrap' }}>
+                  <div style={{ flex: 1, minWidth: '150px' }}>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Category</label>
+                    <select
+                      value={blogForm.category}
+                      onChange={(e) => setBlogForm(prev => ({ ...prev, category: e.target.value }))}
+                      style={inputStyle}
+                    >
+                      <option value="Market Trends">Market Trends</option>
+                      <option value="Investment">Investment</option>
+                      <option value="Guides">Guides</option>
+                      <option value="Architecture">Architecture</option>
+                      <option value="Lifestyle">Lifestyle</option>
+                      <option value="News">News</option>
+                      <option value="General">General</option>
+                    </select>
+                  </div>
+                  <div style={{ flex: 1, minWidth: '150px' }}>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Read Time</label>
+                    <input
+                      type="text"
+                      value={blogForm.readTime}
+                      onChange={(e) => setBlogForm(prev => ({ ...prev, readTime: e.target.value }))}
+                      style={inputStyle}
+                      placeholder="e.g. 5 min read"
+                    />
+                  </div>
+                </div>
+
+                {/* Cover Image */}
+                <div style={{ marginBottom: '1.2rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Cover Image</label>
+                  <div
+                    onClick={() => blogFileInputRef.current?.click()}
+                    style={{
+                      border: '2px dashed var(--border-color)', borderRadius: '12px', padding: '1.5rem',
+                      textAlign: 'center', cursor: 'pointer', background: '#fafafa',
+                      transition: 'border-color 0.3s'
+                    }}
+                  >
+                    {blogForm.image ? (
+                      <img src={blogForm.image} alt="Cover" style={{ maxHeight: '150px', maxWidth: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+                    ) : (
+                      <div>
+                        <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📷</div>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Click to upload cover image</p>
+                      </div>
+                    )}
+                  </div>
+                  <input ref={blogFileInputRef} type="file" accept="image/*" onChange={handleBlogImageUpload} style={{ display: 'none' }} />
+                  {blogForm.image && (
+                    <button type="button" onClick={() => setBlogForm(prev => ({ ...prev, image: '' }))} style={{ background: 'transparent', border: 'none', color: '#ef4444', fontSize: '0.8rem', cursor: 'pointer', marginTop: '0.5rem' }}>
+                      Remove image
+                    </button>
+                  )}
+                </div>
+
+                {/* Excerpt */}
+                <div style={{ marginBottom: '1.2rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Excerpt / Summary</label>
+                  <textarea
+                    value={blogForm.excerpt}
+                    onChange={(e) => setBlogForm(prev => ({ ...prev, excerpt: e.target.value }))}
+                    style={{ ...inputStyle, minHeight: '80px', resize: 'vertical' }}
+                    placeholder="Brief summary shown in blog cards..."
+                  />
+                </div>
+
+                {/* Content */}
+                <div style={{ marginBottom: '1.2rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Full Content</label>
+                  <textarea
+                    value={blogForm.content}
+                    onChange={(e) => setBlogForm(prev => ({ ...prev, content: e.target.value }))}
+                    style={{ ...inputStyle, minHeight: '160px', resize: 'vertical' }}
+                    placeholder="Write your full blog article here..."
+                  />
+                </div>
+
+                {/* Featured Toggle */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.5rem' }}>
+                  <div
+                    onClick={() => setBlogForm(prev => ({ ...prev, featured: !prev.featured }))}
+                    style={{
+                      width: '42px', height: '22px', borderRadius: '11px', cursor: 'pointer',
+                      background: blogForm.featured ? 'var(--primary-dark)' : '#d1d5db',
+                      position: 'relative', transition: 'background 0.3s', flexShrink: 0
+                    }}
+                  >
+                    <div style={{
+                      width: '18px', height: '18px', borderRadius: '50%', background: '#fff',
+                      position: 'absolute', top: '2px', left: blogForm.featured ? '22px' : '2px',
+                      transition: 'left 0.3s', boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+                    }} />
+                  </div>
+                  <label style={{ fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }} onClick={() => setBlogForm(prev => ({ ...prev, featured: !prev.featured }))}>
+                    Mark as Featured
+                  </label>
+                </div>
+
+                {/* Attachments */}
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Attachments (Images, PDFs, Word Docs)</label>
+                  <button
+                    type="button"
+                    onClick={() => blogAttachmentInputRef.current?.click()}
+                    style={{
+                      background: '#f5f5f5', border: '1px dashed var(--border-color)',
+                      padding: '0.6rem 1.2rem', borderRadius: '8px', cursor: 'pointer',
+                      fontSize: '0.85rem', color: 'var(--text-dark)', marginBottom: '0.8rem'
+                    }}
+                  >
+                    📎 Add Files
+                  </button>
+                  <input ref={blogAttachmentInputRef} type="file" multiple accept="image/*,.pdf,.doc,.docx" onChange={handleBlogAttachments} style={{ display: 'none' }} />
+
+                  {(blogForm.attachments || []).length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      {blogForm.attachments.map((att, i) => (
+                        <div key={i} style={{
+                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                          background: '#f9f9f9', padding: '0.5rem 0.8rem', borderRadius: '8px',
+                          border: '1px solid var(--border-color)'
+                        }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, minWidth: 0 }}>
+                            <span style={{ fontSize: '1.1rem' }}>
+                              {att.type?.includes('pdf') ? '📄' : att.type?.includes('word') || att.type?.includes('document') ? '📝' : '🖼️'}
+                            </span>
+                            <span style={{ fontSize: '0.82rem', color: 'var(--text-dark)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{att.name}</span>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', flexShrink: 0 }}>({(att.size / 1024).toFixed(0)} KB)</span>
+                          </div>
+                          <button type="button" onClick={() => handleRemoveAttachment(i)} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '1.1rem', padding: '0 0.3rem' }}>✕</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <button type="submit" className="btn-solid" style={{ width: '100%', padding: '1rem', borderRadius: '8px', fontSize: '1rem', fontWeight: 600 }}>
+                  {blogFormType === 'create' ? 'PUBLISH BLOG' : 'SAVE CHANGES'}
                 </button>
               </form>
             </div>

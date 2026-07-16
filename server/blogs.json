@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "title": "Dubai Real Estate Market Report: Q2 2025 Insights",
+    "category": "Market Trends",
+    "date": "June 28, 2025",
+    "readTime": "8 min read",
+    "image": "/blogs/blog_market_trends.webp",
+    "excerpt": "Transaction volumes hit record highs as off-plan sales surge 42% year-over-year. We break down the numbers behind Dubai's unstoppable real estate momentum and what it means for investors.",
+    "content": "",
+    "featured": true,
+    "attachments": []
+  },
+  {
+    "id": 2,
+    "title": "Why Dubai Remains the World's Top Destination for Property Investment",
+    "category": "Investment",
+    "date": "June 15, 2025",
+    "readTime": "6 min read",
+    "image": "/blogs/blog_investment.webp",
+    "excerpt": "From zero income tax to Golden Visas, Dubai offers a compelling mix of lifestyle and financial returns. Discover why global HNW investors are allocating more capital to the emirate.",
+    "content": "",
+    "featured": true,
+    "attachments": []
+  },
+  {
+    "id": 3,
+    "title": "UAE Golden Visa Through Property: Complete Guide 2025",
+    "category": "Guides",
+    "date": "May 30, 2025",
+    "readTime": "10 min read",
+    "image": "/blogs/blog_golden_visa.webp",
+    "excerpt": "Everything you need to know about obtaining the UAE 10-year Golden Visa through real estate investment — eligibility, requirements, benefits, and step-by-step process.",
+    "content": "",
+    "featured": false,
+    "attachments": []
+  },
+  {
+    "id": 4,
+    "title": "The Architecture Shaping Dubai's Next Skyline",
+    "category": "Architecture",
+    "date": "May 18, 2025",
+    "readTime": "7 min read",
+    "image": "/blogs/blog_architecture.webp",
+    "excerpt": "From parametric facades to sustainable supertalls, we explore the design language defining Dubai's next generation of landmark developments and the architects behind them.",
+    "content": "",
+    "featured": false,
+    "attachments": []
+  },
+  {
+    "id": 5,
+    "title": "Off-Plan vs Ready: Making the Right Investment Choice",
+    "category": "Investment",
+    "date": "April 28, 2025",
+    "readTime": "9 min read",
+    "image": "/blogs/blog_offplan.webp",
+    "excerpt": "Understanding the trade-offs between off-plan and ready properties in Dubai's current market. Capital appreciation, payment plans, and risk factors compared side by side.",
+    "content": "",
+    "featured": false,
+    "attachments": []
+  },
+  {
+    "id": 6,
+    "title": "Living the Dubai Dream: A Guide to Luxury Lifestyle Communities",
+    "category": "Lifestyle",
+    "date": "April 10, 2025",
+    "readTime": "5 min read",
+    "image": "/blogs/blog_lifestyle.webp",
+    "excerpt": "From infinity pools to private beaches, Dubai's residential communities offer unmatched lifestyle amenities. Explore the top destinations for those seeking the ultimate in modern living.",
+    "content": "",
+    "featured": false,
+    "attachments": []
+  }
+]

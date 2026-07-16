@@ -22,15 +22,15 @@ function App() {
 
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 0.95,
+      duration: 1.4,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
       smoothTouch: true,
       syncTouch: true,
-      wheelMultiplier: 1.05,
-      touchMultiplier: 2.6,
+      wheelMultiplier: 0.85,
+      touchMultiplier: 1.6,
       infinite: false,
     });
 

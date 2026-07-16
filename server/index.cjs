@@ -1514,7 +1514,6 @@ app.post('/api/properties/upload-doc', authenticateToken, async (req, res) => {
 
       // Force direct download parameter
       let directUrl = cleanedUrl
-        .replace('www.dropbox.com', 'dl.dropboxusercontent.com')
         .replace('?dl=0', '?dl=1');
       if (!directUrl.includes('?dl=1') && !directUrl.includes('?raw=1')) {
         directUrl += (directUrl.includes('?') ? '&' : '?') + 'dl=1';

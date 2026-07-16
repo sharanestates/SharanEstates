@@ -959,116 +959,216 @@ export default function AdminDashboard() {
                   )}
                 </div>
 
-                <div className="glass-panel admin-table-container" style={{ padding: '1rem' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                    <thead>
-                      <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
-                        <th style={{ padding: '1rem' }}>Property</th>
-                        <th style={{ padding: '1rem' }}>Category</th>
-                        <th style={{ padding: '1rem' }}>Type</th>
-                        <th style={{ padding: '1rem' }}>Location</th>
-                        <th style={{ padding: '1rem' }}>Price</th>
-                        <th style={{ padding: '1rem' }}>Status</th>
-                        <th style={{ padding: '1rem', textAlign: 'center' }}>Highlight</th>
-                        <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {getFilteredList(activeTab === 'ready-listings' ? readyProperties : offPlanProperties).length === 0 ? (
-                        <tr>
-                          <td colSpan="8" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No properties found. Try a different search query or add a property!</td>
+                {/* Desktop view: Table */}
+                <div className="admin-desktop-view">
+                  <div className="glass-panel admin-table-container" style={{ padding: '1rem' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
+                          <th style={{ padding: '1rem' }}>Property</th>
+                          <th style={{ padding: '1rem' }}>Category</th>
+                          <th style={{ padding: '1rem' }}>Type</th>
+                          <th style={{ padding: '1rem' }}>Location</th>
+                          <th style={{ padding: '1rem' }}>Price</th>
+                          <th style={{ padding: '1rem' }}>Status</th>
+                          <th style={{ padding: '1rem', textAlign: 'center' }}>Highlight</th>
+                          <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
                         </tr>
-                      ) : (
-                        getFilteredList(activeTab === 'ready-listings' ? readyProperties : offPlanProperties).map((prop) => {
-                          const floorsArray = sanitizeFloorsArray(prop.floors);
-                          let totalFlats = 0;
-                          floorsArray.forEach(lvl => {
-                            if (lvl.flats && Array.isArray(lvl.flats)) {
-                              totalFlats += lvl.flats.length;
-                            }
-                          });
+                      </thead>
+                      <tbody>
+                        {getFilteredList(activeTab === 'ready-listings' ? readyProperties : offPlanProperties).length === 0 ? (
+                          <tr>
+                            <td colSpan="8" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No properties found. Try a different search query or add a property!</td>
+                          </tr>
+                        ) : (
+                          getFilteredList(activeTab === 'ready-listings' ? readyProperties : offPlanProperties).map((prop) => {
+                            const floorsArray = sanitizeFloorsArray(prop.floors);
+                            let totalFlats = 0;
+                            floorsArray.forEach(lvl => {
+                              if (lvl.flats && Array.isArray(lvl.flats)) {
+                                totalFlats += lvl.flats.length;
+                              }
+                            });
 
-                          return (
-                            <tr key={prop.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
-                              <td style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <img src={prop.image} alt={prop.title} style={{ width: '50px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={(e) => { e.target.src = '/listing_villa.webp' }} />
-                                <div>
-                                  <div style={{ fontWeight: 600, color: 'var(--text-dark)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                                    {prop.title}
-                                    {prop.starred && <span style={{ color: '#000000', fontSize: '1.1rem' }} title="Starred Property">★</span>}
+                            return (
+                              <tr key={prop.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
+                                <td style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                  <img src={prop.image} alt={prop.title} style={{ width: '50px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={(e) => { e.target.src = '/listing_villa.webp' }} />
+                                  <div>
+                                    <div style={{ fontWeight: 600, color: 'var(--text-dark)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                      {prop.title}
+                                      {prop.starred && <span style={{ color: '#000000', fontSize: '1.1rem' }} title="Starred Property">★</span>}
+                                    </div>
+                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                                      🛏️ {prop.beds} Beds | 🚿 {prop.baths} Baths{prop.size ? ` | 📏 ${prop.size}` : ''} | 🏢 {totalFlats} Total Flats
+                                    </div>
                                   </div>
-                                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                                    🛏️ {prop.beds} Beds | 🚿 {prop.baths} Baths{prop.size ? ` | 📏 ${prop.size}` : ''} | 🏢 {totalFlats} Total Flats
-                                  </div>
-                                </div>
-                              </td>
-                              <td style={{ padding: '1rem', textTransform: 'capitalize' }}>{prop.category}</td>
-                              <td style={{ padding: '1rem', textTransform: 'capitalize' }}>{prop.type}</td>
-                              <td style={{ padding: '1rem' }}>{prop.location}</td>
-                              <td style={{ padding: '1rem', fontWeight: 600 }}>{prop.price}</td>
-                              <td style={{ padding: '1rem' }}>
-                                <span style={{
-                                  padding: '0.2rem 0.6rem',
-                                  borderRadius: '20px',
-                                  fontSize: '0.75rem',
-                                  fontWeight: 600,
-                                  background: prop.status === 'Available' ? '#d1fae5' : prop.status === 'Sold' ? '#f3f4f6' : '#fef3c7',
-                                  color: prop.status === 'Available' ? '#065f46' : prop.status === 'Sold' ? '#374151' : '#92400e'
-                                }}>
-                                  {prop.status}
-                                </span>
-                              </td>
-                              <td style={{ padding: '1rem', textAlign: 'center' }}>
-                                <button 
-                                  onClick={() => handleToggleStarred(prop)}
-                                  style={{
-                                    background: (prop.starred === true || prop.starred === 'true') ? '#000000' : 'rgba(0, 0, 0, 0.08)',
-                                    border: 'none',
-                                    borderRadius: '20px',
-                                    width: '44px',
-                                    height: '24px',
-                                    position: 'relative',
-                                    cursor: 'pointer',
-                                    padding: 0,
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    transition: 'background-color 0.3s ease'
-                                  }}
-                                  title={(prop.starred === true || prop.starred === 'true') ? 'Remove from Curated Highlights' : 'Add to Curated Highlights'}
-                                >
+                                </td>
+                                <td style={{ padding: '1rem', textTransform: 'capitalize' }}>{prop.category}</td>
+                                <td style={{ padding: '1rem', textTransform: 'capitalize' }}>{prop.type}</td>
+                                <td style={{ padding: '1rem' }}>{prop.location}</td>
+                                <td style={{ padding: '1rem', fontWeight: 600 }}>{prop.price}</td>
+                                <td style={{ padding: '1rem' }}>
                                   <span style={{
-                                    display: 'block',
-                                    width: '18px',
-                                    height: '18px',
-                                    borderRadius: '50%',
-                                    background: '#FFFFFF',
-                                    position: 'absolute',
-                                    left: (prop.starred === true || prop.starred === 'true') ? '22px' : '4px',
-                                    transition: 'left 0.3s ease',
-                                    boxShadow: '0 1px 3px rgba(0,0,0,0.15)'
-                                  }} />
-                                </button>
-                              </td>
-                              <td style={{ padding: '1rem', textAlign: 'right' }}>
-                                <button 
-                                  onClick={() => handleOpenEditForm(prop)} 
-                                  style={{ marginRight: '0.5rem', background: 'transparent', border: '1px solid var(--primary-color)', color: 'var(--primary-dark)', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
-                                >
-                                  Edit
-                                </button>
-                                <button 
-                                  onClick={() => handlePropertyDelete(prop.id, prop.title)} 
-                                  style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
-                                >
-                                  Delete
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })
-                      )}
-                    </tbody>
-                  </table>
+                                    padding: '0.2rem 0.6rem',
+                                    borderRadius: '20px',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 600,
+                                    background: prop.status === 'Available' ? '#d1fae5' : prop.status === 'Sold' ? '#f3f4f6' : '#fef3c7',
+                                    color: prop.status === 'Available' ? '#065f46' : prop.status === 'Sold' ? '#374151' : '#92400e'
+                                  }}>
+                                    {prop.status}
+                                  </span>
+                                </td>
+                                <td style={{ padding: '1rem', textAlign: 'center' }}>
+                                  <button 
+                                    onClick={() => handleToggleStarred(prop)}
+                                    style={{
+                                      background: (prop.starred === true || prop.starred === 'true') ? '#000000' : 'rgba(0, 0, 0, 0.08)',
+                                      border: 'none',
+                                      borderRadius: '20px',
+                                      width: '44px',
+                                      height: '24px',
+                                      position: 'relative',
+                                      cursor: 'pointer',
+                                      padding: 0,
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      transition: 'background-color 0.3s ease'
+                                    }}
+                                    title={(prop.starred === true || prop.starred === 'true') ? 'Remove from Curated Highlights' : 'Add to Curated Highlights'}
+                                  >
+                                    <span style={{
+                                      display: 'block',
+                                      width: '18px',
+                                      height: '18px',
+                                      borderRadius: '50%',
+                                      background: '#FFFFFF',
+                                      position: 'absolute',
+                                      left: (prop.starred === true || prop.starred === 'true') ? '22px' : '4px',
+                                      transition: 'left 0.3s ease',
+                                      boxShadow: '0 1px 3px rgba(0,0,0,0.15)'
+                                    }} />
+                                  </button>
+                                </td>
+                                <td style={{ padding: '1rem', textAlign: 'right' }}>
+                                  <button 
+                                    onClick={() => handleOpenEditForm(prop)} 
+                                    style={{ marginRight: '0.5rem', background: 'transparent', border: '1px solid var(--primary-color)', color: 'var(--primary-dark)', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
+                                  >
+                                    Edit
+                                  </button>
+                                  <button 
+                                    onClick={() => handlePropertyDelete(prop.id, prop.title)} 
+                                    style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
+                                  >
+                                    Delete
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Mobile view: Cards */}
+                <div className="admin-mobile-view">
+                  {getFilteredList(activeTab === 'ready-listings' ? readyProperties : offPlanProperties).length === 0 ? (
+                    <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                      No properties found.
+                    </div>
+                  ) : (
+                    getFilteredList(activeTab === 'ready-listings' ? readyProperties : offPlanProperties).map((prop) => {
+                      const floorsArray = sanitizeFloorsArray(prop.floors);
+                      let totalFlats = 0;
+                      floorsArray.forEach(lvl => {
+                        if (lvl.flats && Array.isArray(lvl.flats)) {
+                          totalFlats += lvl.flats.length;
+                        }
+                      });
+
+                      return (
+                        <div key={prop.id} className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', background: '#FFFFFF' }}>
+                          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                            <img src={prop.image} alt={prop.title} style={{ width: '60px', height: '50px', objectFit: 'cover', borderRadius: '6px' }} onError={(e) => { e.target.src = '/listing_villa.webp' }} />
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap', wordBreak: 'break-word' }}>
+                                {prop.title}
+                                {prop.starred && <span style={{ color: '#000000', fontSize: '1.1rem' }}>★</span>}
+                              </div>
+                              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                                📍 {prop.location}
+                              </div>
+                            </div>
+                            <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--primary-dark)', whiteSpace: 'nowrap' }}>
+                              {prop.price}
+                            </div>
+                          </div>
+
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)', padding: '0.5rem 0', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                            <div>🛏️ {prop.beds} | 🚿 {prop.baths} | 🏢 {totalFlats} Flats</div>
+                            <span style={{
+                              padding: '0.15rem 0.5rem',
+                              borderRadius: '20px',
+                              fontSize: '0.7rem',
+                              fontWeight: 600,
+                              background: prop.status === 'Available' ? '#d1fae5' : prop.status === 'Sold' ? '#f3f4f6' : '#fef3c7',
+                              color: prop.status === 'Available' ? '#065f46' : prop.status === 'Sold' ? '#374151' : '#92400e'
+                            }}>
+                              {prop.status}
+                            </span>
+                          </div>
+
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                              <span>Highlight:</span>
+                              <button 
+                                onClick={() => handleToggleStarred(prop)}
+                                style={{
+                                  background: (prop.starred === true || prop.starred === 'true') ? '#000000' : 'rgba(0, 0, 0, 0.08)',
+                                  border: 'none',
+                                  borderRadius: '20px',
+                                  width: '36px',
+                                  height: '20px',
+                                  position: 'relative',
+                                  cursor: 'pointer',
+                                  padding: 0
+                                }}
+                              >
+                                <span style={{
+                                  display: 'block',
+                                  width: '12px',
+                                  height: '12px',
+                                  borderRadius: '50%',
+                                  background: '#FFFFFF',
+                                  position: 'absolute',
+                                  left: (prop.starred === true || prop.starred === 'true') ? '20px' : '4px',
+                                  transition: 'left 0.3s ease'
+                                }} />
+                              </button>
+                            </div>
+                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                              <button 
+                                onClick={() => handleOpenEditForm(prop)} 
+                                style={{ background: 'transparent', border: '1px solid var(--primary-color)', color: 'var(--primary-dark)', padding: '0.35rem 0.7rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600 }}
+                              >
+                                Edit
+                              </button>
+                              <button 
+                                onClick={() => handlePropertyDelete(prop.id, prop.title)} 
+                                style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.35rem 0.7rem', borderRadius: '6px', fontSize: '0.75rem' }}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               </div>
             )}
@@ -1078,114 +1178,38 @@ export default function AdminDashboard() {
                 <h3 style={{ fontSize: '1.5rem', fontFamily: 'var(--font-serif)', marginBottom: '0.5rem' }}>Property Inquiries ({propertyInquiries.length})</h3>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Inquiries from clients interested in specific property types.</p>
                 
-                <div className="glass-panel admin-table-container" style={{ padding: '1rem', marginBottom: '3rem' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                    <thead>
-                      <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
-                        <th style={{ padding: '1rem' }}>Client</th>
-                        <th style={{ padding: '1rem' }}>Contact Info</th>
-                        <th style={{ padding: '1rem' }}>Interest Type</th>
-                        <th style={{ padding: '1rem' }}>Date Received</th>
-                        <th style={{ padding: '1rem' }}>Status</th>
-                        <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {propertyInquiries.length === 0 ? (
-                        <tr>
-                          <td colSpan="6" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No property inquiries found.</td>
+                {/* Desktop view: Table */}
+                <div className="admin-desktop-view">
+                  <div className="glass-panel admin-table-container" style={{ padding: '1rem', marginBottom: '3rem' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
+                          <th style={{ padding: '1rem' }}>Client</th>
+                          <th style={{ padding: '1rem' }}>Contact Info</th>
+                          <th style={{ padding: '1rem' }}>Interest Type</th>
+                          <th style={{ padding: '1rem' }}>Date Received</th>
+                          <th style={{ padding: '1rem' }}>Status</th>
+                          <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
                         </tr>
-                      ) : (
-                        propertyInquiries.map((inq) => (
-                          <tr key={inq.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
-                            <td style={{ padding: '1rem', fontWeight: 600, color: 'var(--text-dark)' }}>{inq.name}</td>
-                            <td style={{ padding: '1rem' }}>
-                              <div>✉ {inq.email}</div>
-                              {inq.phone && <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>☎ {inq.phone}</div>}
-                            </td>
-                            <td style={{ padding: '1rem', textTransform: 'capitalize' }}>
-                              {inq.property_type === 'villa' ? 'Luxury Villas' : 
-                               inq.property_type === 'apartment' ? 'Apartments' : 
-                               inq.property_type === 'offplan' ? 'Off-Plan' : 
-                               inq.property_type === 'commercial' ? 'Commercial' : inq.property_type}
-                            </td>
-                            <td style={{ padding: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                              {new Date(inq.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
-                            </td>
-                            <td style={{ padding: '1rem' }}>
-                              <select 
-                                value={inq.status} 
-                                onChange={(e) => handleInquiryStatusChange(inq.id, e.target.value)}
-                                style={{
-                                  padding: '0.3rem 0.6rem',
-                                  borderRadius: '6px',
-                                  border: '1px solid var(--border-color)',
-                                  fontSize: '0.85rem',
-                                  background: (inq.status === 'Pending' || inq.status === 'New') ? '#fef3c7' : inq.status === 'Contacted' ? '#dbeafe' : '#d1fae5',
-                                  color: (inq.status === 'Pending' || inq.status === 'New') ? '#92400e' : inq.status === 'Contacted' ? '#1e40af' : '#065f46',
-                                  fontWeight: 600,
-                                  cursor: 'pointer'
-                                }}
-                              >
-                                <option value="Pending">Pending</option>
-                                <option value="Contacted">Contacted</option>
-                                <option value="Closed">Closed</option>
-                              </select>
-                            </td>
-                            <td style={{ padding: '1rem', textAlign: 'right' }}>
-                              <button 
-                                onClick={() => handleInquiryDelete(inq.id, inq.name)} 
-                                style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
-                              >
-                                Delete
-                              </button>
-                            </td>
+                      </thead>
+                      <tbody>
+                        {propertyInquiries.length === 0 ? (
+                          <tr>
+                            <td colSpan="6" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No property inquiries found.</td>
                           </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-
-                <h3 style={{ fontSize: '1.5rem', fontFamily: 'var(--font-serif)', marginBottom: '0.5rem' }}>Consultation Requests ({consultationInquiries.length})</h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Private advisor booking requests from the portfolio consultation form.</p>
-                
-                <div className="glass-panel admin-table-container" style={{ padding: '1rem' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                    <thead>
-                      <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
-                        <th style={{ padding: '1rem' }}>Client</th>
-                        <th style={{ padding: '1rem' }}>Contact Info</th>
-                        <th style={{ padding: '1rem' }}>Requested Details</th>
-                        <th style={{ padding: '1rem' }}>Date Received</th>
-                        <th style={{ padding: '1rem' }}>Status</th>
-                        <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {consultationInquiries.length === 0 ? (
-                        <tr>
-                          <td colSpan="6" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No consultation requests found.</td>
-                        </tr>
-                      ) : (
-                        consultationInquiries.map((inq) => {
-                          const details = getConsultationDetails(inq.message);
-                          return (
+                        ) : (
+                          propertyInquiries.map((inq) => (
                             <tr key={inq.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
                               <td style={{ padding: '1rem', fontWeight: 600, color: 'var(--text-dark)' }}>{inq.name}</td>
                               <td style={{ padding: '1rem' }}>
                                 <div>✉ {inq.email}</div>
                                 {inq.phone && <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>☎ {inq.phone}</div>}
                               </td>
-                              <td style={{ padding: '1rem' }}>
-                                {details.rawMessage ? (
-                                  <div style={{ color: 'var(--text-dark)', fontSize: '0.9rem' }}>{details.rawMessage}</div>
-                                ) : (
-                                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-                                    <div style={{ fontSize: '0.9rem' }}>💰 <strong>Budget:</strong> {details.budget}</div>
-                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{details.mode}</div>
-                                  </div>
-                                )}
+                              <td style={{ padding: '1rem', textTransform: 'capitalize' }}>
+                                {inq.property_type === 'villa' ? 'Luxury Villas' : 
+                                 inq.property_type === 'apartment' ? 'Apartments' : 
+                                 inq.property_type === 'offplan' ? 'Off-Plan' : 
+                                 inq.property_type === 'commercial' ? 'Commercial' : inq.property_type}
                               </td>
                               <td style={{ padding: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
                                 {new Date(inq.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
@@ -1219,11 +1243,229 @@ export default function AdminDashboard() {
                                 </button>
                               </td>
                             </tr>
-                          );
-                        })
-                      )}
-                    </tbody>
-                  </table>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Mobile view: Cards */}
+                <div className="admin-mobile-view" style={{ marginBottom: '3rem' }}>
+                  {propertyInquiries.length === 0 ? (
+                    <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                      No property inquiries found.
+                    </div>
+                  ) : (
+                    propertyInquiries.map((inq) => (
+                      <div key={inq.id} className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', background: '#FFFFFF' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                          <div>
+                            <div style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.95rem' }}>{inq.name}</div>
+                            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+                              📅 {new Date(inq.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+                            </div>
+                          </div>
+                          <select 
+                            value={inq.status} 
+                            onChange={(e) => handleInquiryStatusChange(inq.id, e.target.value)}
+                            style={{
+                              padding: '0.25rem 0.5rem',
+                              borderRadius: '6px',
+                              border: '1px solid var(--border-color)',
+                              fontSize: '0.78rem',
+                              background: (inq.status === 'Pending' || inq.status === 'New') ? '#fef3c7' : inq.status === 'Contacted' ? '#dbeafe' : '#d1fae5',
+                              color: (inq.status === 'Pending' || inq.status === 'New') ? '#92400e' : inq.status === 'Contacted' ? '#1e40af' : '#065f46',
+                              fontWeight: 600,
+                              cursor: 'pointer'
+                            }}
+                          >
+                            <option value="Pending">Pending</option>
+                            <option value="Contacted">Contacted</option>
+                            <option value="Closed">Closed</option>
+                          </select>
+                        </div>
+
+                        <div style={{ borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)', padding: '0.5rem 0', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                          <div style={{ wordBreak: 'break-all' }}>✉ <a href={`mailto:${inq.email}`} style={{ color: 'var(--primary-dark)', textDecoration: 'none' }}>{inq.email}</a></div>
+                          {inq.phone && <div>☎ <a href={`tel:${inq.phone}`} style={{ color: 'var(--primary-dark)', textDecoration: 'none' }}>{inq.phone}</a></div>}
+                          <div style={{ marginTop: '0.25rem' }}>
+                            <strong>Interest:</strong> <span style={{ textTransform: 'capitalize' }}>
+                              {inq.property_type === 'villa' ? 'Luxury Villas' : 
+                               inq.property_type === 'apartment' ? 'Apartments' : 
+                               inq.property_type === 'offplan' ? 'Off-Plan' : 
+                               inq.property_type === 'commercial' ? 'Commercial' : inq.property_type}
+                            </span>
+                          </div>
+                        </div>
+
+                        {inq.message && (
+                          <div style={{ fontSize: '0.8rem', color: 'var(--text-dark)', background: '#fafafa', padding: '0.5rem 0.75rem', borderRadius: '6px', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                            {inq.message}
+                          </div>
+                        )}
+
+                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                          <button 
+                            onClick={() => handleInquiryDelete(inq.id, inq.name)} 
+                            style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.35rem 0.7rem', borderRadius: '6px', fontSize: '0.75rem' }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                <h3 style={{ fontSize: '1.5rem', fontFamily: 'var(--font-serif)', marginBottom: '0.5rem' }}>Consultation Requests ({consultationInquiries.length})</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Private advisor booking requests from the portfolio consultation form.</p>
+                
+                {/* Desktop view: Table */}
+                <div className="admin-desktop-view">
+                  <div className="glass-panel admin-table-container" style={{ padding: '1rem' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
+                          <th style={{ padding: '1rem' }}>Client</th>
+                          <th style={{ padding: '1rem' }}>Contact Info</th>
+                          <th style={{ padding: '1rem' }}>Requested Details</th>
+                          <th style={{ padding: '1rem' }}>Date Received</th>
+                          <th style={{ padding: '1rem' }}>Status</th>
+                          <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {consultationInquiries.length === 0 ? (
+                          <tr>
+                            <td colSpan="6" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No consultation requests found.</td>
+                          </tr>
+                        ) : (
+                          consultationInquiries.map((inq) => {
+                            const details = getConsultationDetails(inq.message);
+                            return (
+                              <tr key={inq.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
+                                <td style={{ padding: '1rem', fontWeight: 600, color: 'var(--text-dark)' }}>{inq.name}</td>
+                                <td style={{ padding: '1rem' }}>
+                                  <div>✉ {inq.email}</div>
+                                  {inq.phone && <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>☎ {inq.phone}</div>}
+                                </td>
+                                <td style={{ padding: '1rem' }}>
+                                  {details.rawMessage ? (
+                                    <div style={{ color: 'var(--text-dark)', fontSize: '0.9rem' }}>{details.rawMessage}</div>
+                                  ) : (
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                                      <div style={{ fontSize: '0.9rem' }}>💰 <strong>Budget:</strong> {details.budget}</div>
+                                      <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{details.mode}</div>
+                                    </div>
+                                  )}
+                                </td>
+                                <td style={{ padding: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                                  {new Date(inq.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+                                </td>
+                                <td style={{ padding: '1rem' }}>
+                                  <select 
+                                    value={inq.status} 
+                                    onChange={(e) => handleInquiryStatusChange(inq.id, e.target.value)}
+                                    style={{
+                                      padding: '0.3rem 0.6rem',
+                                      borderRadius: '6px',
+                                      border: '1px solid var(--border-color)',
+                                      fontSize: '0.85rem',
+                                      background: (inq.status === 'Pending' || inq.status === 'New') ? '#fef3c7' : inq.status === 'Contacted' ? '#dbeafe' : '#d1fae5',
+                                      color: (inq.status === 'Pending' || inq.status === 'New') ? '#92400e' : inq.status === 'Contacted' ? '#1e40af' : '#065f46',
+                                      fontWeight: 600,
+                                      cursor: 'pointer'
+                                    }}
+                                  >
+                                    <option value="Pending">Pending</option>
+                                    <option value="Contacted">Contacted</option>
+                                    <option value="Closed">Closed</option>
+                                  </select>
+                                </td>
+                                <td style={{ padding: '1rem', textAlign: 'right' }}>
+                                  <button 
+                                    onClick={() => handleInquiryDelete(inq.id, inq.name)} 
+                                    style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
+                                  >
+                                    Delete
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Mobile view: Cards */}
+                <div className="admin-mobile-view">
+                  {consultationInquiries.length === 0 ? (
+                    <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                      No consultation requests found.
+                    </div>
+                  ) : (
+                    consultationInquiries.map((inq) => {
+                      const details = getConsultationDetails(inq.message);
+                      return (
+                        <div key={inq.id} className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', background: '#FFFFFF' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                            <div>
+                              <div style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.95rem' }}>{inq.name}</div>
+                              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+                                📅 {new Date(inq.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+                              </div>
+                            </div>
+                            <select 
+                              value={inq.status} 
+                              onChange={(e) => handleInquiryStatusChange(inq.id, e.target.value)}
+                              style={{
+                                padding: '0.25rem 0.5rem',
+                                borderRadius: '6px',
+                                border: '1px solid var(--border-color)',
+                                fontSize: '0.78rem',
+                                background: (inq.status === 'Pending' || inq.status === 'New') ? '#fef3c7' : inq.status === 'Contacted' ? '#dbeafe' : '#d1fae5',
+                                color: (inq.status === 'Pending' || inq.status === 'New') ? '#92400e' : inq.status === 'Contacted' ? '#1e40af' : '#065f46',
+                                fontWeight: 600,
+                                cursor: 'pointer'
+                              }}
+                            >
+                              <option value="Pending">Pending</option>
+                              <option value="Contacted">Contacted</option>
+                              <option value="Closed">Closed</option>
+                            </select>
+                          </div>
+
+                          <div style={{ borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)', padding: '0.5rem 0', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                            <div style={{ wordBreak: 'break-all' }}>✉ <a href={`mailto:${inq.email}`} style={{ color: 'var(--primary-dark)', textDecoration: 'none' }}>{inq.email}</a></div>
+                            {inq.phone && <div>☎ <a href={`tel:${inq.phone}`} style={{ color: 'var(--primary-dark)', textDecoration: 'none' }}>{inq.phone}</a></div>}
+                          </div>
+
+                          <div style={{ fontSize: '0.82rem', color: 'var(--text-dark)' }}>
+                            {details.rawMessage ? (
+                              <div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{details.rawMessage}</div>
+                            ) : (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                                <div>💰 <strong>Budget:</strong> {details.budget}</div>
+                                <div style={{ color: 'var(--text-muted)' }}>📍 {details.mode}</div>
+                              </div>
+                            )}
+                          </div>
+
+                          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                            <button 
+                              onClick={() => handleInquiryDelete(inq.id, inq.name)} 
+                              style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.35rem 0.7rem', borderRadius: '6px', fontSize: '0.75rem' }}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               </div>
             )}
@@ -1239,69 +1481,136 @@ export default function AdminDashboard() {
                 </div>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Create, edit, and manage blog articles. Upload images, PDFs, and Word documents as attachments.</p>
 
-                <div className="glass-panel admin-table-container" style={{ padding: '1rem' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                    <thead>
-                      <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
-                        <th style={{ padding: '1rem' }}>Title</th>
-                        <th style={{ padding: '1rem' }}>Category</th>
-                        <th style={{ padding: '1rem' }}>Date</th>
-                        <th style={{ padding: '1rem', textAlign: 'center' }}>Featured</th>
-                        <th style={{ padding: '1rem', textAlign: 'center' }}>Files</th>
-                        <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {blogs.length === 0 ? (
-                        <tr><td colSpan="6" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No blog posts found. Click "+ New Blog Post" to create one.</td></tr>
-                      ) : (
-                        blogs.map((blog) => (
-                          <tr key={blog.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
-                            <td style={{ padding: '1rem', maxWidth: '300px' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                {blog.image && (
-                                  <img src={blog.image} alt="" style={{ width: '45px', height: '45px', objectFit: 'cover', borderRadius: '6px', flexShrink: 0 }} />
-                                )}
-                                <div>
-                                  <div style={{ fontWeight: 600, color: 'var(--text-dark)', lineHeight: 1.3 }}>{blog.title}</div>
-                                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '2px' }}>{blog.readTime}</div>
+                {/* Desktop view: Table */}
+                <div className="admin-desktop-view">
+                  <div className="glass-panel admin-table-container" style={{ padding: '1rem' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
+                          <th style={{ padding: '1rem' }}>Title</th>
+                          <th style={{ padding: '1rem' }}>Category</th>
+                          <th style={{ padding: '1rem' }}>Date</th>
+                          <th style={{ padding: '1rem', textAlign: 'center' }}>Featured</th>
+                          <th style={{ padding: '1rem', textAlign: 'center' }}>Files</th>
+                          <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {blogs.length === 0 ? (
+                          <tr><td colSpan="6" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No blog posts found. Click "+ New Blog Post" to create one.</td></tr>
+                        ) : (
+                          blogs.map((blog) => (
+                            <tr key={blog.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
+                              <td style={{ padding: '1rem', maxWidth: '300px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                  {blog.image && (
+                                    <img src={blog.image} alt="" style={{ width: '45px', height: '45px', objectFit: 'cover', borderRadius: '6px', flexShrink: 0 }} />
+                                  )}
+                                  <div>
+                                    <div style={{ fontWeight: 600, color: 'var(--text-dark)', lineHeight: 1.3 }}>{blog.title}</div>
+                                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '2px' }}>{blog.readTime}</div>
+                                  </div>
                                 </div>
-                              </div>
-                            </td>
-                            <td style={{ padding: '1rem' }}>
-                              <span style={{ background: '#f0f0f0', padding: '0.25rem 0.6rem', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 500 }}>{blog.category}</span>
-                            </td>
-                            <td style={{ padding: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>{blog.date}</td>
-                            <td style={{ padding: '1rem', textAlign: 'center' }}>
-                              <div
-                                onClick={() => handleToggleBlogFeatured(blog)}
-                                style={{
-                                  width: '42px', height: '22px', borderRadius: '11px', cursor: 'pointer',
-                                  background: blog.featured ? 'var(--primary-dark)' : '#d1d5db',
-                                  position: 'relative', transition: 'background 0.3s', display: 'inline-block'
-                                }}
-                              >
-                                <div style={{
-                                  width: '18px', height: '18px', borderRadius: '50%', background: '#fff',
-                                  position: 'absolute', top: '2px', left: blog.featured ? '22px' : '2px',
-                                  transition: 'left 0.3s', boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
-                                }} />
-                              </div>
-                            </td>
-                            <td style={{ padding: '1rem', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                              {(blog.attachments || []).length > 0 ? `${blog.attachments.length} file${blog.attachments.length > 1 ? 's' : ''}` : '—'}
-                            </td>
-                            <td style={{ padding: '1rem', textAlign: 'right' }}>
-                              <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                                <button onClick={() => handleOpenBlogEdit(blog)} style={{ background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-dark)', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}>Edit</button>
-                                <button onClick={() => handleBlogDelete(blog.id, blog.title)} style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}>Delete</button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
+                              </td>
+                              <td style={{ padding: '1rem' }}>
+                                <span style={{ background: '#f0f0f0', padding: '0.25rem 0.6rem', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 500 }}>{blog.category}</span>
+                              </td>
+                              <td style={{ padding: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>{blog.date}</td>
+                              <td style={{ padding: '1rem', textAlign: 'center' }}>
+                                <div
+                                  onClick={() => handleToggleBlogFeatured(blog)}
+                                  style={{
+                                    width: '42px', height: '22px', borderRadius: '11px', cursor: 'pointer',
+                                    background: blog.featured ? 'var(--primary-dark)' : '#d1d5db',
+                                    position: 'relative', transition: 'background 0.3s', display: 'inline-block'
+                                  }}
+                                >
+                                  <div style={{
+                                    width: '18px', height: '18px', borderRadius: '50%', background: '#fff',
+                                    position: 'absolute', top: '2px', left: blog.featured ? '22px' : '2px',
+                                    transition: 'left 0.3s', boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+                                  }} />
+                                </div>
+                              </td>
+                              <td style={{ padding: '1rem', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                {(blog.attachments || []).length > 0 ? `${blog.attachments.length} file${blog.attachments.length > 1 ? 's' : ''}` : '—'}
+                              </td>
+                              <td style={{ padding: '1rem', textAlign: 'right' }}>
+                                <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                                  <button onClick={() => handleOpenBlogEdit(blog)} style={{ background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-dark)', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}>Edit</button>
+                                  <button onClick={() => handleBlogDelete(blog.id, blog.title)} style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}>Delete</button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Mobile view: Cards */}
+                <div className="admin-mobile-view">
+                  {blogs.length === 0 ? (
+                    <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                      No blog posts found. Click "+ New Blog Post" to create one.
+                    </div>
+                  ) : (
+                    blogs.map((blog) => (
+                      <div key={blog.id} className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', background: '#FFFFFF' }}>
+                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                          {blog.image && (
+                            <img src={blog.image} alt="" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '6px', flexShrink: 0 }} />
+                          )}
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.95rem', wordBreak: 'break-word', lineHeight: 1.3 }}>
+                              {blog.title}
+                            </div>
+                            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                              <span>{blog.date}</span> • <span>{blog.readTime}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)', padding: '0.5rem 0', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                          <span style={{ background: '#f3f4f6', padding: '0.2rem 0.5rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-dark)' }}>
+                            {blog.category}
+                          </span>
+                          <div>
+                            📄 {(blog.attachments || []).length > 0 ? `${blog.attachments.length} attachment${blog.attachments.length > 1 ? 's' : ''}` : 'No attachments'}
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                            <span>Featured:</span>
+                            <div
+                              onClick={() => handleToggleBlogFeatured(blog)}
+                              style={{
+                                width: '38px', height: '20px', borderRadius: '10px', cursor: 'pointer',
+                                background: blog.featured ? 'var(--primary-dark)' : '#d1d5db',
+                                position: 'relative', transition: 'background 0.3s', display: 'inline-block'
+                              }}
+                            >
+                              <div style={{
+                                width: '16px', height: '16px', borderRadius: '50%', background: '#fff',
+                                position: 'absolute', top: '2px', left: blog.featured ? '20px' : '2px',
+                                transition: 'left 0.3s', boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+                              }} />
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <button onClick={() => handleOpenBlogEdit(blog)} style={{ background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-dark)', padding: '0.35rem 0.7rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600 }}>
+                              Edit
+                            </button>
+                            <button onClick={() => handleBlogDelete(blog.id, blog.title)} style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.35rem 0.7rem', borderRadius: '6px', fontSize: '0.75rem' }}>
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             )}

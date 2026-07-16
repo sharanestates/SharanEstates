@@ -8,14 +8,14 @@ import RevealSection from '../components/RevealSection';
 import useRealTimeSync from '../components/useRealTimeSync';
 
 const bgImages = [
-  '/dubai_luxury_1.jpg',
-  '/dubai_luxury_2.jpg',
-  '/dubai_luxury_3.jpg',
-  '/dubai_luxury_4.jpg',
-  '/dubai_luxury_5.jpg',
-  '/dubai_luxury_6.jpg',
-  '/dubai_luxury_7.jpg',
-  '/dubai_luxury_8.jpg',
+  '/dubai_luxury_1.webp',
+  '/dubai_luxury_2.webp',
+  '/dubai_luxury_3.webp',
+  '/dubai_luxury_4.webp',
+  '/dubai_luxury_5.webp',
+  '/dubai_luxury_6.webp',
+  '/dubai_luxury_7.webp',
+  '/dubai_luxury_8.webp',
   '/exclusive_villa.webp',
   '/luxury_facade.webp',
   '/luxury_community.webp',

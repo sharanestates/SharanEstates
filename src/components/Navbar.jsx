@@ -273,7 +273,7 @@ export default function Navbar() {
           border: 'none', 
           cursor: 'pointer',
           padding: '0.5rem',
-          color: shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF' 
+          color: 'var(--text-dark)' 
         }} 
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >

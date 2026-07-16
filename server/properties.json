@@ -2923,5 +2923,235 @@
         ]
       }
     ]
+  },
+  {
+    "id": 88,
+    "title": "Hudairiyat Island by Modon",
+    "price": "AED 9,500,000",
+    "image": "https://phpstack-1577143-6149876.cloudwaysapps.com/images/properties/solaya%20(1).webp",
+    "description": "Hudairiyat Island by Modon is a breathtaking luxury island development in Abu Dhabi offering premium villas, townhouses, and waterfront apartments. Known for its world-class sports facilities, beach clubs, and nature trails, this destination is perfect for families and sports enthusiasts seeking a resort-style lifestyle.",
+    "beds": 4,
+    "baths": 5,
+    "size": "4,800 Sq. Ft.",
+    "category": "villas",
+    "type": "off-plan",
+    "location": "Hudairiyat Island, Abu Dhabi",
+    "status": "Off-Plan",
+    "starred": true,
+    "features": [
+      "Island Waterfront Living",
+      "Nature Trails & Parks",
+      "Sports Facilities & Gyms",
+      "Private Beach Access",
+      "Modern Design",
+      "Lush Landscaping"
+    ],
+    "images": [
+      "https://phpstack-1577143-6149876.cloudwaysapps.com/images/properties/solaya%20(1).webp"
+    ],
+    "handover": "Q4 2028",
+    "payment_plan": "50/50",
+    "property_type": "Villas, Townhouses, Apartments",
+    "bedrooms_range": "2-6",
+    "floors": [
+      {
+        "id": 1,
+        "name": "Standard Unit",
+        "flats": [
+          {
+            "name": "Typical Unit",
+            "price": "AED 9,500,000",
+            "size": "TBD Sq. Ft.",
+            "beds": 4,
+            "baths": 5,
+            "status": "Available"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 89,
+    "title": "Peninsula by H&H",
+    "price": "AED 3,800,000",
+    "image": "https://phpstack-1577143-6149876.cloudwaysapps.com/images/properties/emaar-oasis%20(1).webp",
+    "description": "Peninsula by H&H offers elite residential buildings coming soon, with premium stock available in the luxury Rosewood Residences. Located in Business Bay along the Dubai Canal, it blends city conveniences with peaceful waterfront living.",
+    "beds": 2,
+    "baths": 3,
+    "size": "1,600 Sq. Ft.",
+    "category": "apartments",
+    "type": "off-plan",
+    "location": "Business Bay, Dubai",
+    "status": "Off-Plan",
+    "starred": true,
+    "features": [
+      "Waterfront Dubai Canal Views",
+      "Adjacent to Rosewood Residences",
+      "Floor-to-Ceiling Windows",
+      "Infinity Swimming Pool",
+      "State-of-the-Art Fitness Center",
+      "Luxury Concierge"
+    ],
+    "images": [
+      "https://phpstack-1577143-6149876.cloudwaysapps.com/images/properties/emaar-oasis%20(1).webp"
+    ],
+    "handover": "Q2 2027",
+    "payment_plan": "60/40",
+    "property_type": "Apartments, Penthouses",
+    "bedrooms_range": "1-4",
+    "floors": [
+      {
+        "id": 1,
+        "name": "Standard Unit",
+        "flats": [
+          {
+            "name": "Typical Unit",
+            "price": "AED 3,800,000",
+            "size": "TBD Sq. Ft.",
+            "beds": 2,
+            "baths": 3,
+            "status": "Available"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 90,
+    "title": "The Oasis & The Heights by Emaar",
+    "price": "AED 12,000,000",
+    "image": "https://phpstack-1577143-6149876.cloudwaysapps.com/images/properties/yas-park-place%20(1).webp",
+    "description": "The Oasis and The Heights by Emaar are master-planned luxury developments featuring majestic villas, expansive townhouses, and scenic crystal lagoons. Surrounded by dense greenery and top-tier amenities, these projects redefine high-end suburban luxury in Dubai.",
+    "beds": 5,
+    "baths": 6,
+    "size": "6,200 Sq. Ft.",
+    "category": "villas",
+    "type": "off-plan",
+    "location": "The Oasis, Dubai",
+    "status": "Off-Plan",
+    "starred": true,
+    "features": [
+      "Crystal Lagoon Access",
+      "Extensive Green Parks",
+      "Signature Clubhouse",
+      "Private Pool Deck",
+      "Fully Integrated Smart System",
+      "Emaar Master Plan Quality"
+    ],
+    "images": [
+      "https://phpstack-1577143-6149876.cloudwaysapps.com/images/properties/yas-park-place%20(1).webp"
+    ],
+    "handover": "Q3 2028",
+    "payment_plan": "80/20",
+    "property_type": "Villas & Townhouses",
+    "bedrooms_range": "4-6",
+    "floors": [
+      {
+        "id": 1,
+        "name": "Standard Unit",
+        "flats": [
+          {
+            "name": "Typical Unit",
+            "price": "AED 12,000,000",
+            "size": "TBD Sq. Ft.",
+            "beds": 5,
+            "baths": 6,
+            "status": "Available"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 91,
+    "title": "Emaar South Residences",
+    "price": "AED 2,100,000",
+    "image": "https://phpstack-1577143-6149876.cloudwaysapps.com/images/properties/cedarwood-south%20(1).webp",
+    "description": "Emaar South Residences offer modern townhouses and contemporary apartments adjacent to the 18-hole championship golf course and close to Al Maktoum International Airport (DWC). An ideal location for global commuters and active families.",
+    "beds": 3,
+    "baths": 3,
+    "size": "2,200 Sq. Ft.",
+    "category": "townhouses",
+    "type": "off-plan",
+    "location": "Emaar South, Dubai",
+    "status": "Off-Plan",
+    "starred": true,
+    "features": [
+      "Championship Golf Course Access",
+      "Close to DWC Airport",
+      "Community Swimming Pools",
+      "Kids Play Areas",
+      "Modern Kitchens & Finishes",
+      "24/7 Gated Security"
+    ],
+    "images": [
+      "https://phpstack-1577143-6149876.cloudwaysapps.com/images/properties/cedarwood-south%20(1).webp"
+    ],
+    "handover": "Q1 2028",
+    "payment_plan": "70/30",
+    "property_type": "Townhouses & Apartments",
+    "bedrooms_range": "1-4",
+    "floors": [
+      {
+        "id": 1,
+        "name": "Standard Unit",
+        "flats": [
+          {
+            "name": "Typical Unit",
+            "price": "AED 2,100,000",
+            "size": "TBD Sq. Ft.",
+            "beds": 3,
+            "baths": 3,
+            "status": "Available"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 92,
+    "title": "WASL at Jumeirah Golf Estates",
+    "price": "AED 4,800,000",
+    "image": "https://phpstack-1577143-6149876.cloudwaysapps.com/images/properties/hado%20(1).webp",
+    "description": "WASL at Jumeirah Golf Estates brings premium townhouses, luxury villas, and spacious apartments to Dubai's world-class golfing community. Experience high-end modern finishes, green landscapes, and direct proximity to two world-renowned golf courses.",
+    "beds": 4,
+    "baths": 4,
+    "size": "3,800 Sq. Ft.",
+    "category": "villas",
+    "type": "off-plan",
+    "location": "Jumeirah Golf Estates, Dubai",
+    "status": "Off-Plan",
+    "starred": true,
+    "features": [
+      "Jumeirah Golf Estates Location",
+      "Championship Golf Course Views",
+      "Premium European Finishes",
+      "Landscaped Patios & Courtyards",
+      "Private Wellness Center Access",
+      "Lush Community Parks"
+    ],
+    "images": [
+      "https://phpstack-1577143-6149876.cloudwaysapps.com/images/properties/hado%20(1).webp"
+    ],
+    "handover": "Q4 2027",
+    "payment_plan": "60/40",
+    "property_type": "Villas, Townhouses & Apartments",
+    "bedrooms_range": "2-5",
+    "floors": [
+      {
+        "id": 1,
+        "name": "Standard Unit",
+        "flats": [
+          {
+            "name": "Typical Unit",
+            "price": "AED 4,800,000",
+            "size": "TBD Sq. Ft.",
+            "beds": 4,
+            "baths": 4,
+            "status": "Available"
+          }
+        ]
+      }
+    ]
   }
 ]

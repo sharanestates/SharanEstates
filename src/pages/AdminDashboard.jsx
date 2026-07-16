@@ -265,6 +265,37 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleToggleStarred = async (prop) => {
+    setError('');
+    try {
+      const updatedStarred = !(prop.starred === true || prop.starred === 'true');
+      const payload = {
+        ...prop,
+        starred: updatedStarred
+      };
+      
+      // Clean up fields that shouldn't be submitted directly or are managed differently
+      delete payload.imagesInput;
+      delete payload.featuresInput;
+      
+      const res = await fetch(`${API_BASE}/properties/${prop.id}`, {
+        method: 'PUT',
+        headers: getHeaders(),
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to toggle starred status');
+      }
+
+      showSuccess(`Curated Highlight status updated for "${prop.title}".`);
+      fetchData(); // Refresh list
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   // Process files from either click or drop
   const handleFileProcessing = (file) => {
     if (!file) return;
@@ -632,13 +663,14 @@ export default function AdminDashboard() {
                         <th style={{ padding: '1rem' }}>Location</th>
                         <th style={{ padding: '1rem' }}>Price</th>
                         <th style={{ padding: '1rem' }}>Status</th>
+                        <th style={{ padding: '1rem', textAlign: 'center' }}>Highlight</th>
                         <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {getFilteredList(activeTab === 'ready-listings' ? readyProperties : offPlanProperties).length === 0 ? (
                         <tr>
-                          <td colSpan="7" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No properties found. Try a different search query or add a property!</td>
+                          <td colSpan="8" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No properties found. Try a different search query or add a property!</td>
                         </tr>
                       ) : (
                         getFilteredList(activeTab === 'ready-listings' ? readyProperties : offPlanProperties).map((prop) => {
@@ -679,6 +711,37 @@ export default function AdminDashboard() {
                                 }}>
                                   {prop.status}
                                 </span>
+                              </td>
+                              <td style={{ padding: '1rem', textAlign: 'center' }}>
+                                <button 
+                                  onClick={() => handleToggleStarred(prop)}
+                                  style={{
+                                    background: (prop.starred === true || prop.starred === 'true') ? '#000000' : 'rgba(0, 0, 0, 0.08)',
+                                    border: 'none',
+                                    borderRadius: '20px',
+                                    width: '44px',
+                                    height: '24px',
+                                    position: 'relative',
+                                    cursor: 'pointer',
+                                    padding: 0,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    transition: 'background-color 0.3s ease'
+                                  }}
+                                  title={(prop.starred === true || prop.starred === 'true') ? 'Remove from Curated Highlights' : 'Add to Curated Highlights'}
+                                >
+                                  <span style={{
+                                    display: 'block',
+                                    width: '18px',
+                                    height: '18px',
+                                    borderRadius: '50%',
+                                    background: '#FFFFFF',
+                                    position: 'absolute',
+                                    left: (prop.starred === true || prop.starred === 'true') ? '22px' : '4px',
+                                    transition: 'left 0.3s ease',
+                                    boxShadow: '0 1px 3px rgba(0,0,0,0.15)'
+                                  }} />
+                                </button>
                               </td>
                               <td style={{ padding: '1rem', textAlign: 'right' }}>
                                 <button 

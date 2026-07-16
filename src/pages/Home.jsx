@@ -193,9 +193,7 @@ export default function Home() {
       {/* Curated Editorial Highlights (Starred Catalogs) */}
       {(() => {
         const starredProperties = properties.filter(p => p.starred);
-        const displayProperties = starredProperties.length > 0 
-          ? starredProperties.slice(0, 3) 
-          : properties.slice(0, 3);
+        const displayProperties = starredProperties;
 
         return displayProperties.length > 0 && (
           <RevealSection>

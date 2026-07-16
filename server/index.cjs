@@ -10,6 +10,7 @@ const { pool } = require('./db.cjs');
 const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
 const AdmZip = require('adm-zip');
+const XLSX = require('xlsx');
 
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
@@ -1534,10 +1535,15 @@ app.post('/api/properties/upload-doc', authenticateToken, async (req, res) => {
         if (contentTypeHeader && !contentTypeHeader.includes('octet-stream')) {
           mimeType = contentTypeHeader.split(';')[0].trim();
         } else {
-          const ext = path.extname(fileName).toLowerCase();
+          let ext = path.extname(fileName).toLowerCase();
+          // Normalize typos like '.xlsxu'
+          if (ext === '.xlsxu') ext = '.xlsx';
+          
           if (ext === '.pdf') mimeType = 'application/pdf';
           else if (ext === '.docx') mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
           else if (ext === '.doc') mimeType = 'application/msword';
+          else if (ext === '.xlsx') mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+          else if (ext === '.xls') mimeType = 'application/vnd.ms-excel';
           else if (['.png', '.jpg', '.jpeg', '.webp'].includes(ext)) mimeType = `image/${ext.replace('.', '')}`;
           else mimeType = 'application/pdf'; // fallback
         }
@@ -1561,7 +1567,8 @@ app.post('/api/properties/upload-doc', authenticateToken, async (req, res) => {
         // Skip system directories and hidden macOS files
         if (entry.entryName.includes('__MACOSX') || entry.isDirectory) continue;
 
-        const entryExt = path.extname(entry.entryName).toLowerCase();
+        let entryExt = path.extname(entry.entryName).toLowerCase();
+        if (entryExt === '.xlsxu') entryExt = '.xlsx';
         const buffer = entry.getData();
 
         // If it's a PDF brochure
@@ -1575,6 +1582,18 @@ app.post('/api/properties/upload-doc', authenticateToken, async (req, res) => {
           console.log('Extracting text from DOCX in ZIP:', entry.entryName);
           const parsed = await mammoth.extractRawText({ buffer });
           if (parsed.value) docTextParts.push(parsed.value);
+        }
+        // If it's an Excel sheet
+        else if (entryExt === '.xlsx' || entryExt === '.xls') {
+          console.log('Extracting text from Excel in ZIP:', entry.entryName);
+          const workbook = XLSX.read(buffer, { type: 'buffer' });
+          workbook.SheetNames.forEach(sheetName => {
+            const worksheet = workbook.Sheets[sheetName];
+            const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+            rows.forEach(row => {
+              if (row.length > 0) docTextParts.push(row.join(' | '));
+            });
+          });
         }
         // If it's an image
         else if (['.png', '.jpg', '.jpeg', '.webp'].includes(entryExt)) {
@@ -1592,13 +1611,17 @@ app.post('/api/properties/upload-doc', authenticateToken, async (req, res) => {
         extractedText = "This folder contains multiple property images. Extract project details if any title exists in files.";
       }
     } else {
-      // Single file parsing (PDF / DOCX / Image)
-      if (mimeType === 'application/pdf') {
+      // Single file parsing (PDF / DOCX / Excel / Image)
+      let currentExt = path.extname(fileName).toLowerCase();
+      if (currentExt === '.xlsxu') currentExt = '.xlsx';
+
+      if (mimeType === 'application/pdf' || currentExt === '.pdf') {
         const pdfData = await pdfParse(fileBuffer);
         extractedText = pdfData.text || '';
       } else if (
         mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-        mimeType === 'application/msword'
+        mimeType === 'application/msword' ||
+        currentExt === '.docx' || currentExt === '.doc'
       ) {
         const result = await mammoth.extractRawText({ buffer: fileBuffer });
         extractedText = result.value || '';
@@ -1619,12 +1642,30 @@ app.post('/api/properties/upload-doc', authenticateToken, async (req, res) => {
         } catch (zipErr) {
           console.warn('Could not extract images from docx:', zipErr.message);
         }
+      } else if (
+        mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+        mimeType === 'application/vnd.ms-excel' ||
+        currentExt === '.xlsx' || currentExt === '.xls'
+      ) {
+        // Extract text from Excel spreadsheet
+        const workbook = XLSX.read(fileBuffer, { type: 'buffer' });
+        let excelTextParts = [];
+        workbook.SheetNames.forEach(sheetName => {
+          const worksheet = workbook.Sheets[sheetName];
+          const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+          rows.forEach(row => {
+            if (row.length > 0) {
+              excelTextParts.push(row.join(' | '));
+            }
+          });
+        });
+        extractedText = excelTextParts.join('\n');
       } else if (mimeType.startsWith('image/')) {
         extractedText = ''; // Handled multimodally below
         // Save the image itself as the base64 input
         fileData = `data:${mimeType};base64,${fileBuffer.toString('base64')}`;
       } else {
-        return res.status(400).json({ error: 'Unsupported file format. Please upload PDF, Docx, or Image files.' });
+        return res.status(400).json({ error: 'Unsupported file format. Please upload PDF, Docx, Excel, or Image files.' });
       }
     }
 

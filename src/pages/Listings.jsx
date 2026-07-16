@@ -23,7 +23,7 @@ export default function Listings() {
     if (type) params.set('type', type);
     if (searchQuery) params.set('search', searchQuery);
     params.set('page', currentPage);
-    params.set('limit', 12);
+    params.set('limit', 15);
 
     fetch(`${API_BASE}/properties?${params.toString()}`)
       .then(res => res.json())
@@ -99,9 +99,9 @@ export default function Listings() {
           </div>
         )}
 
-        {/* Property Grid — 4 columns */}
+        {/* Property Grid — 5 columns */}
         {!loading && properties.length > 0 && (
-          <div className="listings-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', rowGap: '2.5rem', columnGap: '1.5rem', marginBottom: '3rem' }}>
+          <div className="listings-grid-5" style={{ display: 'grid', rowGap: '2.5rem', columnGap: '1.5rem', marginBottom: '3rem' }}>
             {properties.map(prop => (
               <div
                 key={prop.id}
@@ -211,14 +211,14 @@ export default function Listings() {
                 if (idx > 0 && p - arr[idx - 1] > 1) acc.push('...');
                 acc.push(p);
                 return acc;
-              }, [])
+                }, [])
               .map((p, i) =>
                 p === '...'
                   ? <span key={`e-${i}`} style={{ padding: '0 0.3rem', color: 'var(--text-muted)' }}>…</span>
                   : <button
                       key={p}
                       onClick={() => handlePageChange(p)}
-                      style={{ width: '36px', height: '36px', background: p === currentPage ? '#0a0a0a' : 'transparent', color: p === currentPage ? '#fff' : 'var(--text-dark)', border: p === currentPage ? 'none' : '1px solid rgba(0,0,0,0.15)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: p === currentPage ? 700 : 400 }}
+                      style={{ width: '36px', height: '36px', background: p === currentPage ? '#0a0a0a' : '#fff', color: p === currentPage ? '#fff' : 'var(--text-dark)', border: p === currentPage ? 'none' : '1px solid rgba(0,0,0,0.15)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: p === currentPage ? 700 : 400 }}
                     >{p}</button>
               )
             }
@@ -235,9 +235,13 @@ export default function Listings() {
 
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
-        @media (max-width: 1100px) { .listings-grid { grid-template-columns: repeat(3, 1fr) !important; } }
-        @media (max-width: 768px)  { .listings-grid { grid-template-columns: repeat(2, 1fr) !important; } }
-        @media (max-width: 480px)  { .listings-grid { grid-template-columns: 1fr !important; } }
+        .listings-grid-5 {
+          grid-template-columns: repeat(5, 1fr);
+        }
+        @media (max-width: 1250px) { .listings-grid-5 { grid-template-columns: repeat(4, 1fr) !important; } }
+        @media (max-width: 990px)  { .listings-grid-5 { grid-template-columns: repeat(3, 1fr) !important; } }
+        @media (max-width: 768px)  { .listings-grid-5 { grid-template-columns: repeat(2, 1fr) !important; } }
+        @media (max-width: 480px)  { .listings-grid-5 { grid-template-columns: 1fr !important; } }
       `}</style>
     </div>
   );

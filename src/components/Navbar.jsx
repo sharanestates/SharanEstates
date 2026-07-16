@@ -282,20 +282,8 @@ export default function Navbar() {
 
       <div className={`mobile-nav-menu ${isMobileMenuOpen ? 'open' : ''}`}>
         
-        {/* Mobile Buy */}
-        <div className="mobile-nav-item" style={{ display: 'flex', flexDirection: 'column' }}>
-          <div 
-            onClick={() => toggleMobileMenu('buy')}
-            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', padding: '0.5rem 0' }}
-          >
-            <span style={{ color: 'var(--text-dark)', fontSize: '0.95rem', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Buy</span>
-            <ChevronDown size={16} style={{ transition: 'transform 0.3s', transform: mobileBuyOpen ? 'rotate(180deg)' : 'none' }} />
-          </div>
-          <div style={{ display: mobileBuyOpen ? 'flex' : 'none', flexDirection: 'column', gap: '0.8rem', paddingLeft: '1rem', marginTop: '0.5rem', borderLeft: '2px solid var(--primary-color)' }}>
-            <Link to="/listings/off-plan" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Off-Plan Properties</Link>
-            <Link to="/listings/ready" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Ready Properties</Link>
-          </div>
-        </div>
+        <Link to="/listings/off-plan" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Explore Off-Plan</Link>
+        <Link to="/listings/ready" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Explore Ready Property</Link>
 
         <Link to="/about" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>About Us</Link>
         <Link to="/contact" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Contact Us</Link>

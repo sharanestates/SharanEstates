@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import AdminLogin from './AdminLogin';
+import useRealTimeSync from '../components/useRealTimeSync';
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -237,6 +238,15 @@ export default function AdminDashboard() {
     }
   };
 
+  // Real-time synchronization hook integration
+  useRealTimeSync((message) => {
+    console.log('Real-time sync event received:', message);
+    if (message.type === 'PROPERTY_CHANGE' || message.type === 'INQUIRY_CHANGE' || message.type === 'BLOG_CHANGE') {
+      // Perform a silent background refresh to update tables instantly without disruptive spinners
+      fetchData(null, true);
+    }
+  });
+
   useEffect(() => {
     checkAuth();
   }, []);
@@ -260,8 +270,8 @@ export default function AdminDashboard() {
     };
   };
 
-  const fetchData = async (token) => {
-    setLoading(true);
+  const fetchData = async (token, silent = false) => {
+    if (!silent) setLoading(true);
     setError('');
     try {
       // Fetch Properties with a high limit for Admin
@@ -298,7 +308,7 @@ export default function AdminDashboard() {
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 

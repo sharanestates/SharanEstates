@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import RevealSection from '../components/RevealSection';
+import useRealTimeSync from '../components/useRealTimeSync';
 
 const defaultCategories = ['All', 'Market Trends', 'Investment', 'Guides', 'Architecture', 'Lifestyle', 'News'];
 
@@ -241,14 +242,24 @@ export default function BlogsPage() {
 
   const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    // Fetch blogs from API
+  const loadBlogs = () => {
     fetch(`${API_BASE}/blogs`)
       .then(res => res.ok ? res.json() : [])
       .then(data => setBlogPosts(Array.isArray(data) ? data : []))
       .catch(() => setBlogPosts([]));
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    loadBlogs();
   }, []);
+
+  useRealTimeSync((message) => {
+    if (message.type === 'BLOG_CHANGE') {
+      console.log('Real-time blogs update triggered');
+      loadBlogs();
+    }
+  });
 
   // Build dynamic categories from fetched data + defaults
   const blogCategories = [...new Set(blogPosts.map(p => p.category).filter(Boolean))];

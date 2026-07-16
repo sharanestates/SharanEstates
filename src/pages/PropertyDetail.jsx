@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import InteractiveFloorPlan from '../components/InteractiveFloorPlan';
 import RevealSection from '../components/RevealSection';
+import useRealTimeSync from '../components/useRealTimeSync';
 
 // ─── Floor Plan Lead Modal ────────────────────────────────────────────────────
 function FloorPlanModal({ property, onClose }) {
@@ -199,20 +200,40 @@ export default function PropertyDetail() {
 
   const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    setLoading(true);
+  const loadProperty = (silent = false) => {
+    if (!silent) setLoading(true);
     const isNumeric = /^\d+$/.test(id);
     if (isNumeric) {
       fetch(`${API_BASE}/properties/${id}`)
         .then(res => { if (!res.ok) throw new Error('Not found'); return res.json(); })
         .then(data => setProperty(data))
         .catch(() => setProperty(null))
-        .finally(() => setLoading(false));
+        .finally(() => {
+          if (!silent) setLoading(false);
+        });
     } else {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    loadProperty(false);
   }, [id]);
+
+  useRealTimeSync((message) => {
+    if (message.type === 'PROPERTY_CHANGE' && (message.action === 'update' || message.action === 'delete')) {
+      if (message.id && message.id.toString() === id.toString()) {
+        if (message.action === 'delete') {
+          setProperty(null); // Show property not found if deleted
+        } else {
+          loadProperty(true); // Silent update for detail edits
+        }
+      } else if (message.data && message.data.id.toString() === id.toString()) {
+        loadProperty(true);
+      }
+    }
+  });
 
   const handleBrochureSubmit = async (e) => {
     e.preventDefault();

@@ -11,6 +11,10 @@ const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
 const AdmZip = require('adm-zip');
 const XLSX = require('xlsx');
+const { WebSocketServer } = require('ws');
+
+// Global WebSocket broadcast helper for real-time syncing
+let broadcast = () => {};
 
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
@@ -1862,6 +1866,7 @@ app.post('/api/properties', authenticateToken, async (req, res) => {
     ];
 
     const result = await pool.query(sql, values);
+    broadcast({ type: 'PROPERTY_CHANGE', action: 'create', data: result.rows[0] });
     res.status(201).json(result.rows[0]);
   } catch (err) {
     console.warn('Create property database insert failed, using memory/JSON fallback:', err.message);
@@ -1898,6 +1903,7 @@ app.post('/api/properties', authenticateToken, async (req, res) => {
     
     fallbackProperties.push(newProperty);
     savePropertiesToDisk();
+    broadcast({ type: 'PROPERTY_CHANGE', action: 'create', data: newProperty });
     res.status(201).json(newProperty);
   }
 });
@@ -1949,6 +1955,7 @@ app.put('/api/properties/:id', authenticateToken, async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Property not found' });
     }
+    broadcast({ type: 'PROPERTY_CHANGE', action: 'update', data: result.rows[0] });
     res.json(result.rows[0]);
   } catch (err) {
     console.warn('Update property database update failed, using memory/JSON fallback:', err.message);
@@ -1983,6 +1990,7 @@ app.put('/api/properties/:id', authenticateToken, async (req, res) => {
 
     fallbackProperties[index] = updatedProperty;
     savePropertiesToDisk();
+    broadcast({ type: 'PROPERTY_CHANGE', action: 'update', data: updatedProperty });
     res.json(updatedProperty);
   }
 });
@@ -1995,6 +2003,7 @@ app.delete('/api/properties/:id', authenticateToken, async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Property not found' });
     }
+    broadcast({ type: 'PROPERTY_CHANGE', action: 'delete', id });
     res.json({ message: 'Property deleted successfully', deletedProperty: result.rows[0] });
   } catch (err) {
     console.warn('Delete property database query failed, using memory/JSON fallback:', err.message);
@@ -2004,6 +2013,7 @@ app.delete('/api/properties/:id', authenticateToken, async (req, res) => {
     }
     const deleted = fallbackProperties.splice(index, 1)[0];
     savePropertiesToDisk();
+    broadcast({ type: 'PROPERTY_CHANGE', action: 'delete', id });
     res.json({ message: 'Property deleted successfully', deletedProperty: deleted });
   }
 });
@@ -2035,6 +2045,7 @@ app.post('/api/inquiries', async (req, res) => {
     ];
 
     const result = await pool.query(sql, values);
+    broadcast({ type: 'INQUIRY_CHANGE', action: 'create', data: result.rows[0] });
     res.status(201).json(result.rows[0]);
   } catch (err) {
     console.warn('Inquiry submission database insert failed, using memory fallback:', err.message);
@@ -2050,6 +2061,7 @@ app.post('/api/inquiries', async (req, res) => {
       created_at: new Date().toISOString()
     };
     fallbackInquiries.push(newInquiry);
+    broadcast({ type: 'INQUIRY_CHANGE', action: 'create', data: newInquiry });
     res.status(201).json(newInquiry);
   }
 });
@@ -2083,11 +2095,13 @@ app.put('/api/inquiries/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({ error: 'Inquiry not found' });
     }
     res.json(result.rows[0]);
+    broadcast({ type: 'INQUIRY_CHANGE', action: 'update', data: result.rows[0] });
   } catch (err) {
     console.warn('Update inquiry failed (falling back to memory database):', err.message);
     const inquiry = fallbackInquiries.find(inq => inq.id.toString() === id);
     if (inquiry) {
       inquiry.status = status;
+      broadcast({ type: 'INQUIRY_CHANGE', action: 'update', data: inquiry });
       res.json(inquiry);
     } else {
       res.status(404).json({ error: 'Inquiry not found in fallback database' });
@@ -2103,12 +2117,14 @@ app.delete('/api/inquiries/:id', authenticateToken, async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Inquiry not found' });
     }
+    broadcast({ type: 'INQUIRY_CHANGE', action: 'delete', id });
     res.json({ message: 'Inquiry deleted successfully', deletedInquiry: result.rows[0] });
   } catch (err) {
     console.warn('Delete inquiry failed (falling back to memory database):', err.message);
     const index = fallbackInquiries.findIndex(inq => inq.id.toString() === id);
     if (index !== -1) {
       const deleted = fallbackInquiries.splice(index, 1)[0];
+      broadcast({ type: 'INQUIRY_CHANGE', action: 'delete', id });
       res.json({ message: 'Inquiry deleted successfully', deletedInquiry: deleted });
     } else {
       res.status(404).json({ error: 'Inquiry not found in fallback database' });
@@ -2170,6 +2186,7 @@ app.post('/api/blogs', authenticateToken, async (req, res) => {
     };
     fallbackBlogs.push(newBlog);
     saveBlogsToDisk();
+    broadcast({ type: 'BLOG_CHANGE', action: 'create', data: newBlog });
     res.status(201).json(newBlog);
   } catch (err) {
     console.error('Create blog failed:', err.message);
@@ -2188,6 +2205,7 @@ app.put('/api/blogs/:id', authenticateToken, async (req, res) => {
     const updatedBlog = { ...fallbackBlogs[index], ...req.body, id: fallbackBlogs[index].id };
     fallbackBlogs[index] = updatedBlog;
     saveBlogsToDisk();
+    broadcast({ type: 'BLOG_CHANGE', action: 'update', data: updatedBlog });
     res.json(updatedBlog);
   } catch (err) {
     console.error('Update blog failed:', err.message);
@@ -2205,6 +2223,7 @@ app.delete('/api/blogs/:id', authenticateToken, async (req, res) => {
     }
     const deleted = fallbackBlogs.splice(index, 1)[0];
     saveBlogsToDisk();
+    broadcast({ type: 'BLOG_CHANGE', action: 'delete', id });
     res.json({ message: 'Blog deleted successfully', deletedBlog: deleted });
   } catch (err) {
     console.error('Delete blog failed:', err.message);
@@ -2241,10 +2260,43 @@ const startServer = async () => {
 };
 
 // Always listen — works on both local dev and Render
-app.listen(PORT, async () => {
+const server = app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
   await startServer();
 });
+
+// Create WebSocket server attached to HTTP server
+const wss = new WebSocketServer({ server });
+const clients = new Set();
+
+wss.on('connection', (ws) => {
+  clients.add(ws);
+  // Send initial welcome/ping
+  ws.send(JSON.stringify({ type: 'CONNECTED', message: 'Real-time sync active' }));
+
+  ws.on('close', () => {
+    clients.delete(ws);
+  });
+
+  ws.on('error', (err) => {
+    console.error('WebSocket connection error:', err.message);
+    clients.delete(ws);
+  });
+});
+
+// Define the broadcast function to send payloads to all connected clients
+broadcast = (data) => {
+  const payload = JSON.stringify(data);
+  for (const client of clients) {
+    if (client.readyState === 1) { // 1 === OPEN
+      try {
+        client.send(payload);
+      } catch (e) {
+        clients.delete(client);
+      }
+    }
+  }
+};
 
 // Export for Vercel Serverless Functions (backwards compatibility)
 module.exports = app;

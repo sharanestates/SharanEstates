@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import RevealSection from '../components/RevealSection';
+import useRealTimeSync from '../components/useRealTimeSync';
 
 export default function Listings() {
   const { type, category } = useParams();
@@ -15,9 +16,8 @@ export default function Listings() {
 
   const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    setLoading(true);
+  const loadProperties = (silent = false) => {
+    if (!silent) setLoading(true);
     const params = new URLSearchParams();
     if (category && category !== 'all') params.set('category', category);
     if (type) params.set('type', type);
@@ -33,8 +33,22 @@ export default function Listings() {
         if (data.totalPages) setTotalPages(data.totalPages);
       })
       .catch(() => setProperties([]))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (!silent) setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    loadProperties(false);
   }, [type, category, searchQuery, currentPage]);
+
+  useRealTimeSync((message) => {
+    if (message.type === 'PROPERTY_CHANGE') {
+      console.log('Real-time listings update triggered');
+      loadProperties(true);
+    }
+  });
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {

@@ -5,6 +5,7 @@ import InvestmentAnalytics from '../components/InvestmentAnalytics';
 import Properties from '../components/Properties';
 import ConsultationSection from '../components/ConsultationSection';
 import RevealSection from '../components/RevealSection';
+import useRealTimeSync from '../components/useRealTimeSync';
 
 const bgImages = [
   '/dubai_luxury_1.jpg',
@@ -37,7 +38,7 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
+  const loadProperties = () => {
     const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
     fetch(`${API_BASE}/properties?limit=100`)
       .then(res => res.json())
@@ -46,7 +47,18 @@ export default function Home() {
         setProperties(propsArray);
       })
       .catch(err => console.error("Failed to fetch properties:", err));
+  };
+
+  useEffect(() => {
+    loadProperties();
   }, []);
+
+  useRealTimeSync((message) => {
+    if (message.type === 'PROPERTY_CHANGE') {
+      console.log('Real-time home properties update triggered');
+      loadProperties();
+    }
+  });
 
   const slideshowRef = useRef(null);
   const heroCardRef = useRef(null);

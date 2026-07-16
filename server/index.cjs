@@ -1534,8 +1534,19 @@ app.post('/api/properties/upload-doc', authenticateToken, async (req, res) => {
         }
       }
 
-      const arrayBuffer = await dlRes.arrayBuffer();
-      fileBuffer = Buffer.from(arrayBuffer);
+
+      // Stream the response body chunk-by-chunk with byte limitation
+      const chunks = [];
+      let totalBytes = 0;
+      for await (const chunk of dlRes.body) {
+        totalBytes += chunk.length;
+        if (totalBytes > 50 * 1024 * 1024) {
+          throw new Error("The Dropbox folder/file is too large (exceeds 50 MB limit). Please paste the direct Dropbox link to the PDF brochure, Word document, or image flyer instead.");
+        }
+        chunks.push(chunk);
+      }
+      
+      fileBuffer = Buffer.concat(chunks);
       fileName = path.basename(cleanedUrl.split('?')[0]);
 
       // Check if it's a ZIP archive (Dropbox folders download as zip)

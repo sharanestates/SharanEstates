@@ -534,41 +534,45 @@ h4, h5, h6 { font-size: 0.9rem !important; line-height: 1.5 !important; }
     border-radius: 12px !important;
   }
 
-  /* Monogram Logo Styles for Tablet & Mobile */
+  /* Responsive Full Brand Logo Styles for Mobile & Tablet */
   .pill-nav .navbar-brand-logo {
-    background-color: var(--text-dark) !important;
-    color: #FFFFFF !important;
-    border: none !important;
-    padding: 0 !important;
-    width: 44px !important;
-    height: 44px !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: center !important;
+    background-color: transparent !important;
+    color: var(--text-dark) !important;
+    border: 1px solid var(--text-dark) !important;
+    padding: 0.55rem 1rem !important;
+    width: auto !important;
+    height: auto !important;
+    box-shadow: none !important;
     border-radius: 2px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    gap: 0.7rem !important;
   }
 
   .logo-divider-desktop {
-    display: none !important;
+    display: block !important;
+    width: 1px !important;
+    height: 18px !important;
+    background-color: rgba(0, 0, 0, 0.15) !important;
   }
 
   .logo-text-desktop {
-    display: none !important;
-  }
-
-  .pill-nav .navbar-brand-logo span {
-    color: #FFFFFF !important;
-    font-size: 1.35rem !important;
-    letter-spacing: 0.5px !important;
-    margin-right: -0.5px !important;
+    display: block !important;
     font-family: var(--font-serif) !important;
+    font-size: 0.8rem !important;
     font-weight: 600 !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
     line-height: 1 !important;
   }
 
-  .pill-nav .navbar-brand-logo div {
-    display: none !important;
+  .pill-nav .navbar-brand-logo span {
+    color: var(--text-dark) !important;
+    font-size: 1.25rem !important;
+    letter-spacing: 1px !important;
+    font-family: var(--font-serif) !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
   }
 
   .pill-nav .mobile-menu-btn,

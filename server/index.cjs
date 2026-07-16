@@ -1524,6 +1524,16 @@ app.post('/api/properties/upload-doc', authenticateToken, async (req, res) => {
         throw new Error(`Failed to download from Dropbox link (HTTP ${dlRes.status})`);
       }
 
+      // Safeguard against Out-Of-Memory (OOM) crashes on Render (limit to 50MB)
+      const contentLengthHeader = dlRes.headers.get('content-length');
+      if (contentLengthHeader) {
+        const sizeBytes = parseInt(contentLengthHeader, 10);
+        const sizeMB = sizeBytes / (1024 * 1024);
+        if (sizeMB > 50) {
+          throw new Error(`The Dropbox folder/file is too large (${sizeMB.toFixed(1)} MB). To prevent server timeouts and memory limits, please paste the direct Dropbox link to the PDF brochure, Word document, or image flyer instead of the entire folder.`);
+        }
+      }
+
       const arrayBuffer = await dlRes.arrayBuffer();
       fileBuffer = Buffer.from(arrayBuffer);
       fileName = path.basename(cleanedUrl.split('?')[0]);

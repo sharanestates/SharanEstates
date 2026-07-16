@@ -1304,6 +1304,23 @@ async function initDb() {
         await pool.query(sql, values);
       }
       console.log(`Seeded default properties successfully.`);
+    } else {
+      // Synchronize Dropbox marketing links from properties.json to the database
+      console.log('Database not empty. Synchronizing JSON campaign links to PostgreSQL properties table...');
+      let syncCount = 0;
+      for (const prop of fallbackProperties) {
+        if (prop.dropbox_link) {
+          const syncSql = `
+            UPDATE properties 
+            SET dropbox_link = $1 
+            WHERE dropbox_link IS NULL OR dropbox_link = '' OR dropbox_link != $1
+            AND (title = $2 OR title LIKE $3)
+          `;
+          const res = await pool.query(syncSql, [prop.dropbox_link, prop.title, `%${prop.title}%`]);
+          syncCount += res.rowCount || 0;
+        }
+      }
+      console.log(`Synchronized ${syncCount} property rows with campaign links in database.`);
     }
   } catch (err) {
     console.error('Error initializing database:', err.message);

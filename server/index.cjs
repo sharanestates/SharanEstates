@@ -1507,8 +1507,13 @@ app.post('/api/properties/upload-doc', authenticateToken, async (req, res) => {
     if (dropboxUrl) {
       console.log('Downloading Dropbox marketing pack:', dropboxUrl);
       
+      let cleanedUrl = dropboxUrl.trim();
+      if (cleanedUrl.includes('.xlsxu')) {
+        cleanedUrl = cleanedUrl.replace('.xlsxu', '.xlsx');
+      }
+
       // Force direct download parameter
-      let directUrl = dropboxUrl.trim()
+      let directUrl = cleanedUrl
         .replace('www.dropbox.com', 'dl.dropboxusercontent.com')
         .replace('?dl=0', '?dl=1');
       if (!directUrl.includes('?dl=1') && !directUrl.includes('?raw=1')) {
@@ -1522,7 +1527,7 @@ app.post('/api/properties/upload-doc', authenticateToken, async (req, res) => {
 
       const arrayBuffer = await dlRes.arrayBuffer();
       fileBuffer = Buffer.from(arrayBuffer);
-      fileName = path.basename(dropboxUrl.split('?')[0]);
+      fileName = path.basename(cleanedUrl.split('?')[0]);
 
       // Check if it's a ZIP archive (Dropbox folders download as zip)
       // ZIP signature is PK\x03\x04

@@ -129,7 +129,7 @@ export default function Home() {
               <div className="hero-stats-grid">
                 <div>
                   <h4 className="hero-stat-value">AED 300M+</h4>
-                  <p className="hero-stat-label">In Sales Closed</p>
+                  <p className="hero-stat-label">In Transactions</p>
                 </div>
                 <div>
                   <h4 className="hero-stat-value">Exclusive</h4>

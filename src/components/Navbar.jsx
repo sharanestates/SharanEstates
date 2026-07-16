@@ -178,7 +178,7 @@ export default function Navbar() {
           </span>
 
           {/* Vertical Divider */}
-          <div style={{
+          <div className="logo-divider-desktop" style={{
             width: '1px',
             height: '24px',
             backgroundColor: shouldShowOpaque ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.35)',
@@ -186,7 +186,7 @@ export default function Navbar() {
           }} />
 
           {/* Right Brand Name */}
-          <span style={{
+          <span className="logo-text-desktop" style={{
             fontFamily: 'var(--font-serif)',
             fontSize: '1.1rem',
             fontWeight: 600,

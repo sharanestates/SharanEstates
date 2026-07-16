@@ -90,6 +90,10 @@ export default function Home() {
               />
             ))}
           </div>
+          {/* Mobile-only brand name overlay over the slideshow */}
+          <div className="mobile-hero-brand-overlay">
+            Sharan Estates
+          </div>
         </div>
 
         {/* Content Container on Top of Slideshow */}

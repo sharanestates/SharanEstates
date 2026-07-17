@@ -25,17 +25,14 @@ export default function Footer() {
 
 
         {/* Footer Main Grid */}
-        <div className="footer-grid-mobile" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+        <div className="footer-grid-mobile" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
           
           {/* Brand */}
           <div className="footer-col-mobile" style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '1.1rem',
-              border: '1px solid rgba(255, 255, 255, 0.45)',
-              padding: '0.7rem 1.4rem',
-              borderRadius: '2px',
+              gap: '0.8rem',
               color: '#FFFFFF',
               marginBottom: '1.25rem',
               width: 'fit-content'
@@ -43,9 +40,9 @@ export default function Footer() {
               {/* Left Initials */}
               <span style={{
                 fontFamily: 'var(--font-serif)',
-                fontSize: '1.6rem',
+                fontSize: '1.4rem',
                 fontWeight: 600,
-                letterSpacing: '1.5px',
+                letterSpacing: '1px',
                 lineHeight: 1
               }}>
                 SE
@@ -54,14 +51,14 @@ export default function Footer() {
               {/* Vertical Divider */}
               <div style={{
                 width: '1px',
-                height: '24px',
+                height: '20px',
                 backgroundColor: 'rgba(255, 255, 255, 0.25)'
               }} />
 
               {/* Right Brand Name */}
               <span style={{
                 fontFamily: 'var(--font-serif)',
-                fontSize: '1.1rem',
+                fontSize: '1.0rem',
                 fontWeight: 600,
                 letterSpacing: '3px',
                 textTransform: 'uppercase',
@@ -84,15 +81,36 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Links */}
+          {/* Explore Links */}
           <div className="footer-col-mobile" style={{ display: 'flex', flexDirection: 'column' }}>
-            <h3 className="footer-h3-mobile" style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px', color: 'var(--primary-color)', marginBottom: '1.25rem' }}>Explore</h3>
+            <h3 className="footer-h3-mobile" style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#FFFFFF', marginBottom: '1.25rem', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>Explore</h3>
             <ul className="footer-links-list-mobile" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
               {[
-                { name: 'Dashboard', path: '/' },
+                { name: 'Buy', path: '/listings/ready' },
+                { name: 'New Developments', path: '/listings/off-plan' },
+                { name: 'Sell With Us', path: '/list-with-us' },
+                { name: 'Contact Us', path: '/contact' },
+              ].map(link => (
+                <li key={link.name}>
+                  <Link to={link.path} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.3s, transform 0.3s', display: 'inline-block' }} 
+                     onMouseOver={(e) => { e.target.style.color = '#FFF'; e.target.style.transform = 'translateX(5px)'; }}
+                     onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.7)'; e.target.style.transform = 'translateX(0)'; }}>
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Resources Links */}
+          <div className="footer-col-mobile" style={{ display: 'flex', flexDirection: 'column' }}>
+            <h3 className="footer-h3-mobile" style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#FFFFFF', marginBottom: '1.25rem', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>Resources</h3>
+            <ul className="footer-links-list-mobile" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+              {[
+                { name: 'Area Guide', path: '/area-guide' },
+                { name: 'Market Trends', path: '/market-trends' },
+                { name: 'Blogs', path: '/blogs' },
                 { name: 'About Us', path: '/about' },
-                { name: 'Off-Plan Properties', path: '/listings/off-plan' },
-                { name: 'Ready Properties', path: '/listings/ready' },
               ].map(link => (
                 <li key={link.name}>
                   <Link to={link.path} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.3s, transform 0.3s', display: 'inline-block' }} 
@@ -107,7 +125,7 @@ export default function Footer() {
 
           {/* Newsletter */}
           <div className="footer-col-mobile" style={{ display: 'flex', flexDirection: 'column' }}>
-            <h3 className="footer-h3-mobile" style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px', color: 'var(--primary-color)', marginBottom: '1.25rem' }}>Private Newsletter</h3>
+            <h3 className="footer-h3-mobile" style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#FFFFFF', marginBottom: '1.25rem', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>Private Newsletter</h3>
             <p className="footer-desc-mobile" style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.8, fontSize: '0.9rem', marginBottom: '1.25rem' }}>
               Subscribe to gain access to exclusive off-market listings, early-stage off-plan releases, and deep market insights.
             </p>
@@ -128,7 +146,7 @@ export default function Footer() {
           <div className="footer-disclaimer-container" style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
             <div>
               <p style={{ color: 'rgba(255,255,255,0.22)', fontSize: '0.54rem', lineHeight: 1.5, margin: 0, textAlign: 'center' }}>
-                Disclaimer: Sharan Estates is a real estate agency licensed by the Real Estate Regulatory Agency (RERA) under License Number 1067808 and ORN: 30498. The content provided on this website is for informational purposes only. Renders, virtual tours, and images are for illustrative and representational purposes only and subject to change by developers. Read our full <Link to="/privacy-policy" style={{ color: 'rgba(0,0,0,0.5)', textDecoration: 'underline' }}>Disclaimer & Privacy Policy</Link> and <Link to="/terms-of-service" style={{ color: 'rgba(0,0,0,0.5)', textDecoration: 'underline' }}>Terms of Service</Link>.
+                Disclaimer: Sharan Estates is a real estate agency licensed by the Real Estate Regulatory Agency (RERA) under License Number 1067808 and ORN: 30498. The content provided on this website is for informational purposes only. Renders, virtual tours, and images are for illustrative and representational purposes only and subject to change by developers. Read our full <Link to="/privacy-policy" style={{ color: 'rgba(255,255,255,0.45)', textDecoration: 'underline' }}>Disclaimer & Privacy Policy</Link> and <Link to="/terms-of-service" style={{ color: 'rgba(255,255,255,0.45)', textDecoration: 'underline' }}>Terms of Service</Link>.
               </p>
             </div>
           </div>

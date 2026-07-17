@@ -310,7 +310,7 @@ export default function Home() {
                               <label style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.85rem' }}>Tenure</label>
                               <span style={{ color: 'var(--primary-dark)', fontWeight: 'bold', fontSize: '0.85rem' }}>{tenure} Yrs</span>
                             </div>
-                            <input type="range" min="5" max="30" step="1" value={tenure} onChange={(e) => setDownPayment(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary-color)' }} />
+                            <input type="range" min="5" max="30" step="1" value={tenure} onChange={(e) => setTenure(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary-color)' }} />
                           </div>
                         </div>
                       </div>
@@ -334,7 +334,13 @@ export default function Home() {
               {/* Right side: Investment Analytics Card */}
               <div className="hide-on-mobile" style={{ flex: '1 1 500px', display: 'flex', justifyContent: 'center', alignItems: 'stretch' }}>
                 <div style={{ width: '100%', display: 'flex' }}>
-                  <InvestmentAnalytics />
+                  <InvestmentAnalytics 
+                    propertyValue={propertyValue} 
+                    downPayment={downPayment} 
+                    interestRate={interestRate} 
+                    tenure={tenure} 
+                    emi={emi}
+                  />
                 </div>
               </div>
 

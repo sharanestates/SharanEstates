@@ -317,9 +317,9 @@ export default function AreaGuidePage() {
           padding: 'clamp(7rem, 14vw, 9rem) 1.5rem clamp(4rem, 8vw, 5rem)',
           maxWidth: '800px',
         }}>
-          <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', margin: '0 auto 1.5rem' }} />
+          <div style={{ width: '40px', height: '1px', background: '#eab308', margin: '0 auto 1.5rem' }} />
           <p style={{
-            color: 'var(--primary-color)',
+            color: '#eab308',
             fontSize: '0.7rem',
             letterSpacing: '4px',
             textTransform: 'uppercase',
@@ -339,7 +339,7 @@ export default function AreaGuidePage() {
             fontWeight: 300,
           }}>
             Navigate the Best Places<br />
-            <span style={{ color: 'var(--primary-color)' }}>to Live in Dubai</span>
+            <span style={{ color: '#eab308' }}>to Live in Dubai</span>
           </h1>
           <p style={{
             color: 'rgba(255,255,255,0.45)',
@@ -470,29 +470,46 @@ export default function AreaGuidePage() {
               </div>
 
               {/* Category Filters */}
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                {categories.map(cat => (
-                  <button
-                    key={cat}
-                    onClick={() => setActiveCategory(cat)}
-                    style={{
-                      padding: '0.4rem 1.1rem',
-                      border: '1px solid',
-                      borderColor: activeCategory === cat ? 'var(--text-dark)' : 'rgba(0, 0, 0,0.3)',
-                      borderRadius: '2px',
-                      background: activeCategory === cat ? 'var(--text-dark)' : 'transparent',
-                      color: activeCategory === cat ? '#fff' : 'var(--text-muted)',
-                      fontSize: '0.65rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      transition: 'all 0.3s',
-                      letterSpacing: '1.5px',
-                      textTransform: 'uppercase',
-                    }}
-                  >
-                    {cat}
-                  </button>
-                ))}
+              <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
+                {categories.map(cat => {
+                  const isActive = activeCategory === cat;
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => setActiveCategory(cat)}
+                      style={{
+                        padding: '0.6rem 0',
+                        border: 'none',
+                        background: 'transparent',
+                        color: isActive ? '#000000' : 'rgba(0, 0, 0, 0.45)',
+                        fontSize: '0.72rem',
+                        fontWeight: isActive ? 600 : 500,
+                        cursor: 'pointer',
+                        position: 'relative',
+                        transition: 'color 0.3s ease',
+                        letterSpacing: '2px',
+                        textTransform: 'uppercase',
+                        outline: 'none',
+                      }}
+                      onMouseOver={(e) => { if (!isActive) e.target.style.color = '#000000'; }}
+                      onMouseOut={(e) => { if (!isActive) e.target.style.color = 'rgba(0, 0, 0, 0.45)'; }}
+                    >
+                      {cat}
+                      {/* Elegant Golden Line */}
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '-1px',
+                        left: 0,
+                        right: 0,
+                        height: '2px',
+                        backgroundColor: '#eab308',
+                        transform: isActive ? 'scaleX(1)' : 'scaleX(0)',
+                        transformOrigin: 'left',
+                        transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      }} />
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -520,11 +537,11 @@ export default function AreaGuidePage() {
       {/* ── INTRO TEXT ── */}
       <RevealSection>
         <section style={{
-          background: 'var(--text-dark)',
+          background: 'var(--primary-dark)',
           padding: 'clamp(3.5rem, 7vw, 5rem) 1.5rem',
         }}>
         <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', margin: '0 auto 1.5rem' }} />
+          <div style={{ width: '40px', height: '1px', background: '#eab308', margin: '0 auto 1.5rem' }} />
           <h2 style={{
             fontSize: 'clamp(1.3rem, 3vw, 1.8rem)',
             fontFamily: 'var(--font-serif)',
@@ -534,7 +551,7 @@ export default function AreaGuidePage() {
             fontWeight: 300,
             marginBottom: '1.5rem',
           }}>
-            Why Location <span style={{ color: 'var(--primary-color)' }}>Matters</span>
+            Why Location <span style={{ color: '#eab308' }}>Matters</span>
           </h2>
           <p style={{
             color: 'rgba(255,255,255,0.5)',

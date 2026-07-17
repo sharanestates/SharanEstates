@@ -14,7 +14,10 @@ export default function useRealTimeSync(onMessage) {
   useEffect(() => {
     // Determine WebSocket URL based on protocol (http -> ws, https -> wss)
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const host = window.location.hostname === 'localhost' ? 'localhost:5000' : window.location.host;
+    // If the Vite client is running on port 5173, point the WebSocket to port 5000 (Express) on the same hostname
+    const host = window.location.port === '5173'
+      ? `${window.location.hostname}:5000`
+      : window.location.host;
     const wsUrl = `${protocol}//${host}`;
 
     let socket;
@@ -40,14 +43,13 @@ export default function useRealTimeSync(onMessage) {
 
       socket.onclose = () => {
         if (isMounted) {
-          console.log('Sharan Estates real-time sync offline. Reconnecting in 3 seconds...');
-          reconnectTimeout = setTimeout(connect, 3000);
+          console.log('Sharan Estates real-time sync offline. Reconnecting in 5 seconds...');
+          reconnectTimeout = setTimeout(connect, 5000);
         }
       };
 
       socket.onerror = (err) => {
-        console.error('Sharan Estates real-time sync error:', err.message);
-        socket.close();
+        console.error('Sharan Estates real-time sync connection error:', err);
       };
     }
 

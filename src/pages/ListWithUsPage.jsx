@@ -248,7 +248,7 @@ export default function ListWithUsPage() {
             ].map((benefit, idx) => (
               <div
                 key={idx}
-                className="classic-property-card"
+                className="advantage-card"
                 style={{
                   padding: '2.5rem 2rem',
                   textAlign: 'center',
@@ -257,18 +257,7 @@ export default function ListWithUsPage() {
                   alignItems: 'center',
                 }}
               >
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '50%',
-                  background: 'rgba(0, 0, 0,0.08)',
-                  border: '1px solid rgba(0, 0, 0,0.2)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '1.25rem',
-                  color: 'var(--primary-dark)',
-                }}>
+                <div className="advantage-icon-container">
                   {benefit.icon}
                 </div>
                 <h3 style={{
@@ -659,6 +648,36 @@ export default function ListWithUsPage() {
     </RevealSection>
 
       <style>{`
+        .advantage-card {
+          background: #FFFFFF;
+          border: 1px solid rgba(0, 0, 0, 0.06) !important;
+          border-radius: 4px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+        .advantage-card:hover {
+          transform: translateY(-6px);
+          border-color: rgba(234, 179, 8, 0.3) !important;
+          box-shadow: 0 20px 40px rgba(234, 179, 8, 0.06) !important;
+        }
+        .advantage-icon-container {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          background: rgba(234, 179, 8, 0.05);
+          border: 1px solid rgba(234, 179, 8, 0.15);
+          display: flex;
+          align-items: center;
+          justifyContent: center;
+          margin-bottom: 1.25rem;
+          color: #eab308;
+          transition: all 0.4s ease;
+        }
+        .advantage-card:hover .advantage-icon-container {
+          background: rgba(234, 179, 8, 0.12);
+          border-color: rgba(234, 179, 8, 0.3);
+          transform: scale(1.05);
+        }
         .step-image-hover:hover {
           transform: scale(1.08);
         }

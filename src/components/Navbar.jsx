@@ -47,12 +47,13 @@ export default function Navbar() {
 
   const linkStyle = {
     color: shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF',
-    fontSize: '0.82rem',
-    fontWeight: 600,
+    fontSize: '0.72rem',
+    fontWeight: 500,
     textTransform: 'uppercase',
-    letterSpacing: '1.2px',
+    letterSpacing: '1px',
     textDecoration: 'none',
-    transition: 'color 0.3s ease'
+    transition: 'color 0.3s ease',
+    whiteSpace: 'nowrap'
   };
 
   const buttonStyle = {
@@ -94,32 +95,25 @@ export default function Navbar() {
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '1.1rem',
-          border: shouldShowOpaque ? '1px solid var(--text-dark)' : '1px solid rgba(255, 255, 255, 0.8)',
-          padding: '0.7rem 1.4rem',
-          borderRadius: '2px',
+          gap: '0.8rem',
           color: shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF',
-          transition: 'all 0.4s ease',
+          transition: 'all 0.3s ease',
           backgroundColor: 'transparent'
         }}
         className="navbar-brand-logo"
         onMouseOver={e => {
-          e.currentTarget.style.borderColor = '#FFFFFF';
-          e.currentTarget.style.background = shouldShowOpaque ? 'var(--text-dark)' : 'rgba(255, 255, 255, 0.08)';
-          e.currentTarget.style.color = shouldShowOpaque ? '#FFFFFF' : '#FFFFFF';
+          e.currentTarget.style.opacity = '0.75';
         }}
         onMouseOut={e => {
-          e.currentTarget.style.borderColor = shouldShowOpaque ? 'var(--text-dark)' : 'rgba(255, 255, 255, 0.8)';
-          e.currentTarget.style.background = 'transparent';
-          e.currentTarget.style.color = shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF';
+          e.currentTarget.style.opacity = '1';
         }}
         >
           {/* Left Initials */}
           <span style={{
             fontFamily: 'var(--font-serif)',
-            fontSize: '1.6rem',
+            fontSize: '1.4rem',
             fontWeight: 600,
-            letterSpacing: '1.5px',
+            letterSpacing: '1px',
             lineHeight: 1,
             transition: 'color 0.4s ease'
           }}>
@@ -129,7 +123,7 @@ export default function Navbar() {
           {/* Vertical Divider */}
           <div className="logo-divider-desktop" style={{
             width: '1px',
-            height: '24px',
+            height: '20px',
             backgroundColor: shouldShowOpaque ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.35)',
             transition: 'background-color 0.4s ease'
           }} />
@@ -137,9 +131,9 @@ export default function Navbar() {
           {/* Right Brand Name */}
           <span className="logo-text-desktop" style={{
             fontFamily: 'var(--font-serif)',
-            fontSize: '1.1rem',
+            fontSize: '1.0rem',
             fontWeight: 600,
-            letterSpacing: '3.5px',
+            letterSpacing: '3px',
             textTransform: 'uppercase',
             lineHeight: 1,
             transition: 'color 0.4s ease'
@@ -150,7 +144,7 @@ export default function Navbar() {
       </Link>
 
       {/* Desktop Navigation Links */}
-      <ul className="nav-links desktop-nav" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: '1.8rem', listStyle: 'none', margin: 0, padding: 0 }}>
+      <ul className="nav-links desktop-nav" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: '1.4rem', listStyle: 'none', margin: 0, padding: 0 }}>
         <li style={{ display: 'flex', alignItems: 'center' }}>
           <Link to="/listings/ready" style={linkStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF'}>Buy</Link>
         </li>

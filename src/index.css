@@ -534,32 +534,32 @@ h4, h5, h6 { font-size: 0.9rem !important; line-height: 1.5 !important; }
     border-radius: 12px !important;
   }
 
-  /* Responsive Full Brand Logo Styles for Mobile & Tablet - Scaled Up */
+  /* Responsive Full Brand Logo Styles for Mobile & Tablet - Borderless */
   .pill-nav .navbar-brand-logo {
     display: flex !important;
     align-items: center !important;
     background-color: transparent !important;
     color: var(--text-dark) !important;
-    border: 1px solid var(--text-dark) !important;
-    padding: 0.65rem 1.2rem !important;
+    border: none !important;
+    padding: 0.2rem 0 !important;
     width: auto !important;
     height: auto !important;
     box-shadow: none !important;
-    border-radius: 2px !important;
-    gap: 0.85rem !important;
+    border-radius: 0 !important;
+    gap: 0.6rem !important;
   }
 
   .logo-divider-desktop {
     display: block !important;
     width: 1px !important;
-    height: 22px !important;
+    height: 16px !important;
     background-color: rgba(0, 0, 0, 0.15) !important;
   }
 
   .logo-text-desktop {
     display: block !important;
     font-family: var(--font-serif) !important;
-    font-size: 0.95rem !important;
+    font-size: 0.85rem !important;
     font-weight: 600 !important;
     letter-spacing: 2px !important;
     text-transform: uppercase !important;
@@ -568,8 +568,8 @@ h4, h5, h6 { font-size: 0.9rem !important; line-height: 1.5 !important; }
 
   .pill-nav .navbar-brand-logo span {
     color: var(--text-dark) !important;
-    font-size: 1.5rem !important;
-    letter-spacing: 1px !important;
+    font-size: 1.3rem !important;
+    letter-spacing: 0.5px !important;
     font-family: var(--font-serif) !important;
     font-weight: 600 !important;
     line-height: 1 !important;

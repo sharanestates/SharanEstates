@@ -364,6 +364,29 @@ h4, h5, h6 { font-size: 0.9rem !important; line-height: 1.5 !important; }
   border-color: var(--text-dark);
 }
 
+.highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 1050px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 991px) {
+  .highlights-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 720px;
+  }
+}
+
+@media (max-width: 600px) {
+  .highlights-grid {
+    grid-template-columns: 1fr;
+    max-width: 330px;
+  }
+}
+
 .image-glossy {
   border-radius: 20px;
   width: 100%;

@@ -193,7 +193,7 @@ export default function Home() {
       {/* Curated Editorial Highlights (Starred Catalogs) */}
       {(() => {
         const starredProperties = properties.filter(p => p.starred);
-        const displayProperties = starredProperties;
+        const displayProperties = starredProperties.slice(0, 6);
 
         return displayProperties.length > 0 && (
           <RevealSection>
@@ -209,27 +209,40 @@ export default function Home() {
                   <div style={{ width: '40px', height: '1px', background: 'var(--text-dark)', margin: '1.5rem auto 0' }} />
                 </div>
 
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2.5rem', justifyContent: 'center' }}>
+                <div className="highlights-grid">
                   {displayProperties.map((prop) => (
-                    <div key={prop.id} style={{ flex: '1 1 320px', maxWidth: '380px', display: 'flex' }}>
+                    <div key={prop.id} style={{ display: 'flex' }}>
                       <Link to={`/property/${prop.id}`} style={{ textDecoration: 'none', width: '100%', display: 'flex', flexDirection: 'column' }}>
                         <div className="classic-property-card" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%' }}>
-                          <div style={{ height: '280px', background: `url(${prop.image}) center/cover`, position: 'relative' }}>
-                            <div style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(0, 0, 0, 0.85)', color: '#FFFFFF', padding: '0.4rem 0.9rem', fontSize: '0.68rem', fontWeight: 600, letterSpacing: '1.5px', textTransform: 'uppercase', borderRadius: '2px', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                              <span style={{ color: '#eab308' }}>★</span> Starred
+                          <div style={{ height: '210px', background: `url(${prop.image}) center/cover`, position: 'relative' }}>
+                            <div style={{ 
+                              position: 'absolute', 
+                              top: '1rem', 
+                              right: '1rem', 
+                              background: '#FFFFFF', 
+                              color: '#eab308', 
+                              width: '32px', 
+                              height: '32px', 
+                              borderRadius: '50%', 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              justifyContent: 'center', 
+                              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.12)' 
+                            }} title="Starred Highlight">
+                              <span style={{ fontSize: '1.05rem', lineHeight: 1 }}>★</span>
                             </div>
-                            <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', background: '#FFFFFF', color: '#000000', padding: '0.35rem 0.75rem', fontSize: '0.65rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', border: '1px solid rgba(0,0,0,0.15)', borderRadius: '2px' }}>
+                            <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', background: '#FFFFFF', color: '#000000', padding: '0.3rem 0.6rem', fontSize: '0.58rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', border: '1px solid rgba(0,0,0,0.12)', borderRadius: '2px' }}>
                               {prop.location}
                             </div>
                           </div>
-                          <div style={{ padding: '1.8rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                            <h3 style={{ color: 'var(--text-dark)', fontSize: '1.35rem', marginBottom: '0.65rem', fontFamily: 'var(--font-serif)', letterSpacing: '0.5px', fontWeight: 300 }}>{prop.title}</h3>
-                            <p style={{ color: 'var(--text-muted)', lineHeight: 1.65, flex: 1, fontSize: '0.88rem', marginBottom: '1.8rem' }}>{prop.description ? (prop.description.substring(0, 120) + '...') : ''}</p>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', borderTop: '1px solid rgba(0,0,0,0.08)', paddingTop: '1.25rem' }}>
-                              <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+                          <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                            <h3 style={{ color: 'var(--text-dark)', fontSize: '1.15rem', marginBottom: '0.4rem', fontFamily: 'var(--font-serif)', letterSpacing: '0.5px', fontWeight: 300 }}>{prop.title}</h3>
+                            <p style={{ color: 'var(--text-muted)', lineHeight: 1.55, flex: 1, fontSize: '0.78rem', marginBottom: '1.2rem' }}>{prop.description ? (prop.description.substring(0, 85) + '...') : ''}</p>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', borderTop: '1px solid rgba(0,0,0,0.08)', paddingTop: '0.9rem' }}>
+                              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                                 🛏️ {prop.beds} Beds | 🚿 {prop.baths} Baths
                               </span>
-                              <span style={{ color: 'var(--text-dark)', fontWeight: 700, fontSize: '1.15rem' }}>
+                              <span style={{ color: 'var(--text-dark)', fontWeight: 700, fontSize: '1.05rem' }}>
                                 {prop.price}
                               </span>
                             </div>

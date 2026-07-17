@@ -316,10 +316,9 @@ export default function BlogsPage() {
             padding: 'clamp(7rem, 14vw, 9rem) 1.5rem clamp(4rem, 8vw, 5rem)',
             maxWidth: '760px',
           }}>
-            <div style={{ width: '40px', height: '1px', background: '#FFFFFF', opacity: 0.3, margin: '0 auto 1.5rem' }} />
+            <div style={{ width: '40px', height: '1px', background: '#eab308', margin: '0 auto 1.5rem' }} />
             <p style={{
-              color: '#FFFFFF',
-              opacity: 0.7,
+              color: '#eab308',
               fontSize: '0.7rem',
               letterSpacing: '4px',
               textTransform: 'uppercase',
@@ -339,7 +338,7 @@ export default function BlogsPage() {
               fontWeight: 300,
             }}>
               The Sharan Estates<br />
-              <span style={{ color: '#FFFFFF', opacity: 0.95 }}>Journal</span>
+              <span style={{ color: '#eab308' }}>Journal</span>
             </h1>
             <p style={{
               color: 'rgba(255,255,255,0.65)',
@@ -373,37 +372,54 @@ export default function BlogsPage() {
           flexWrap: 'wrap',
         }}>
           {/* Category Filters */}
-          <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
-            {categories.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                style={{
-                  padding: '0.4rem 1rem',
-                  border: '1px solid',
-                  borderColor: activeCategory === cat ? 'var(--text-dark)' : 'rgba(0, 0, 0,0.3)',
-                  borderRadius: '2px',
-                  background: activeCategory === cat ? 'var(--text-dark)' : 'transparent',
-                  color: activeCategory === cat ? '#fff' : 'var(--text-muted)',
-                  fontSize: '0.63rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'all 0.3s',
-                  letterSpacing: '1.5px',
-                  textTransform: 'uppercase',
-                }}
-              >
-                {cat}
-              </button>
-            ))}
+          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
+            {categories.map(cat => {
+              const isActive = activeCategory === cat;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  style={{
+                    padding: '0.6rem 0',
+                    border: 'none',
+                    background: 'transparent',
+                    color: isActive ? '#000000' : 'rgba(0, 0, 0, 0.45)',
+                    fontSize: '0.72rem',
+                    fontWeight: isActive ? 600 : 500,
+                    cursor: 'pointer',
+                    position: 'relative',
+                    transition: 'color 0.3s ease',
+                    letterSpacing: '2px',
+                    textTransform: 'uppercase',
+                    outline: 'none',
+                  }}
+                  onMouseOver={(e) => { if (!isActive) e.target.style.color = '#000000'; }}
+                  onMouseOut={(e) => { if (!isActive) e.target.style.color = 'rgba(0, 0, 0, 0.45)'; }}
+                >
+                  {cat}
+                  {/* Elegant Golden Line */}
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '-1px',
+                    left: 0,
+                    right: 0,
+                    height: '2px',
+                    backgroundColor: '#eab308',
+                    transform: isActive ? 'scaleX(1)' : 'scaleX(0)',
+                    transformOrigin: 'left',
+                    transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  }} />
+                </button>
+              );
+            })}
           </div>
 
           {/* Search */}
-          <div style={{ position: 'relative', minWidth: '200px' }}>
+          <div style={{ position: 'relative', minWidth: '240px', flex: '1 1 auto', maxWidth: '320px' }}>
             <svg
-              width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"
-              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-              style={{ position: 'absolute', left: '0.9rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}
+              width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(0,0,0,0.4)"
+              strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+              style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }}
             >
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
@@ -414,19 +430,20 @@ export default function BlogsPage() {
               onChange={e => setSearchQuery(e.target.value)}
               style={{
                 width: '100%',
-                padding: '0.6rem 0.9rem 0.6rem 2.5rem',
-                background: 'var(--bg-light)',
-                border: '1px solid rgba(0, 0, 0,0.25)',
+                padding: '0.75rem 1.2rem 0.75rem 2.8rem',
+                background: 'rgba(0, 0, 0, 0.03)',
+                border: '1px solid rgba(0, 0, 0, 0.08)',
                 borderRadius: '3px',
-                color: 'var(--text-dark)',
-                fontSize: '0.8rem',
+                color: '#000000',
+                fontSize: '0.82rem',
                 fontFamily: 'var(--font-sans)',
                 outline: 'none',
                 boxSizing: 'border-box',
-                transition: 'border-color 0.3s',
+                transition: 'all 0.3s ease',
+                letterSpacing: '0.5px',
               }}
-              onFocus={e => e.currentTarget.style.borderColor = 'var(--primary-dark)'}
-              onBlur={e => e.currentTarget.style.borderColor = 'rgba(0, 0, 0,0.25)'}
+              onFocus={e => { e.currentTarget.style.borderColor = '#eab308'; e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)'; }}
+              onBlur={e => { e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.08)'; e.currentTarget.style.background = 'rgba(0, 0, 0, 0.03)'; e.currentTarget.style.boxShadow = 'none'; }}
             />
           </div>
         </div>
@@ -501,11 +518,11 @@ export default function BlogsPage() {
       {/* ── NEWSLETTER CTA ── */}
       <RevealSection>
         <section style={{
-          background: '#0F0F0F',
+          background: 'var(--primary-dark)',
           padding: '3.5rem 1.5rem',
         }}>
         <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ width: '40px', height: '1px', background: '#FFFFFF', opacity: 0.3, margin: '0 auto 1.25rem' }} />
+          <div style={{ width: '40px', height: '1px', background: '#eab308', margin: '0 auto 1.25rem' }} />
           <h2 style={{
             fontSize: 'clamp(1.2rem, 2.5vw, 1.6rem)',
             fontFamily: 'var(--font-serif)',
@@ -515,7 +532,7 @@ export default function BlogsPage() {
             fontWeight: 300,
             marginBottom: '0.75rem',
           }}>
-            Stay <span style={{ color: '#FFFFFF', opacity: 0.95 }}>Informed</span>
+            Stay <span style={{ color: '#eab308' }}>Informed</span>
           </h2>
           <p style={{
             color: 'rgba(255,255,255,0.65)',

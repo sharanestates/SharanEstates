@@ -25,7 +25,7 @@ export default function Footer() {
 
 
         {/* Footer Main Grid */}
-        <div className="footer-grid-mobile" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+        <div className="footer-grid-mobile" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
           
           {/* Brand */}
           <div className="footer-col-mobile" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -73,54 +73,57 @@ export default function Footer() {
             <div className="footer-socials-mobile" style={{ display: 'flex', gap: '1.5rem' }}>
               {['Twitter', 'LinkedIn', 'Instagram'].map(social => (
                 <a key={social} href="#" style={{ color: '#FFF', textDecoration: 'none', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 600, transition: 'color 0.3s' }}
-                   onMouseOver={(e) => e.target.style.color = 'var(--primary-color)'}
-                   onMouseOut={(e) => e.target.style.color = '#FFF'}>
+                   onMouseOver={(e) => { e.target.style.color = '#eab308'; }}
+                   onMouseOut={(e) => { e.target.style.color = '#FFF'; }}>
                   {social}
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Explore Links */}
-          <div className="footer-col-mobile" style={{ display: 'flex', flexDirection: 'column' }}>
-            <h3 className="footer-h3-mobile" style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#FFFFFF', marginBottom: '1.25rem', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>Explore</h3>
-            <ul className="footer-links-list-mobile" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-              {[
-                { name: 'Buy', path: '/listings/ready' },
-                { name: 'New Developments', path: '/listings/off-plan' },
-                { name: 'Sell With Us', path: '/list-with-us' },
-                { name: 'Contact Us', path: '/contact' },
-              ].map(link => (
-                <li key={link.name}>
-                  <Link to={link.path} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.3s, transform 0.3s', display: 'inline-block' }} 
-                     onMouseOver={(e) => { e.target.style.color = '#FFF'; e.target.style.transform = 'translateX(5px)'; }}
-                     onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.7)'; e.target.style.transform = 'translateX(0)'; }}>
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Navigation links group (Explore & Resources columns side-by-side with tighter gap) */}
+          <div className="footer-nav-group-mobile" style={{ display: 'flex', gap: '1.8rem', flex: '1 1 auto', minWidth: '280px' }}>
+            {/* Explore Links */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+              <h3 className="footer-h3-mobile" style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#FFFFFF', marginBottom: '1.25rem', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>Explore</h3>
+              <ul className="footer-links-list-mobile" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                {[
+                  { name: 'Buy', path: '/listings/ready' },
+                  { name: 'New Developments', path: '/listings/off-plan' },
+                  { name: 'Sell With Us', path: '/list-with-us' },
+                  { name: 'Contact Us', path: '/contact' },
+                ].map(link => (
+                  <li key={link.name}>
+                    <Link to={link.path} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.3s, transform 0.3s', display: 'inline-block' }} 
+                       onMouseOver={(e) => { e.target.style.color = '#FFF'; e.target.style.transform = 'translateX(5px)'; }}
+                       onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.7)'; e.target.style.transform = 'translateX(0)'; }}>
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Resources Links */}
-          <div className="footer-col-mobile" style={{ display: 'flex', flexDirection: 'column' }}>
-            <h3 className="footer-h3-mobile" style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#FFFFFF', marginBottom: '1.25rem', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>Resources</h3>
-            <ul className="footer-links-list-mobile" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-              {[
-                { name: 'Area Guide', path: '/area-guide' },
-                { name: 'Market Trends', path: '/market-trends' },
-                { name: 'Blogs', path: '/blogs' },
-                { name: 'About Us', path: '/about' },
-              ].map(link => (
-                <li key={link.name}>
-                  <Link to={link.path} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.3s, transform 0.3s', display: 'inline-block' }} 
-                     onMouseOver={(e) => { e.target.style.color = '#FFF'; e.target.style.transform = 'translateX(5px)'; }}
-                     onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.7)'; e.target.style.transform = 'translateX(0)'; }}>
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {/* Resources Links */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+              <h3 className="footer-h3-mobile" style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#FFFFFF', marginBottom: '1.25rem', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>Resources</h3>
+              <ul className="footer-links-list-mobile" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                {[
+                  { name: 'Area Guide', path: '/area-guide' },
+                  { name: 'Market Trends', path: '/market-trends' },
+                  { name: 'Blogs', path: '/blogs' },
+                  { name: 'About Us', path: '/about' },
+                ].map(link => (
+                  <li key={link.name}>
+                    <Link to={link.path} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.3s, transform 0.3s', display: 'inline-block' }} 
+                       onMouseOver={(e) => { e.target.style.color = '#FFF'; e.target.style.transform = 'translateX(5px)'; }}
+                       onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.7)'; e.target.style.transform = 'translateX(0)'; }}>
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {/* Newsletter */}

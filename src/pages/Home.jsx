@@ -106,7 +106,7 @@ export default function Home() {
               className="hero-frosted-card reveal-animate"
             >
               <p className="hero-subtitle">
-                Curated Dubai Portfolio
+                Curated Portfolio
               </p>
               <h1 className="hero-title">
                 Representing Exceptional Real Estate

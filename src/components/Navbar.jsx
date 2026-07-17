@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { ChevronDown, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import RegisterInterestModal from './RegisterInterestModal';
 
 export default function Navbar() {
@@ -9,14 +9,6 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
-  
-  // Desktop dropdown states
-  const [buyOpen, setBuyOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
-  
-  // Mobile specific dropdown states
-  const [mobileBuyOpen, setMobileBuyOpen] = useState(false);
-  const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,49 +34,6 @@ export default function Navbar() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
-  };
-
-  const toggleMobileMenu = (menu) => {
-    if (menu === 'buy') {
-      setMobileBuyOpen(!mobileBuyOpen);
-      setMobileMoreOpen(false);
-    } else if (menu === 'more') {
-      setMobileMoreOpen(!mobileMoreOpen);
-      setMobileBuyOpen(false);
-    }
-  };
-
-  const dropdownStyle = {
-    position: 'absolute',
-    top: '100%',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    background: 'rgba(255, 255, 255, 0.96)',
-    backdropFilter: 'blur(15px)',
-    border: '1px solid rgba(0, 0, 0, 0.25)',
-    borderRadius: '4px',
-    padding: '0.5rem 0',
-    minWidth: '180px',
-    boxShadow: '0 10px 30px rgba(0,0,0,0.06)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.2rem',
-    zIndex: 1000,
-    opacity: 0,
-    visibility: 'hidden',
-    transition: 'all 0.3s ease',
-    marginTop: '1rem'
-  };
-
-  const dropdownItemStyle = {
-    padding: '0.7rem 1.5rem',
-    color: 'var(--text-dark)',
-    textDecoration: 'none',
-    fontSize: '0.8rem',
-    fontWeight: 500,
-    textTransform: 'uppercase',
-    letterSpacing: '1px',
-    transition: 'background 0.2s, color 0.2s',
   };
 
   const navBackground = shouldShowOpaque 
@@ -201,49 +150,31 @@ export default function Navbar() {
       </Link>
 
       {/* Desktop Navigation Links */}
-      <ul className="nav-links desktop-nav" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: '2rem', listStyle: 'none', margin: 0, padding: 0 }}>
-        
-        {/* Buy Dropdown */}
-        <li 
-          style={{ position: 'relative', cursor: 'pointer', padding: '0.5rem 0' }}
-          onMouseEnter={() => setBuyOpen(true)}
-          onMouseLeave={() => setBuyOpen(false)}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF', fontSize: '0.82rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1.2px', transition: 'color 0.3s ease' }}>
-            Buy <ChevronDown size={12} style={{ transition: 'transform 0.3s', transform: buyOpen ? 'rotate(180deg)' : 'none', opacity: 0.8 }} />
-          </div>
-          <div style={{ ...dropdownStyle, opacity: buyOpen ? 1 : 0, visibility: buyOpen ? 'visible' : 'hidden', marginTop: buyOpen ? '0.5rem' : '1rem' }}>
-            <Link to="/listings/off-plan" style={dropdownItemStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = 'var(--text-dark)'}>Off-Plan Properties</Link>
-            <Link to="/listings/ready" style={dropdownItemStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = 'var(--text-dark)'}>Ready Properties</Link>
-          </div>
+      <ul className="nav-links desktop-nav" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: '1.8rem', listStyle: 'none', margin: 0, padding: 0 }}>
+        <li style={{ display: 'flex', alignItems: 'center' }}>
+          <Link to="/listings/ready" style={linkStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF'}>Buy</Link>
         </li>
-
+        <li style={{ display: 'flex', alignItems: 'center' }}>
+          <Link to="/listings/off-plan" style={linkStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF'}>New Developments</Link>
+        </li>
+        <li style={{ display: 'flex', alignItems: 'center' }}>
+          <Link to="/area-guide" style={linkStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF'}>Area Guide</Link>
+        </li>
+        <li style={{ display: 'flex', alignItems: 'center' }}>
+          <Link to="/market-trends" style={linkStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF'}>Market Trends</Link>
+        </li>
+        <li style={{ display: 'flex', alignItems: 'center' }}>
+          <Link to="/blogs" style={linkStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF'}>Blogs</Link>
+        </li>
+        <li style={{ display: 'flex', alignItems: 'center' }}>
+          <Link to="/list-with-us" style={linkStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF'}>Sell With Us</Link>
+        </li>
         <li style={{ display: 'flex', alignItems: 'center' }}>
           <Link to="/about" style={linkStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF'}>About Us</Link>
         </li>
-        
         <li style={{ display: 'flex', alignItems: 'center' }}>
           <Link to="/contact" style={linkStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF'}>Contact Us</Link>
         </li>
-        
-        {/* More Dropdown */}
-        <li 
-          style={{ position: 'relative', cursor: 'pointer', padding: '0.5rem 0' }}
-          onMouseEnter={() => setMoreOpen(true)}
-          onMouseLeave={() => setMoreOpen(false)}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF', fontSize: '0.82rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1.2px', transition: 'color 0.3s ease' }}>
-            More <ChevronDown size={12} style={{ transition: 'transform 0.3s', transform: moreOpen ? 'rotate(180deg)' : 'none', opacity: 0.8 }} />
-          </div>
-          <div style={{ ...dropdownStyle, opacity: moreOpen ? 1 : 0, visibility: moreOpen ? 'visible' : 'hidden', marginTop: moreOpen ? '0.5rem' : '1rem' }}>
-            <Link to="/area-guide" style={dropdownItemStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = 'var(--text-dark)'}>Area Guide</Link>
-            <Link to="/market-trends" style={dropdownItemStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = 'var(--text-dark)'}>Market Trends</Link>
-            <Link to="/blogs" style={dropdownItemStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = 'var(--text-dark)'}>Blogs</Link>
-            <Link to="/list-with-us" style={dropdownItemStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = 'var(--text-dark)'}>List With Us</Link>
-            <Link to="/careers" style={dropdownItemStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = 'var(--text-dark)'}>Careers</Link>
-          </div>
-        </li>
-
       </ul>
 
       {/* Register Interest CTA */}
@@ -281,18 +212,14 @@ export default function Navbar() {
       </button>
 
       <div className={`mobile-nav-menu ${isMobileMenuOpen ? 'open' : ''}`}>
-        
-        <Link to="/listings/off-plan" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Explore Off-Plan</Link>
-        <Link to="/listings/ready" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Explore Ready Property</Link>
-
-        <Link to="/about" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>About Us</Link>
-        <Link to="/contact" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Contact Us</Link>
-
+        <Link to="/listings/ready" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Buy</Link>
+        <Link to="/listings/off-plan" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>New Developments</Link>
         <Link to="/area-guide" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Area Guide</Link>
         <Link to="/market-trends" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Market Trends</Link>
         <Link to="/blogs" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Blogs</Link>
-        <Link to="/list-with-us" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>List With Us</Link>
-        <Link to="/careers" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Careers</Link>
+        <Link to="/list-with-us" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Sell With Us</Link>
+        <Link to="/about" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>About Us</Link>
+        <Link to="/contact" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Contact Us</Link>
 
         <div className="mobile-nav-item" style={{ borderBottom: 'none', marginTop: '0.5rem' }}>
           <button className="btn-solid" style={{ width: '100%' }} onClick={() => { setIsModalOpen(true); setIsMobileMenuOpen(false); }}>Register Interest</button>

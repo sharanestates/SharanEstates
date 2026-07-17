@@ -1204,6 +1204,11 @@ export default function AdminDashboard() {
                               <td style={{ padding: '1rem' }}>
                                 <div>✉ {inq.email}</div>
                                 {inq.phone && <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>☎ {inq.phone}</div>}
+                                {inq.message && (
+                                  <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: 'var(--text-dark)', background: 'rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)', padding: '0.5rem 0.75rem', borderRadius: '4px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', maxWidth: '320px', lineHeight: 1.4 }}>
+                                    {inq.message}
+                                  </div>
+                                )}
                               </td>
                               <td style={{ padding: '1rem', textTransform: 'capitalize' }}>
                                 {inq.property_type === 'villa' ? 'Luxury Villas' : 
@@ -1349,6 +1354,11 @@ export default function AdminDashboard() {
                                 <td style={{ padding: '1rem' }}>
                                   <div>✉ {inq.email}</div>
                                   {inq.phone && <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>☎ {inq.phone}</div>}
+                                  {inq.message && (
+                                    <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: 'var(--text-dark)', background: 'rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)', padding: '0.5rem 0.75rem', borderRadius: '4px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', maxWidth: '320px', lineHeight: 1.4 }}>
+                                      {inq.message}
+                                    </div>
+                                  )}
                                 </td>
                                 <td style={{ padding: '1rem' }}>
                                   {details.rawMessage ? (

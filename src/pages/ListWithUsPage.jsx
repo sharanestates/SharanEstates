@@ -14,6 +14,7 @@ export default function ListWithUsPage() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -22,10 +23,42 @@ export default function ListWithUsPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1200));
-    setSubmitted(true);
-    setLoading(false);
+    setError('');
+
+    const payload = {
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      propertyType: form.propertyType.toLowerCase(),
+      message: `PROPERTY SUBMISSION details:
+• Location: ${form.location}
+• Bedrooms: ${form.bedrooms}
+• Expected Price: AED ${Number(form.expectedPrice).toLocaleString()}
+• Notes: ${form.notes || 'None'}`
+    };
+
+    try {
+      const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
+      const res = await fetch(`${API_BASE}/inquiries`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || 'Failed to submit property listing inquiry.');
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      console.error('Submission error:', err);
+      setError(err.message || 'An error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputStyle = {
@@ -249,10 +282,8 @@ export default function ListWithUsPage() {
                 }}>
                   {benefit.title}
                 </h3>
-                <div style={{ width: '20px', height: '1px', background: 'var(--primary-color)', marginBottom: '0.75rem' }} />
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.7 }}>
-                  {benefit.desc}
-                </p>
+                <div style={{ width: '25px', height: '1px', background: '#eab308', margin: '0.5rem auto 0.75rem' }} />
+                <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.7, margin: 0 }}>{benefit.desc}</p>
               </div>
             ))}
           </div>
@@ -261,10 +292,10 @@ export default function ListWithUsPage() {
 
       {/* ── THE PROCESS SECTION ── */}
       <RevealSection>
-        <section style={{ background: '#FFFFFF', padding: '3rem 1.5rem', borderTop: '1px solid rgba(0, 0, 0,0.15)', borderBottom: '1px solid rgba(0, 0, 0,0.15)' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+        <section style={{ background: '#FFFFFF', padding: '3.5rem 1.5rem', borderTop: '1px solid rgba(0, 0, 0,0.12)', borderBottom: '1px solid rgba(0, 0, 0,0.12)' }}>
+          <div style={{ maxWidth: '1150px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: 'clamp(3rem, 6vw, 4.5rem)' }}>
-              <div style={{ width: '40px', height: '1px', background: 'var(--primary-color)', margin: '0 auto 1rem' }} />
+              <div style={{ width: '40px', height: '1px', background: '#eab308', margin: '0 auto 1rem' }} />
               <p style={{
                 color: 'var(--primary-dark)',
                 fontSize: '0.68rem',
@@ -289,40 +320,98 @@ export default function ListWithUsPage() {
             <div style={{
               display: 'flex',
               justifyContent: 'space-between',
-              gap: '2rem',
+              gap: '1.5rem',
               flexWrap: 'wrap',
             }} className="process-container">
               {[
-                { step: '01', title: 'Consultation & Valuation', desc: 'We conduct a detailed market analysis to recommend a competitive, optimized list price.' },
-                { step: '02', title: 'Media Production', desc: 'Our creative team captures high-definition cinematic tours, drone shots, and images.' },
-                { step: '03', title: 'Bespoke Marketing', desc: 'We launch targeted campaigns across local real estate portals, social channels, and print.' },
-                { step: '04', title: 'Sale & Closure', desc: 'We manage all buyer viewings, handle negotiations, and coordinate contract signatures.' }
+                { step: '01', title: 'Consultation & Valuation', desc: 'We conduct a detailed market analysis to recommend a competitive, optimized list price.', image: '/list_step_1.png' },
+                { step: '02', title: 'Media Production', desc: 'Our creative team captures high-definition cinematic tours, drone shots, and images.', image: '/list_step_2.png' },
+                { step: '03', title: 'Bespoke Marketing', desc: 'We launch targeted campaigns across local real estate portals, social channels, and print.', image: '/list_step_3.png' },
+                { step: '04', title: 'Sale & Closure', desc: 'We manage all buyer viewings, handle negotiations, and coordinate contract signatures.', image: '/list_step_4.png' }
               ].map((proc, idx) => (
-                <div key={idx} style={{ flex: '1 1 220px', position: 'relative' }}>
-                  <div style={{
-                    fontSize: '2.5rem',
-                    fontFamily: 'var(--font-serif)',
-                    color: 'rgba(0, 0, 0,0.18)',
-                    fontWeight: 700,
-                    lineHeight: 1,
-                    marginBottom: '0.5rem',
+                <div key={idx} style={{ flex: '1 1 220px', position: 'relative', display: 'flex', flexDirection: 'column' }} className="process-step-wrapper">
+                  {/* Card Container */}
+                  <div className="classic-property-card" style={{
+                    background: '#FFFFFF',
+                    border: '1px solid rgba(0,0,0,0.08)',
+                    borderRadius: '4px',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.04)',
+                    transition: 'all 0.4s ease',
                   }}>
-                    {proc.step}
+                    {/* Image Area */}
+                    <div style={{ position: 'relative', height: '140px', overflow: 'hidden' }}>
+                      <img src={proc.image} alt={proc.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s ease' }} className="step-image-hover" />
+                      <div style={{
+                        position: 'absolute',
+                        top: '0.75rem',
+                        left: '0.75rem',
+                        background: 'rgba(0,0,0,0.85)',
+                        color: '#eab308',
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '0.9rem',
+                        fontFamily: 'var(--font-serif)',
+                        fontWeight: 600,
+                        border: '1px solid #eab308',
+                      }}>
+                        {proc.step}
+                      </div>
+                    </div>
+                    {/* Content */}
+                    <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                      <h3 style={{
+                        fontSize: '0.82rem',
+                        fontFamily: 'var(--font-serif)',
+                        color: 'var(--text-dark)',
+                        fontWeight: 600,
+                        letterSpacing: '1px',
+                        textTransform: 'uppercase',
+                        marginBottom: '0.5rem',
+                      }}>
+                        {proc.title}
+                      </h3>
+                      <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+                        {proc.desc}
+                      </p>
+                    </div>
                   </div>
-                  <h3 style={{
-                    fontSize: '0.82rem',
-                    fontFamily: 'var(--font-serif)',
-                    color: 'var(--text-dark)',
-                    fontWeight: 600,
-                    letterSpacing: '1px',
-                    textTransform: 'uppercase',
-                    marginBottom: '0.5rem',
-                  }}>
-                    {proc.title}
-                  </h3>
-                  <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                    {proc.desc}
-                  </p>
+
+                  {/* Flowchart Connectors */}
+                  {idx < 3 && (
+                    <>
+                      <div style={{
+                        position: 'absolute',
+                        top: '70px',
+                        right: '-1.1rem',
+                        transform: 'translateY(-50%)',
+                        color: '#eab308',
+                        fontSize: '1.25rem',
+                        fontWeight: 300,
+                        zIndex: 5,
+                        display: 'none',
+                      }} className="process-arrow-desktop">
+                        →
+                      </div>
+                      <div style={{
+                        color: '#eab308',
+                        fontSize: '1.25rem',
+                        fontWeight: 300,
+                        textAlign: 'center',
+                        margin: '0.5rem 0',
+                        display: 'none',
+                      }} className="process-arrow-mobile">
+                        ↓
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
@@ -570,13 +659,27 @@ export default function ListWithUsPage() {
     </RevealSection>
 
       <style>{`
+        .step-image-hover:hover {
+          transform: scale(1.08);
+        }
+        @media (min-width: 769px) {
+          .process-arrow-desktop {
+            display: block !important;
+          }
+        }
         @media (max-width: 768px) {
           .benefits-grid {
             grid-template-columns: 1fr !important;
           }
           .process-container {
             flex-direction: column !important;
-            gap: 1.5rem !important;
+            gap: 1rem !important;
+          }
+          .process-step-wrapper {
+            flex: 1 1 100% !important;
+          }
+          .process-arrow-mobile {
+            display: block !important;
           }
           .form-row-2 {
             grid-template-columns: 1fr !important;

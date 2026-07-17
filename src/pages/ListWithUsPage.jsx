@@ -454,6 +454,19 @@ export default function ListWithUsPage() {
           <div style={{ padding: '2.5rem' }}>
             {!submitted ? (
               <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                {error && (
+                  <div style={{
+                    padding: '0.85rem 1rem',
+                    background: 'rgba(239, 68, 68, 0.08)',
+                    border: '1px solid rgba(239, 68, 68, 0.2)',
+                    borderRadius: '4px',
+                    color: '#ef4444',
+                    fontSize: '0.82rem',
+                    lineHeight: 1.5,
+                  }}>
+                    {error}
+                  </div>
+                )}
                 
                 {/* Section: Owner Contact */}
                 <h4 style={{
@@ -475,6 +488,7 @@ export default function ListWithUsPage() {
                       onChange={e => setForm({ ...form, name: e.target.value })}
                       style={inputStyle}
                       placeholder="Your name"
+                      className="premium-input"
                     />
                   </div>
                   <div>
@@ -486,6 +500,7 @@ export default function ListWithUsPage() {
                       onChange={e => setForm({ ...form, email: e.target.value })}
                       style={inputStyle}
                       placeholder="your@email.com"
+                      className="premium-input"
                     />
                   </div>
                 </div>
@@ -499,6 +514,7 @@ export default function ListWithUsPage() {
                     onChange={e => setForm({ ...form, phone: e.target.value })}
                     style={inputStyle}
                     placeholder="+971 50 000 0000"
+                    className="premium-input"
                   />
                 </div>
 
@@ -520,6 +536,7 @@ export default function ListWithUsPage() {
                       value={form.propertyType}
                       onChange={e => setForm({ ...form, propertyType: e.target.value })}
                       style={{ ...inputStyle, height: '42px', padding: '0.5rem 1rem' }}
+                      className="premium-input"
                     >
                       <option value="Villa">Villa</option>
                       <option value="Apartment">Apartment</option>
@@ -537,6 +554,7 @@ export default function ListWithUsPage() {
                       onChange={e => setForm({ ...form, location: e.target.value })}
                       style={inputStyle}
                       placeholder="e.g. Palm Jumeirah"
+                      className="premium-input"
                     />
                   </div>
                 </div>
@@ -548,6 +566,7 @@ export default function ListWithUsPage() {
                       value={form.bedrooms}
                       onChange={e => setForm({ ...form, bedrooms: e.target.value })}
                       style={{ ...inputStyle, height: '42px', padding: '0.5rem 1rem' }}
+                      className="premium-input"
                     >
                       <option value="Studio">Studio</option>
                       <option value="1">1 Bedroom</option>
@@ -566,6 +585,7 @@ export default function ListWithUsPage() {
                       onChange={e => setForm({ ...form, expectedPrice: e.target.value })}
                       style={inputStyle}
                       placeholder="Expected price"
+                      className="premium-input"
                     />
                   </div>
                 </div>
@@ -578,6 +598,7 @@ export default function ListWithUsPage() {
                     onChange={e => setForm({ ...form, notes: e.target.value })}
                     style={{ ...inputStyle, resize: 'vertical' }}
                     placeholder="Provide details about pool, view, layout, etc."
+                    className="premium-input"
                   />
                 </div>
 
@@ -665,18 +686,32 @@ export default function ListWithUsPage() {
           height: 48px;
           border-radius: 50%;
           background: rgba(234, 179, 8, 0.05);
-          border: 1px solid rgba(234, 179, 8, 0.15);
-          display: flex;
-          align-items: center;
-          justifyContent: center;
+          border: 1px solid rgba(234, 179, 8, 0.15) !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
           margin-bottom: 1.25rem;
           color: #eab308;
           transition: all 0.4s ease;
         }
+        .advantage-icon-container svg {
+          display: block;
+          margin: 0 auto;
+        }
         .advantage-card:hover .advantage-icon-container {
           background: rgba(234, 179, 8, 0.12);
-          border-color: rgba(234, 179, 8, 0.3);
+          border-color: rgba(234, 179, 8, 0.3) !important;
           transform: scale(1.05);
+        }
+        .premium-input {
+          transition: all 0.3s ease !important;
+          border: 1px solid rgba(0, 0, 0, 0.15) !important;
+        }
+        .premium-input:focus {
+          border-color: #eab308 !important;
+          background: #FFFFFF !important;
+          box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.12) !important;
+          outline: none !important;
         }
         .step-image-hover:hover {
           transform: scale(1.08);

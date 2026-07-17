@@ -12,23 +12,29 @@ export default function useRealTimeSync(onMessage) {
   }, [onMessage]);
 
   useEffect(() => {
-    // Determine WebSocket URL based on protocol (http -> ws, https -> wss)
+    const isLocal = window.location.hostname === 'localhost' ||
+                    window.location.hostname === '127.0.0.1' ||
+                    window.location.hostname.startsWith('192.168.') ||
+                    window.location.hostname.startsWith('10.') ||
+                    window.location.hostname.startsWith('172.');
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    // If the Vite client is running on port 5173, point the WebSocket to port 5000 (Express) on the same hostname
-    const host = window.location.port === '5173'
-      ? `${window.location.hostname}:5000`
-      : window.location.host;
+    const host = isLocal ? `${window.location.hostname}:5000` : window.location.host;
     const wsUrl = `${protocol}//${host}`;
 
     let socket;
     let reconnectTimeout;
     let isMounted = true;
+    let hasConnected = false;
 
     function connect() {
       if (!isMounted) return;
       
-      console.log('Connecting to Sharan Estates real-time sync...');
       socket = new WebSocket(wsUrl);
+
+      socket.onopen = () => {
+        hasConnected = true;
+        console.log('Connected to Sharan Estates real-time sync.');
+      };
 
       socket.onmessage = (event) => {
         try {
@@ -43,13 +49,16 @@ export default function useRealTimeSync(onMessage) {
 
       socket.onclose = () => {
         if (isMounted) {
-          console.log('Sharan Estates real-time sync offline. Reconnecting in 5 seconds...');
-          reconnectTimeout = setTimeout(connect, 5000);
+          if (hasConnected) {
+            console.log('Sharan Estates real-time sync disconnected. Reconnecting in 10 seconds...');
+            hasConnected = false;
+          }
+          reconnectTimeout = setTimeout(connect, 10000);
         }
       };
 
-      socket.onerror = (err) => {
-        console.error('Sharan Estates real-time sync connection error:', err);
+      socket.onerror = () => {
+        // Suppress custom console.error here. The browser naturally prints a network error to console if connection fails.
       };
     }
 

@@ -1,6 +1,12 @@
 import React, { useEffect } from 'react';
+import useSEO from '../components/useSEO';
 
 export default function TermsPage() {
+  useSEO(
+    'Terms of Service',
+    'Review the terms of service for using the Sharan Estates real estate portal, including usage policies, intellectual property rights, and liability disclaimers.'
+  );
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);

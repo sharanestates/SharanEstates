@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import RevealSection from '../components/RevealSection';
 import useRealTimeSync from '../components/useRealTimeSync';
+import useSEO from '../components/useSEO';
 
 export default function Listings() {
   const { type, category } = useParams();
@@ -59,6 +60,11 @@ export default function Listings() {
 
   const typeLabel = type === 'off-plan' ? 'Off-Plan Properties' : type === 'rent' ? 'For Rent' : 'For Sale';
   const isOffPlan = type === 'off-plan';
+
+  useSEO(
+    typeLabel,
+    `Browse our curated portfolio of premium ${typeLabel.toLowerCase()} properties across Dubai & Abu Dhabi.`
+  );
 
   const getImage = (prop) => {
     if (prop.images && Array.isArray(prop.images) && prop.images.length > 0) return prop.images[0];
@@ -129,6 +135,7 @@ export default function Listings() {
                     <img
                       src={getImage(prop)}
                       alt={prop.title}
+                      loading="lazy"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       onError={e => { e.target.src = '/listing_villa.webp'; }}
                     />

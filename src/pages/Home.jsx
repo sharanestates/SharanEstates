@@ -6,6 +6,7 @@ import Properties from '../components/Properties';
 import ConsultationSection from '../components/ConsultationSection';
 import RevealSection from '../components/RevealSection';
 import useRealTimeSync from '../components/useRealTimeSync';
+import useSEO from '../components/useSEO';
 
 const bgImages = [
   '/dubai_luxury_1.webp',
@@ -15,6 +16,11 @@ const bgImages = [
 ];
 
 export default function Home() {
+  useSEO(
+    'Luxury Real Estate Dubai',
+    'Sharan Estates is a premier luxury real estate agency in Dubai, offering premium villas, penthouses, off-plan projects, and investment advisory.'
+  );
+
   const [propertyValue, setPropertyValue] = useState(500000);
   const [downPayment, setDownPayment] = useState(100000);
   const [interestRate, setInterestRate] = useState(4.5);

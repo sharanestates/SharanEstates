@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import RevealSection from '../components/RevealSection';
+import useSEO from '../components/useSEO';
 
 const areas = [
   {
@@ -150,6 +151,7 @@ function AreaCard({ area, index }) {
           <img
             src={area.image}
             alt={area.name}
+            loading="lazy"
             style={{
               width: '100%',
               height: '100%',
@@ -253,6 +255,11 @@ function AreaCard({ area, index }) {
 
 
 export default function AreaGuidePage() {
+  useSEO(
+    'Dubai Area Guides',
+    'Explore Dubai\'s premier residential communities, from beachfront waterfronts to luxury villa communities and emerging areas.'
+  );
+
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
 

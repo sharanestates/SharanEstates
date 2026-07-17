@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import RevealSection from '../components/RevealSection';
+import useSEO from '../components/useSEO';
 
 const areaDetailsData = {
   'downtown-dubai': {
@@ -248,6 +249,11 @@ const areaDetailsData = {
 export default function AreaDetailPage() {
   const { id } = useParams();
   const detail = areaDetailsData[id] || areaDetailsData['downtown-dubai'];
+
+  useSEO(
+    detail ? `${detail.name} Area Guide` : 'Area Guide',
+    detail ? detail.overview : ''
+  );
 
   const [properties, setProperties] = useState([]);
   const [loadingProperties, setLoadingProperties] = useState(true);
@@ -499,6 +505,7 @@ export default function AreaDetailPage() {
                     <img 
                       src={getImage(prop)} 
                       alt={prop.title} 
+                      loading="lazy"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       onError={e => e.target.src = '/listing_villa.webp'}
                     />

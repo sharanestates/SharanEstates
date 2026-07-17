@@ -1,6 +1,12 @@
 import React, { useEffect } from 'react';
+import useSEO from '../components/useSEO';
 
 export default function PrivacyPolicyPage() {
+  useSEO(
+    'Privacy Policy',
+    'Read the privacy policy and legal disclaimer of Sharan Estates regarding data collection, communications, and third-party listings.'
+  );
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);

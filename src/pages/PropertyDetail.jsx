@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import InteractiveFloorPlan from '../components/InteractiveFloorPlan';
 import RevealSection from '../components/RevealSection';
 import useRealTimeSync from '../components/useRealTimeSync';
+import useSEO from '../components/useSEO';
 
 // ─── Floor Plan Lead Modal ────────────────────────────────────────────────────
 function FloorPlanModal({ property, onClose }) {
@@ -178,7 +179,7 @@ function ImageGallery({ images, fallback }) {
               onClick={() => setActive(i)}
               style={{ height: '80px', borderRadius: '4px', overflow: 'hidden', cursor: 'pointer', opacity: active === i ? 1 : 0.65, border: active === i ? '2px solid var(--primary-dark)' : '2px solid transparent', transition: 'all 0.2s' }}
             >
-              <img src={img} alt={`View ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.src = fallback || '/listing_villa.webp'; }} />
+              <img src={img} alt={`View ${i + 1}`} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.src = fallback || '/listing_villa.webp'; }} />
             </div>
           ))}
         </div>
@@ -192,6 +193,12 @@ export default function PropertyDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [property, setProperty] = useState(null);
+
+  useSEO(
+    property ? property.title : 'Property Details',
+    property ? property.description : ''
+  );
+
   const [loading, setLoading] = useState(true);
   const [showFloorPlan, setShowFloorPlan] = useState(false);
   const [brochureForm, setBrochureForm] = useState({ name: '', phone: '', email: '', message: '' });

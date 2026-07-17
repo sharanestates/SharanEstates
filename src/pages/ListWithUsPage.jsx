@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import RevealSection from '../components/RevealSection';
+import useSEO from '../components/useSEO';
 
 export default function ListWithUsPage() {
+  useSEO(
+    'List Your Property',
+    'List your luxury villa, penthouse, or apartment with Sharan Estates. Maximize your property value with our premium marketing and network.'
+  );
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -333,7 +338,7 @@ export default function ListWithUsPage() {
                   }}>
                     {/* Image Area */}
                     <div style={{ position: 'relative', height: '140px', overflow: 'hidden' }}>
-                      <img src={proc.image} alt={proc.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s ease' }} className="step-image-hover" />
+                      <img src={proc.image} alt={proc.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s ease' }} className="step-image-hover" />
                       <div style={{
                         position: 'absolute',
                         top: '0.75rem',

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import RevealSection from '../components/RevealSection';
+import useSEO from '../components/useSEO';
 
 const jobOpenings = [
   {
@@ -594,6 +595,11 @@ function ApplyModal({ job, onClose }) {
 
 
 export default function CareersPage() {
+  useSEO(
+    'Careers',
+    'Join the team at Sharan Estates. Explore career opportunities in luxury real estate sales, marketing, and operations in Dubai.'
+  );
+
   const [activeJob, setActiveJob] = useState(null);
   const [activeFilter, setActiveFilter] = useState('All');
   const [expandedId, setExpandedId] = useState(null);

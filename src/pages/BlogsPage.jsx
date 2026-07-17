@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import RevealSection from '../components/RevealSection';
 import useRealTimeSync from '../components/useRealTimeSync';
+import useSEO from '../components/useSEO';
 
 const defaultCategories = ['All', 'Market Trends', 'Investment', 'Guides', 'Architecture', 'Lifestyle', 'News'];
 
@@ -149,6 +150,7 @@ function BlogListCard({ post, index }) {
         <img
           src={post.image}
           alt={post.title}
+          loading="lazy"
           style={{
             width: '100%',
             height: '100%',
@@ -239,6 +241,11 @@ function BlogListCard({ post, index }) {
 
 
 export default function BlogsPage() {
+  useSEO(
+    'Insights & Market News',
+    'Stay up to date with the latest Dubai real estate market reports, investment insights, guides, and lifestyle news from Sharan Estates.'
+  );
+
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [blogPosts, setBlogPosts] = useState([]);

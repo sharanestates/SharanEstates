@@ -126,9 +126,9 @@ export default function ListWithUsPage() {
             padding: 'clamp(7rem, 14vw, 9rem) 1.5rem clamp(4rem, 8vw, 5rem)',
             maxWidth: '780px',
           }}>
-            <div style={{ width: '40px', height: '1px', background: '#FFFFFF', margin: '0 auto 1.5rem' }} />
+            <div style={{ width: '40px', height: '1px', background: '#eab308', margin: '0 auto 1.5rem' }} />
             <p style={{
-              color: '#FFFFFF',
+              color: '#eab308',
               fontSize: '0.7rem',
               letterSpacing: '4px',
               textTransform: 'uppercase',
@@ -148,7 +148,7 @@ export default function ListWithUsPage() {
               fontWeight: 300,
             }}>
               Showcase Your Home to<br />
-              <span style={{ color: '#FFFFFF' }}>Our Elite Global Network</span>
+              <span style={{ color: '#eab308' }}>Our Elite Global Network</span>
             </h1>
             <p style={{
               color: 'rgba(255,255,255,0.45)',

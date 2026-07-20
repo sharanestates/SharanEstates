@@ -90,7 +90,8 @@ export default function Listings() {
 
         {/* Page Header */}
         <div style={{ marginBottom: '2.5rem', textAlign: 'center' }}>
-          <p style={{ color: 'var(--primary-dark)', fontSize: '0.75rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.5rem' }}>
+          <div style={{ width: '40px', height: '1px', background: '#eab308', margin: '0 auto 1rem' }} />
+          <p style={{ color: '#eab308', fontSize: '0.75rem', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.5rem' }}>
             Sharan Estates
           </p>
           <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', textTransform: 'uppercase', letterSpacing: '2px', lineHeight: 1.2 }}>

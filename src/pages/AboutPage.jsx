@@ -19,11 +19,12 @@ export default function AboutPage() {
       <RevealSection>
         <section style={{ paddingTop: 'clamp(5rem, 12vw, 8rem)', paddingBottom: '1rem', textAlign: 'center' }}>
           <div className="container p-mobile">
-            <p style={{ color: 'var(--primary-dark)', fontSize: '0.9rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>
+          <div style={{ width: '40px', height: '1px', background: '#eab308', margin: '0 auto 1.5rem' }} />
+            <p style={{ color: '#eab308', fontSize: '0.9rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>
               Our Story
             </p>
             <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', lineHeight: 1.1, marginBottom: '2rem' }}>
-              The Standard of <br/><span style={{ color: 'var(--primary-color)' }}>Excellence</span>
+              The Standard of <br/><span style={{ color: '#eab308' }}>Excellence</span>
             </h1>
             <p style={{ fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)', color: 'var(--text-muted)', maxWidth: '700px', margin: '0 auto', lineHeight: 1.6 }}>
               At Sharan Estates, we redefine the standard of luxury real estate. Through cutting-edge PropTech solutions, 

@@ -17,13 +17,14 @@ export default function TermsPage() {
         
         {/* Header */}
         <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
-          <p style={{ color: 'var(--primary-dark)', fontSize: '0.75rem', letterSpacing: '4px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.75rem' }}>
+          <div style={{ width: '40px', height: '1px', background: '#eab308', margin: '0 auto 1rem' }} />
+          <p style={{ color: '#eab308', fontSize: '0.75rem', letterSpacing: '4px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.75rem' }}>
             Legal Documents
           </p>
           <h1 style={{ fontSize: 'clamp(2rem, 4vw, 2.8rem)', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', textTransform: 'uppercase', letterSpacing: '2px', margin: 0, fontWeight: 300 }}>
             Terms of Service
           </h1>
-          <div style={{ width: '50px', height: '1px', background: 'var(--primary-color)', margin: '1.5rem auto 0' }} />
+          <div style={{ width: '50px', height: '1px', background: '#eab308', margin: '1.5rem auto 0' }} />
         </div>
 
         {/* Content Card */}

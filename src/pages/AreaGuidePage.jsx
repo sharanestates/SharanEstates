@@ -558,7 +558,7 @@ export default function AreaGuidePage() {
             fontWeight: 300,
             marginBottom: '1.5rem',
           }}>
-            Why Location <span style={{ color: '#eab308' }}>Matters</span>
+            <span style={{ color: '#eab308' }}>Why Location Matters</span>
           </h2>
           <p style={{
             color: 'rgba(255,255,255,0.5)',

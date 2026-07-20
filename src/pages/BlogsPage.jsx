@@ -539,7 +539,7 @@ export default function BlogsPage() {
             fontWeight: 300,
             marginBottom: '0.75rem',
           }}>
-            Stay <span style={{ color: '#eab308' }}>Informed</span>
+            <span style={{ color: '#eab308' }}>Stay Informed</span>
           </h2>
           <p style={{
             color: 'rgba(255,255,255,0.65)',

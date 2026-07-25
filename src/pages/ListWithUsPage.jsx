@@ -126,9 +126,9 @@ export default function ListWithUsPage() {
             padding: 'clamp(7rem, 14vw, 9rem) 1.5rem clamp(4rem, 8vw, 5rem)',
             maxWidth: '780px',
           }}>
-            <div style={{ width: '40px', height: '1px', background: '#eab308', margin: '0 auto 1.5rem' }} />
+            <div style={{ width: '40px', height: '1px', background: 'rgba(255,255,255,0.5)', margin: '0 auto 1.5rem' }} />
             <p style={{
-              color: '#eab308',
+              color: 'rgba(255,255,255,0.6)',
               fontSize: '0.7rem',
               letterSpacing: '4px',
               textTransform: 'uppercase',
@@ -148,7 +148,7 @@ export default function ListWithUsPage() {
               fontWeight: 300,
             }}>
               Showcase Your Home to<br />
-              <span style={{ color: '#eab308' }}>Our Elite Global Network</span>
+              <span style={{ color: '#FFFFFF' }}>Our Elite Global Network</span>
             </h1>
             <p style={{
               color: 'rgba(255,255,255,0.45)',
@@ -276,7 +276,7 @@ export default function ListWithUsPage() {
                 }}>
                   {benefit.title}
                 </h3>
-                <div style={{ width: '25px', height: '1px', background: '#eab308', margin: '0.5rem auto 0.75rem' }} />
+                <div style={{ width: '25px', height: '1px', background: 'rgba(0,0,0,0.15)', margin: '0.5rem auto 0.75rem' }} />
                 <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.7, margin: 0 }}>{benefit.desc}</p>
               </div>
             ))}
@@ -289,7 +289,7 @@ export default function ListWithUsPage() {
         <section style={{ background: '#FFFFFF', padding: '3.5rem 1.5rem', borderTop: '1px solid rgba(0, 0, 0,0.12)', borderBottom: '1px solid rgba(0, 0, 0,0.12)' }}>
           <div style={{ maxWidth: '1150px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: 'clamp(3rem, 6vw, 4.5rem)' }}>
-              <div style={{ width: '40px', height: '1px', background: '#eab308', margin: '0 auto 1rem' }} />
+              <div style={{ width: '40px', height: '1px', background: 'rgba(0,0,0,0.15)', margin: '0 auto 1rem' }} />
               <p style={{
                 color: 'var(--primary-dark)',
                 fontSize: '0.68rem',
@@ -344,7 +344,7 @@ export default function ListWithUsPage() {
                         top: '0.75rem',
                         left: '0.75rem',
                         background: 'rgba(0,0,0,0.85)',
-                        color: '#eab308',
+                        color: '#FFFFFF',
                         width: '32px',
                         height: '32px',
                         borderRadius: '50%',
@@ -354,7 +354,7 @@ export default function ListWithUsPage() {
                         fontSize: '0.9rem',
                         fontFamily: 'var(--font-serif)',
                         fontWeight: 600,
-                        border: '1px solid #eab308',
+                        border: '1px solid rgba(255,255,255,0.4)',
                       }}>
                         {proc.step}
                       </div>
@@ -386,7 +386,7 @@ export default function ListWithUsPage() {
                         top: '70px',
                         right: '-1.1rem',
                         transform: 'translateY(-50%)',
-                        color: '#eab308',
+                        color: 'rgba(0,0,0,0.4)',
                         fontSize: '1.25rem',
                         fontWeight: 300,
                         zIndex: 5,
@@ -395,7 +395,7 @@ export default function ListWithUsPage() {
                         →
                       </div>
                       <div style={{
-                        color: '#eab308',
+                        color: 'rgba(0,0,0,0.4)',
                         fontSize: '1.25rem',
                         fontWeight: 300,
                         textAlign: 'center',
@@ -690,13 +690,13 @@ export default function ListWithUsPage() {
           width: 48px;
           height: 48px;
           border-radius: 50%;
-          background: rgba(234, 179, 8, 0.05);
-          border: 1px solid rgba(234, 179, 8, 0.15) !important;
+          background: rgba(0, 0, 0, 0.04);
+          border: 1px solid rgba(0, 0, 0, 0.12) !important;
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
           margin-bottom: 1.25rem;
-          color: #eab308;
+          color: var(--text-dark);
           transition: all 0.4s ease;
         }
         .advantage-icon-container svg {
@@ -704,8 +704,8 @@ export default function ListWithUsPage() {
           margin: 0 auto;
         }
         .advantage-card:hover .advantage-icon-container {
-          background: rgba(234, 179, 8, 0.12);
-          border-color: rgba(234, 179, 8, 0.3) !important;
+          background: rgba(0, 0, 0, 0.08);
+          border-color: rgba(0, 0, 0, 0.25) !important;
           transform: scale(1.05);
         }
         .premium-input {
@@ -713,9 +713,9 @@ export default function ListWithUsPage() {
           border: 1px solid rgba(0, 0, 0, 0.15) !important;
         }
         .premium-input:focus {
-          border-color: #eab308 !important;
+          border-color: rgba(0,0,0,0.5) !important;
           background: #FFFFFF !important;
-          box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.12) !important;
+          box-shadow: 0 0 0 3px rgba(0,0,0,0.06) !important;
           outline: none !important;
         }
         .step-image-hover:hover {

@@ -324,9 +324,9 @@ export default function AreaGuidePage() {
           padding: 'clamp(7rem, 14vw, 9rem) 1.5rem clamp(4rem, 8vw, 5rem)',
           maxWidth: '800px',
         }}>
-          <div style={{ width: '40px', height: '1px', background: '#eab308', margin: '0 auto 1.5rem' }} />
+          <div style={{ width: '40px', height: '1px', background: 'rgba(255,255,255,0.5)', margin: '0 auto 1.5rem' }} />
           <p style={{
-            color: '#eab308',
+            color: 'rgba(255,255,255,0.6)',
             fontSize: '0.7rem',
             letterSpacing: '4px',
             textTransform: 'uppercase',
@@ -346,7 +346,7 @@ export default function AreaGuidePage() {
             fontWeight: 300,
           }}>
             Navigate the Best Places<br />
-            <span style={{ color: '#eab308' }}>to Live in Dubai</span>
+            <span style={{ color: '#FFFFFF' }}>to Live in Dubai</span>
           </h1>
           <p style={{
             color: 'rgba(255,255,255,0.45)',
@@ -509,7 +509,7 @@ export default function AreaGuidePage() {
                         left: 0,
                         right: 0,
                         height: '2px',
-                        backgroundColor: '#eab308',
+                        backgroundColor: '#FFFFFF',
                         transform: isActive ? 'scaleX(1)' : 'scaleX(0)',
                         transformOrigin: 'left',
                         transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -548,7 +548,7 @@ export default function AreaGuidePage() {
           padding: 'clamp(3.5rem, 7vw, 5rem) 1.5rem',
         }}>
         <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ width: '40px', height: '1px', background: '#eab308', margin: '0 auto 1.5rem' }} />
+          <div style={{ width: '40px', height: '1px', background: 'rgba(255,255,255,0.3)', margin: '0 auto 1.5rem' }} />
           <h2 style={{
             fontSize: 'clamp(1.3rem, 3vw, 1.8rem)',
             fontFamily: 'var(--font-serif)',
@@ -558,7 +558,7 @@ export default function AreaGuidePage() {
             fontWeight: 300,
             marginBottom: '1.5rem',
           }}>
-            <span style={{ color: '#eab308' }}>Why Location Matters</span>
+            Why Location Matters
           </h2>
           <p style={{
             color: 'rgba(255,255,255,0.5)',

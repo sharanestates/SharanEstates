@@ -323,9 +323,9 @@ export default function BlogsPage() {
             padding: 'clamp(7rem, 14vw, 9rem) 1.5rem clamp(4rem, 8vw, 5rem)',
             maxWidth: '760px',
           }}>
-            <div style={{ width: '40px', height: '1px', background: '#eab308', margin: '0 auto 1.5rem' }} />
+            <div style={{ width: '40px', height: '1px', background: 'rgba(255,255,255,0.5)', margin: '0 auto 1.5rem' }} />
             <p style={{
-              color: '#eab308',
+              color: 'rgba(255,255,255,0.6)',
               fontSize: '0.7rem',
               letterSpacing: '4px',
               textTransform: 'uppercase',
@@ -345,7 +345,7 @@ export default function BlogsPage() {
               fontWeight: 300,
             }}>
               The Sharan Estates<br />
-              <span style={{ color: '#eab308' }}>Journal</span>
+              <span style={{ color: '#FFFFFF' }}>Journal</span>
             </h1>
             <p style={{
               color: 'rgba(255,255,255,0.65)',
@@ -411,7 +411,7 @@ export default function BlogsPage() {
                     left: 0,
                     right: 0,
                     height: '2px',
-                    backgroundColor: '#eab308',
+                    backgroundColor: '#000000',
                     transform: isActive ? 'scaleX(1)' : 'scaleX(0)',
                     transformOrigin: 'left',
                     transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -449,7 +449,7 @@ export default function BlogsPage() {
                 transition: 'all 0.3s ease',
                 letterSpacing: '0.5px',
               }}
-              onFocus={e => { e.currentTarget.style.borderColor = '#eab308'; e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)'; }}
+              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.4)'; e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)'; }}
               onBlur={e => { e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.08)'; e.currentTarget.style.background = 'rgba(0, 0, 0, 0.03)'; e.currentTarget.style.boxShadow = 'none'; }}
             />
           </div>
@@ -529,7 +529,7 @@ export default function BlogsPage() {
           padding: '3.5rem 1.5rem',
         }}>
         <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ width: '40px', height: '1px', background: '#eab308', margin: '0 auto 1.25rem' }} />
+          <div style={{ width: '40px', height: '1px', background: 'rgba(255,255,255,0.3)', margin: '0 auto 1.25rem' }} />
           <h2 style={{
             fontSize: 'clamp(1.2rem, 2.5vw, 1.6rem)',
             fontFamily: 'var(--font-serif)',
@@ -539,7 +539,7 @@ export default function BlogsPage() {
             fontWeight: 300,
             marginBottom: '0.75rem',
           }}>
-            <span style={{ color: '#eab308' }}>Stay Informed</span>
+            Stay Informed
           </h2>
           <p style={{
             color: 'rgba(255,255,255,0.65)',

@@ -226,7 +226,7 @@ export default function Home() {
                               top: '1rem', 
                               right: '1rem', 
                               background: '#FFFFFF', 
-                              color: '#eab308', 
+                              color: '#000000', 
                               width: '32px', 
                               height: '32px', 
                               borderRadius: '50%', 

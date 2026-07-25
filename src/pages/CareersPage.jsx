@@ -665,11 +665,11 @@ export default function CareersPage() {
             <div style={{
               width: '40px',
               height: '1px',
-              background: '#eab308',
+              background: 'rgba(255,255,255,0.5)',
               margin: '0 auto 1.5rem',
             }} />
             <p style={{
-              color: '#eab308',
+              color: 'rgba(255,255,255,0.6)',
               fontSize: '0.7rem',
               letterSpacing: '4px',
               textTransform: 'uppercase',
@@ -689,7 +689,7 @@ export default function CareersPage() {
               fontWeight: 300,
             }}>
               Shape the Future of<br />
-              <span style={{ color: '#eab308' }}>Luxury Real Estate</span>
+              <span style={{ color: '#FFFFFF' }}>Luxury Real Estate</span>
             </h1>
             <p style={{
               color: 'rgba(255,255,255,0.5)',

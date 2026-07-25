@@ -73,7 +73,7 @@ export default function Footer() {
             <div className="footer-socials-mobile" style={{ display: 'flex', gap: '1.5rem' }}>
               {['Twitter', 'LinkedIn', 'Instagram'].map(social => (
                 <a key={social} href="#" style={{ color: '#FFF', textDecoration: 'none', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 600, transition: 'color 0.3s' }}
-                   onMouseOver={(e) => { e.target.style.color = '#eab308'; }}
+                   onMouseOver={(e) => { e.target.style.color = 'rgba(255,255,255,0.6)'; }}
                    onMouseOut={(e) => { e.target.style.color = '#FFF'; }}>
                   {social}
                 </a>

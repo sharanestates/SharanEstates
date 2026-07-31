@@ -137,8 +137,8 @@ export default function RegisterInterestModal({ isOpen, onClose }) {
           </div>
         ) : (
           <>
-            <h2 style={{ fontSize: '1.8rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Register Interest</h2>
-            <p style={{ color: 'rgba(0,0,0,0.6)', marginBottom: '2rem' }}>Provide your details below and our advisory team will reach out with exclusive opportunities.</p>
+            <h2 style={{ fontSize: '1.6rem', fontWeight: '300', fontFamily: 'var(--font-serif)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>Speak With An Advisor</h2>
+            <p style={{ color: 'rgba(0,0,0,0.6)', marginBottom: '2rem', fontSize: '0.88rem' }}>Provide your details below and a senior advisor will reach out discreetly with bespoke opportunities.</p>
 
             <form onSubmit={handleSubmit}>
               <div>
@@ -159,15 +159,15 @@ export default function RegisterInterestModal({ isOpen, onClose }) {
               <div>
                 <label style={labelStyle}>Primary Interest</label>
                 <select name="propertyType" className="interest-input" style={{ ...inputStyle, appearance: 'none', cursor: 'pointer' }} value={formData.propertyType} onChange={handleChange}>
-                  <option value="villa">Luxury Villas</option>
-                  <option value="apartment">Penthouses & Apartments</option>
-                  <option value="offplan">Off-Plan Investments</option>
-                  <option value="commercial">Commercial Real Estate</option>
+                  <option value="villa">Luxury Villas & Estates</option>
+                  <option value="apartment">Penthouses & Signature Residences</option>
+                  <option value="offplan">Off-Plan Developments</option>
+                  <option value="commercial">Commercial & Portfolio Investments</option>
                 </select>
               </div>
 
-              <button type="submit" className="btn-solid" style={{ width: '100%', boxSizing: 'border-box', marginTop: '0.5rem', padding: '1rem', fontSize: '1rem', borderRadius: '8px' }}>
-                REQUEST CONSULTATION
+              <button type="submit" className="btn-solid" style={{ width: '100%', boxSizing: 'border-box', marginTop: '0.5rem', padding: '1rem', fontSize: '0.85rem', borderRadius: '4px', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
+                SUBMIT PRIVATE ENQUIRY
               </button>
             </form>
           </>

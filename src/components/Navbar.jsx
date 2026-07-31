@@ -102,44 +102,22 @@ export default function Navbar() {
         }}
         className="navbar-brand-logo"
         onMouseOver={e => {
-          e.currentTarget.style.opacity = '0.75';
+          e.currentTarget.style.opacity = '0.8';
         }}
         onMouseOut={e => {
           e.currentTarget.style.opacity = '1';
         }}
         >
-          {/* Left Initials */}
-          <span style={{
-            fontFamily: 'var(--font-serif)',
-            fontSize: '1.4rem',
-            fontWeight: 600,
-            letterSpacing: '1px',
-            lineHeight: 1,
-            transition: 'color 0.4s ease'
-          }}>
-            SE
-          </span>
-
-          {/* Vertical Divider */}
-          <div className="logo-divider-desktop" style={{
-            width: '1px',
-            height: '20px',
-            backgroundColor: shouldShowOpaque ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.35)',
-            transition: 'background-color 0.4s ease'
-          }} />
-
-          {/* Right Brand Name */}
-          <span className="logo-text-desktop" style={{
-            fontFamily: 'var(--font-serif)',
-            fontSize: '1.0rem',
-            fontWeight: 600,
-            letterSpacing: '3px',
-            textTransform: 'uppercase',
-            lineHeight: 1,
-            transition: 'color 0.4s ease'
-          }}>
-            Sharan Estates
-          </span>
+          <img 
+            src={shouldShowOpaque ? '/logo.png' : '/logo-white.png'} 
+            alt="Sharan Estates" 
+            style={{ 
+              height: shouldShowOpaque ? '36px' : '40px', 
+              width: 'auto', 
+              objectFit: 'contain',
+              transition: 'height 0.3s ease'
+            }} 
+          />
         </div>
       </Link>
 
@@ -167,11 +145,11 @@ export default function Navbar() {
           <Link to="/about" style={linkStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF'}>About Us</Link>
         </li>
         <li style={{ display: 'flex', alignItems: 'center' }}>
-          <Link to="/contact" style={linkStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF'}>Contact Us</Link>
+          <Link to="/contact" style={linkStyle} onMouseOver={e => e.target.style.color = 'var(--primary-color)'} onMouseOut={e => e.target.style.color = shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF'}>Private Client Enquiry</Link>
         </li>
       </ul>
 
-      {/* Register Interest CTA */}
+      {/* Speak with an Advisor CTA */}
       <div className="desktop-nav">
         <button 
           style={buttonStyle} 
@@ -187,7 +165,7 @@ export default function Navbar() {
             e.currentTarget.style.borderColor = shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF'; 
           }}
         >
-          Register Interest
+          Speak With An Advisor
         </button>
       </div>
 
@@ -213,10 +191,10 @@ export default function Navbar() {
         <Link to="/blogs" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Blogs</Link>
         <Link to="/list-with-us" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Sell With Us</Link>
         <Link to="/about" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>About Us</Link>
-        <Link to="/contact" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Contact Us</Link>
+        <Link to="/contact" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--text-dark)', textDecoration: 'none', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '1px' }}>Private Client Enquiry</Link>
 
         <div className="mobile-nav-item" style={{ borderBottom: 'none', marginTop: '0.5rem' }}>
-          <button className="btn-solid" style={{ width: '100%' }} onClick={() => { setIsModalOpen(true); setIsMobileMenuOpen(false); }}>Register Interest</button>
+          <button className="btn-solid" style={{ width: '100%', fontSize: '0.8rem', padding: '0.9rem 1rem' }} onClick={() => { setIsModalOpen(true); setIsMobileMenuOpen(false); }}>Speak With An Advisor</button>
         </div>
       </div>
       

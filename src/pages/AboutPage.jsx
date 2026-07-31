@@ -198,6 +198,120 @@ export default function AboutPage() {
         </section>
       </RevealSection>
 
+      {/* ── FOUNDER NOTE SECTION (Sophisticated, Understated & Editorial) ── */}
+      <RevealSection>
+        <section style={{
+          padding: 'clamp(5rem, 10vw, 7.5rem) 1.5rem',
+          background: '#FFFFFF',
+          borderBottom: '1px solid rgba(0,0,0,0.06)'
+        }}>
+          <div style={{ maxWidth: '780px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+              <div style={{ width: '35px', height: '1px', background: 'rgba(0,0,0,0.2)', margin: '0 auto 1.25rem' }} />
+              <p style={{
+                color: 'rgba(0,0,0,0.45)',
+                fontSize: '0.68rem',
+                letterSpacing: '4px',
+                textTransform: 'uppercase',
+                fontWeight: 600,
+                marginBottom: '0.5rem'
+              }}>
+                A Note From The Founder
+              </p>
+              <h2 style={{
+                fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)',
+                fontFamily: 'var(--font-serif)',
+                color: '#111111',
+                fontWeight: 300,
+                letterSpacing: '1.5px',
+                textTransform: 'uppercase',
+                margin: 0
+              }}>
+                Knowing The Person Before The Brief
+              </h2>
+            </div>
+
+            <div style={{
+              background: '#FDFDFB',
+              border: '1px solid rgba(0,0,0,0.07)',
+              padding: 'clamp(2.5rem, 5vw, 4rem)',
+              position: 'relative',
+              boxShadow: '0 10px 40px rgba(0,0,0,0.02)'
+            }}>
+              <p style={{
+                fontSize: 'clamp(1.05rem, 2.2vw, 1.25rem)',
+                fontFamily: 'var(--font-serif)',
+                color: 'rgba(0,0,0,0.85)',
+                lineHeight: 1.85,
+                fontStyle: 'italic',
+                marginBottom: '1.75rem',
+                fontWeight: 300
+              }}>
+                "I believe real estate is, first and foremost, about relationships. Taking the time to understand my clients—their lives, their tastes and what matters to them—is what allows me to advise with genuine perspective. For me, the right property often begins with knowing the person before knowing the brief."
+              </p>
+
+              <p style={{
+                fontSize: 'clamp(1.05rem, 2.2vw, 1.25rem)',
+                fontFamily: 'var(--font-serif)',
+                color: 'rgba(0,0,0,0.85)',
+                lineHeight: 1.85,
+                fontStyle: 'italic',
+                margin: 0,
+                fontWeight: 300
+              }}>
+                "Sharan Estates was founded on this belief: that meaningful relationships are built over time, through trust, honesty and an understanding that goes beyond the transaction."
+              </p>
+
+              <div style={{
+                marginTop: '2.5rem',
+                paddingTop: '1.5rem',
+                borderTop: '1px solid rgba(0,0,0,0.08)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '1rem'
+              }}>
+                <div>
+                  <h4 style={{
+                    fontSize: '0.88rem',
+                    fontFamily: 'var(--font-serif)',
+                    letterSpacing: '2px',
+                    textTransform: 'uppercase',
+                    color: '#111111',
+                    margin: '0 0 0.25rem',
+                    fontWeight: 600
+                  }}>
+                    FOUNDER & MANAGING DIRECTOR
+                  </h4>
+                  <p style={{
+                    fontSize: '0.7rem',
+                    letterSpacing: '2px',
+                    textTransform: 'uppercase',
+                    color: 'rgba(0,0,0,0.45)',
+                    margin: 0,
+                    fontWeight: 500
+                  }}>
+                    SHARAN ESTATES
+                  </p>
+                </div>
+
+                <div style={{
+                  fontFamily: 'var(--font-serif)',
+                  fontSize: '1.1rem',
+                  letterSpacing: '3px',
+                  color: 'rgba(0,0,0,0.3)',
+                  textTransform: 'uppercase',
+                  fontStyle: 'italic'
+                }}>
+                  SHĀRĀN
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </RevealSection>
+
       {/* ── 3. OUR APPROACH & PHILOSOPHY (Paragraph 3 Highlight) ── */}
       <RevealSection>
         <section style={{

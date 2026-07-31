@@ -32,40 +32,14 @@ export default function Footer() {
             <div style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '0.8rem',
-              color: '#FFFFFF',
               marginBottom: '1.25rem',
               width: 'fit-content'
             }}>
-              {/* Left Initials */}
-              <span style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: '1.4rem',
-                fontWeight: 600,
-                letterSpacing: '1px',
-                lineHeight: 1
-              }}>
-                SE
-              </span>
-
-              {/* Vertical Divider */}
-              <div style={{
-                width: '1px',
-                height: '20px',
-                backgroundColor: 'rgba(255, 255, 255, 0.25)'
-              }} />
-
-              {/* Right Brand Name */}
-              <span style={{
-                fontFamily: 'var(--font-serif)',
-                fontSize: '1.0rem',
-                fontWeight: 600,
-                letterSpacing: '3px',
-                textTransform: 'uppercase',
-                lineHeight: 1
-              }}>
-                Sharan Estates
-              </span>
+              <img 
+                src="/logo-white.png" 
+                alt="Sharan Estates" 
+                style={{ height: '42px', width: 'auto', objectFit: 'contain' }} 
+              />
             </div>
             <p className="footer-desc-mobile" style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.8, fontSize: '0.9rem', marginBottom: '1.5rem' }}>
               Elevating real estate investment through visionary PropTech, interactive 3D modeling, and unparalleled global market intelligence.
@@ -91,7 +65,7 @@ export default function Footer() {
                   { name: 'Buy', path: '/listings/ready' },
                   { name: 'New Developments', path: '/listings/off-plan' },
                   { name: 'Sell With Us', path: '/list-with-us' },
-                  { name: 'Contact Us', path: '/contact' },
+                  { name: 'Private Client Enquiry', path: '/contact' },
                 ].map(link => (
                   <li key={link.name}>
                     <Link to={link.path} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.3s, transform 0.3s', display: 'inline-block' }} 

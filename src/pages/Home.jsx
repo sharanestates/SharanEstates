@@ -17,24 +17,15 @@ const bgImages = [
 
 export default function Home() {
   useSEO(
-    'Luxury Real Estate Dubai',
-    'Sharan Estates is a premier luxury real estate agency in Dubai, offering premium villas, penthouses, off-plan projects, and investment advisory.'
+    'Luxury Real Estate Dubai | Sharan Estates',
+    'Sharan Estates provides private real estate advisory in Dubai, curating exceptional off-plan developments, luxury villas, and signature residences for global investors.'
   );
 
   const [propertyValue, setPropertyValue] = useState(500000);
   const [downPayment, setDownPayment] = useState(100000);
   const [interestRate, setInterestRate] = useState(4.5);
   const [tenure, setTenure] = useState(20);
-  const [currentSlide, setCurrentSlide] = useState(0);
-
   const [properties, setProperties] = useState([]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % bgImages.length);
-    }, 6500); // 6.5 seconds interval for slow cinematic feel
-    return () => clearInterval(timer);
-  }, []);
 
   const loadProperties = () => {
     const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
@@ -58,17 +49,13 @@ export default function Home() {
     }
   });
 
-  const slideshowRef = useRef(null);
   const heroCardRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
       const scrolled = window.scrollY;
-      if (slideshowRef.current) {
-        slideshowRef.current.style.transform = `translate3d(0, ${scrolled * 0.28}px, 0)`;
-      }
       if (heroCardRef.current) {
-        heroCardRef.current.style.transform = `translate3d(0, -${scrolled * 0.08}px, 0)`;
+        heroCardRef.current.style.transform = `translate3d(0, -${scrolled * 0.06}px, 0)`;
       }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -84,26 +71,40 @@ export default function Home() {
 
   return (
     <div>
-      {/* Hero Section */}
+      {/* ── HERO SECTION WITH CINEMATIC VIDEO BACKGROUND ── */}
       <section className="hero-section-wrapper">
         
-        {/* Full Viewport Background Slideshow (Whole Landing Page Screen) */}
+        {/* Cinema Video Background Container */}
         <div className="hero-slideshow-container" style={{ overflow: 'hidden' }}>
-          <div className="hero-overlay"></div>
-          <div className="cinematic-vignette"></div>
-          <div ref={slideshowRef} style={{ position: 'absolute', inset: '-30px', width: 'calc(100% + 60px)', height: 'calc(100% + 60px)', willChange: 'transform' }}>
-            {bgImages.map((img, idx) => (
-              <div 
-                key={img} 
-                className={`cinematic-slide ${idx === currentSlide ? 'active' : ''} ${idx % 2 === 0 ? 'zoom-in' : 'zoom-out'}`}
-                style={{ backgroundImage: `url(${img})`, opacity: idx === currentSlide ? 1 : 0 }}
-              />
-            ))}
-          </div>
+          <div className="hero-overlay" style={{ background: 'rgba(10, 10, 10, 0.45)', zIndex: 1 }}></div>
+          <div className="cinematic-vignette" style={{ zIndex: 2 }}></div>
+          
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            poster="/dubai_luxury_1.webp"
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              minWidth: '100%',
+              minHeight: '100%',
+              width: 'auto',
+              height: 'auto',
+              transform: 'translate(-50%, -50%)',
+              objectFit: 'cover',
+              zIndex: 0,
+              filter: 'brightness(0.9) contrast(1.05)'
+            }}
+          >
+            <source src="/hero_bg.mp4" type="video/mp4" />
+          </video>
         </div>
 
-        {/* Content Container on Top of Slideshow */}
-        <div className="hero-content-container">
+        {/* Content Container on Top of Video */}
+        <div className="hero-content-container" style={{ zIndex: 3 }}>
           <div className="container" style={{ width: '100%', display: 'flex', justifyContent: 'flex-start' }}>
             
             {/* Frosted Glass Content Card */}
@@ -112,7 +113,7 @@ export default function Home() {
               className="hero-frosted-card reveal-animate"
             >
               <p className="hero-subtitle">
-                Curated Portfolio
+                Private Real Estate Advisory
               </p>
               <h1 className="hero-title">
                 Representing Exceptional Real Estate
@@ -156,6 +157,215 @@ export default function Home() {
         </div>
 
       </section>
+
+      {/* ── PRIVATE REAL ESTATE ADVISORY (3 PILLARS SECTION) ── */}
+      <RevealSection>
+        <section style={{
+          background: '#0D0D0D',
+          color: '#FFFFFF',
+          padding: 'clamp(4.5rem, 9vw, 6.5rem) 1.5rem',
+          borderBottom: '1px solid rgba(255,255,255,0.08)'
+        }}>
+          <div style={{ maxWidth: '1150px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: 'clamp(3rem, 6vw, 4.5rem)' }}>
+              <div style={{ width: '40px', height: '1px', background: 'rgba(255,255,255,0.4)', margin: '0 auto 1rem' }} />
+              <p style={{
+                color: 'rgba(255,255,255,0.55)',
+                fontSize: '0.7rem',
+                letterSpacing: '4px',
+                textTransform: 'uppercase',
+                fontWeight: 600,
+                marginBottom: '0.75rem'
+              }}>
+                Advisory Philosophy
+              </p>
+              <h2 style={{
+                fontSize: 'clamp(1.6rem, 4vw, 2.6rem)',
+                fontFamily: 'var(--font-serif)',
+                color: '#FFFFFF',
+                textTransform: 'uppercase',
+                letterSpacing: '2px',
+                fontWeight: 300,
+                margin: 0
+              }}>
+                Private Real Estate Advisory
+              </h2>
+            </div>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))',
+              gap: '2.5rem'
+            }}>
+              {/* Pillar 1: Acquisition */}
+              <div style={{
+                padding: '2.5rem 2rem',
+                background: 'rgba(255,255,255,0.02)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: '2px'
+              }}>
+                <div style={{
+                  fontSize: '0.72rem',
+                  letterSpacing: '3px',
+                  color: 'rgba(255,255,255,0.45)',
+                  fontWeight: 600,
+                  marginBottom: '1rem',
+                  textTransform: 'uppercase'
+                }}>
+                  01 / ACQUISITION
+                </div>
+                <h3 style={{
+                  fontSize: '1.35rem',
+                  fontFamily: 'var(--font-serif)',
+                  color: '#FFFFFF',
+                  fontWeight: 300,
+                  marginBottom: '1rem',
+                  letterSpacing: '1px',
+                  textTransform: 'uppercase'
+                }}>
+                  Acquisition
+                </h3>
+                <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.75, margin: 0 }}>
+                  Identifying exceptional residences and opportunities aligned with each client’s objectives.
+                </p>
+              </div>
+
+              {/* Pillar 2: Advisory */}
+              <div style={{
+                padding: '2.5rem 2rem',
+                background: 'rgba(255,255,255,0.02)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: '2px'
+              }}>
+                <div style={{
+                  fontSize: '0.72rem',
+                  letterSpacing: '3px',
+                  color: 'rgba(255,255,255,0.45)',
+                  fontWeight: 600,
+                  marginBottom: '1rem',
+                  textTransform: 'uppercase'
+                }}>
+                  02 / ADVISORY
+                </div>
+                <h3 style={{
+                  fontSize: '1.35rem',
+                  fontFamily: 'var(--font-serif)',
+                  color: '#FFFFFF',
+                  fontWeight: 300,
+                  marginBottom: '1rem',
+                  letterSpacing: '1px',
+                  textTransform: 'uppercase'
+                }}>
+                  Advisory
+                </h3>
+                <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.75, margin: 0 }}>
+                  Providing considered guidance across selection, negotiation and investment strategy.
+                </p>
+              </div>
+
+              {/* Pillar 3: Access */}
+              <div style={{
+                padding: '2.5rem 2rem',
+                background: 'rgba(255,255,255,0.02)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: '2px'
+              }}>
+                <div style={{
+                  fontSize: '0.72rem',
+                  letterSpacing: '3px',
+                  color: 'rgba(255,255,255,0.45)',
+                  fontWeight: 600,
+                  marginBottom: '1rem',
+                  textTransform: 'uppercase'
+                }}>
+                  03 / ACCESS
+                </div>
+                <h3 style={{
+                  fontSize: '1.35rem',
+                  fontFamily: 'var(--font-serif)',
+                  color: '#FFFFFF',
+                  fontWeight: 300,
+                  marginBottom: '1rem',
+                  letterSpacing: '1px',
+                  textTransform: 'uppercase'
+                }}>
+                  Access
+                </h3>
+                <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.75, margin: 0 }}>
+                  Connecting clients with curated opportunities and trusted relationships beyond the conventional market.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </RevealSection>
+
+      {/* ── SELECTED DEVELOPERS & PARTNERS SECTION ── */}
+      <RevealSection>
+        <section style={{
+          background: '#FFFFFF',
+          padding: 'clamp(3.5rem, 7vw, 5rem) 1.5rem',
+          borderBottom: '1px solid rgba(0,0,0,0.06)'
+        }}>
+          <div style={{ maxWidth: '1150px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+              <div style={{ width: '35px', height: '1px', background: 'rgba(0,0,0,0.15)', margin: '0 auto 0.75rem' }} />
+              <p style={{
+                color: 'rgba(0,0,0,0.45)',
+                fontSize: '0.68rem',
+                letterSpacing: '3.5px',
+                textTransform: 'uppercase',
+                fontWeight: 600,
+                margin: 0
+              }}>
+                Selected Developers & Partners
+              </p>
+            </div>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px, 100%), 1fr))',
+              gap: '1.25rem',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              {[
+                'EMAAR',
+                'MERAAS',
+                'NAKHEEL',
+                'OMNIYAT',
+                'SELECT GROUP',
+                'ELLINGTON',
+                'H&H DEVELOPMENT',
+                'SOBHA REALTY'
+              ].map((partner) => (
+                <div
+                  key={partner}
+                  style={{
+                    padding: '1.4rem 1rem',
+                    background: '#FDFDFB',
+                    border: '1px solid rgba(0,0,0,0.06)',
+                    borderRadius: '2px',
+                    textAlign: 'center',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  <span style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontSize: '0.88rem',
+                    fontWeight: 500,
+                    letterSpacing: '2.5px',
+                    color: 'rgba(0,0,0,0.7)',
+                    textTransform: 'uppercase'
+                  }}>
+                    {partner}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </RevealSection>
 
       {/* About Us Teaser Section */}
       <RevealSection>

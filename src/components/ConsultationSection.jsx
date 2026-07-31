@@ -11,13 +11,13 @@ export default function ConsultationSection() {
         {/* Left Side: Copy */}
         <div className="w-full-mobile" style={{ flex: '1 1 min(100%, 450px)', paddingRight: '1rem' }}>
           <p style={{ color: 'var(--primary-dark)', fontSize: '0.85rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1rem' }}>
-            Bespoke Advisory
+            Private Client Advisory
           </p>
-          <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', lineHeight: 1.1, marginBottom: '1.5rem' }}>
-            Private Portfolio<br />Consultation
+          <h2 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.2rem)', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', lineHeight: 1.1, marginBottom: '1.5rem' }}>
+            Private Client<br />Enquiry
           </h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-            Schedule an exclusive one-on-one session with our senior investment managers to review yield analytics, capital leverage strategies, and off-market listings tailored to your financial goals.
+            Schedule a confidential, discreet advisory session with our senior leadership to review off-market opportunities, bespoke portfolio strategy, and tailored acquisitions.
           </p>
 
           <div className="hide-on-mobile" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>

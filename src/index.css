@@ -1279,14 +1279,20 @@ html.lenis body {
 
   .hero-cta-buttons {
     margin: 0.8rem 0 !important;
-    gap: 0.8rem !important;
+    gap: 0.6rem !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
   }
 
   .hero-cta-btn {
-    padding: 0.7rem 1.2rem !important;
-    font-size: 0.78rem !important;
-    flex: 1 !important;
+    padding: 0.75rem clamp(0.5rem, 2.5vw, 1rem) !important;
+    font-size: clamp(0.65rem, 2.8vw, 0.76rem) !important;
+    letter-spacing: 0.8px !important;
+    white-space: nowrap !important;
+    flex: 1 1 calc(50% - 0.4rem) !important;
+    min-width: 135px !important;
     text-align: center !important;
+    box-sizing: border-box !important;
   }
 
   .hero-cta-btn.btn-solid {

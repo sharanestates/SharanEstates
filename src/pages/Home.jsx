@@ -25,7 +25,15 @@ export default function Home() {
   const [downPayment, setDownPayment] = useState(100000);
   const [interestRate, setInterestRate] = useState(4.5);
   const [tenure, setTenure] = useState(20);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [properties, setProperties] = useState([]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % bgImages.length);
+    }, 6500);
+    return () => clearInterval(timer);
+  }, []);
 
   const loadProperties = () => {
     const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
@@ -49,11 +57,15 @@ export default function Home() {
     }
   });
 
+  const slideshowRef = useRef(null);
   const heroCardRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
       const scrolled = window.scrollY;
+      if (slideshowRef.current) {
+        slideshowRef.current.style.transform = `translate3d(0, ${scrolled * 0.28}px, 0)`;
+      }
       if (heroCardRef.current) {
         heroCardRef.current.style.transform = `translate3d(0, -${scrolled * 0.06}px, 0)`;
       }
@@ -71,40 +83,26 @@ export default function Home() {
 
   return (
     <div>
-      {/* ── HERO SECTION WITH CINEMATIC VIDEO BACKGROUND ── */}
+      {/* ── HERO SECTION WITH CINEMATIC IMAGE SLIDESHOW ── */}
       <section className="hero-section-wrapper">
         
-        {/* Cinema Video Background Container */}
+        {/* Full Viewport Background Slideshow */}
         <div className="hero-slideshow-container" style={{ overflow: 'hidden' }}>
-          <div className="hero-overlay" style={{ background: 'rgba(10, 10, 10, 0.45)', zIndex: 1 }}></div>
-          <div className="cinematic-vignette" style={{ zIndex: 2 }}></div>
-          
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            poster="/dubai_luxury_1.webp"
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              minWidth: '100%',
-              minHeight: '100%',
-              width: 'auto',
-              height: 'auto',
-              transform: 'translate(-50%, -50%)',
-              objectFit: 'cover',
-              zIndex: 0,
-              filter: 'brightness(0.9) contrast(1.05)'
-            }}
-          >
-            <source src="/hero_bg.mp4" type="video/mp4" />
-          </video>
+          <div className="hero-overlay"></div>
+          <div className="cinematic-vignette"></div>
+          <div ref={slideshowRef} style={{ position: 'absolute', inset: '-30px', width: 'calc(100% + 60px)', height: 'calc(100% + 60px)', willChange: 'transform' }}>
+            {bgImages.map((img, idx) => (
+              <div 
+                key={img} 
+                className={`cinematic-slide ${idx === currentSlide ? 'active' : ''} ${idx % 2 === 0 ? 'zoom-in' : 'zoom-out'}`}
+                style={{ backgroundImage: `url(${img})`, opacity: idx === currentSlide ? 1 : 0 }}
+              />
+            ))}
+          </div>
         </div>
 
-        {/* Content Container on Top of Video */}
-        <div className="hero-content-container" style={{ zIndex: 3 }}>
+        {/* Content Container on Top of Slideshow */}
+        <div className="hero-content-container">
           <div className="container" style={{ width: '100%', display: 'flex', justifyContent: 'flex-start' }}>
             
             {/* Frosted Glass Content Card */}

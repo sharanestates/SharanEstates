@@ -59,15 +59,16 @@ export default function Navbar() {
   const buttonStyle = {
     background: shouldShowOpaque ? 'var(--text-dark)' : 'transparent',
     color: '#FFFFFF',
-    border: shouldShowOpaque ? '1px solid var(--text-dark)' : '1px solid rgba(255, 255, 255, 0.8)',
-    padding: '0.7rem 1.6rem',
+    border: shouldShowOpaque ? '1px solid var(--text-dark)' : '1px solid rgba(255, 255, 255, 0.7)',
+    padding: '0.45rem 1.1rem',
     borderRadius: '2px',
-    fontSize: '0.82rem',
+    fontSize: '0.68rem',
     fontWeight: 600,
     textTransform: 'uppercase',
-    letterSpacing: '1.5px',
+    letterSpacing: '1.2px',
     cursor: 'pointer',
     transition: 'all 0.3s ease',
+    whiteSpace: 'nowrap'
   };
 
   return (
@@ -79,8 +80,8 @@ export default function Navbar() {
       backdropFilter: navBlur,
       WebkitBackdropFilter: navBlur,
       transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-      paddingTop: shouldShowOpaque ? '0.4rem' : '0.8rem',
-      paddingBottom: shouldShowOpaque ? '0.4rem' : '0.8rem',
+      paddingTop: shouldShowOpaque ? '0.4rem' : '0.6rem',
+      paddingBottom: shouldShowOpaque ? '0.4rem' : '0.6rem',
       paddingLeft: 'clamp(1rem, 4vw, 3.5rem)',
       paddingRight: 'clamp(1rem, 4vw, 3.5rem)',
       display: 'flex',
@@ -112,9 +113,10 @@ export default function Navbar() {
             src={shouldShowOpaque ? '/logo.png' : '/logo-white.png'} 
             alt="Sharan Estates" 
             style={{ 
-              height: shouldShowOpaque ? '36px' : '40px', 
+              height: shouldShowOpaque ? '32px' : '36px', 
               width: 'auto', 
               objectFit: 'contain',
+              display: 'block',
               transition: 'height 0.3s ease'
             }} 
           />
@@ -176,7 +178,8 @@ export default function Navbar() {
           border: 'none', 
           cursor: 'pointer',
           padding: '0.5rem',
-          color: 'var(--text-dark)' 
+          color: shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF',
+          transition: 'color 0.3s ease'
         }} 
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >

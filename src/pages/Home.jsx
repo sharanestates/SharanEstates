@@ -240,160 +240,7 @@ export default function Home() {
         </section>
       </RevealSection>
 
-      {/* ── 3. ADVISORY PHILOSOPHY SECTION (Acquisition / Advisory / Access) ── */}
-      <RevealSection>
-        <section style={{
-          padding: 'clamp(3.5rem, 6vw, 5rem) 1.5rem',
-          background: '#0B0B0B',
-          color: '#FFFFFF',
-          borderBottom: '1px solid rgba(255,255,255,0.08)'
-        }}>
-          <div style={{ maxWidth: '1050px', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-              <p style={{
-                color: 'rgba(255,255,255,0.45)',
-                fontSize: '0.68rem',
-                letterSpacing: '4px',
-                textTransform: 'uppercase',
-                fontWeight: 600,
-                marginBottom: '0.5rem'
-              }}>
-                Advisory Philosophy
-              </p>
-              <h2 style={{
-                fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)',
-                fontFamily: 'var(--font-serif)',
-                color: '#FFFFFF',
-                textTransform: 'uppercase',
-                letterSpacing: '2px',
-                fontWeight: 300,
-                margin: 0
-              }}>
-                Private Real Estate Advisory
-              </h2>
-            </div>
-
-            <div 
-              className="responsive-pillars-grid"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(min(260px, 100%), 1fr))',
-                gap: '1.5rem'
-              }}
-            >
-              {/* Pillar 1: Acquisition */}
-              <div 
-                className="responsive-pillar-card"
-                style={{
-                  padding: '1.8rem 1.5rem',
-                  background: 'rgba(255,255,255,0.025)',
-                  border: '1px solid rgba(255,255,255,0.07)',
-                  borderRadius: '2px'
-                }}
-              >
-                <div style={{
-                  fontSize: '0.65rem',
-                  letterSpacing: '2.5px',
-                  color: 'rgba(255,255,255,0.4)',
-                  fontWeight: 600,
-                  marginBottom: '0.6rem',
-                  textTransform: 'uppercase'
-                }}>
-                  01 / ACQUISITION
-                </div>
-                <h3 style={{
-                  fontSize: '1.15rem',
-                  fontFamily: 'var(--font-serif)',
-                  color: '#FFFFFF',
-                  fontWeight: 300,
-                  marginBottom: '0.6rem',
-                  letterSpacing: '1px',
-                  textTransform: 'uppercase'
-                }}>
-                  Acquisition
-                </h3>
-                <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, margin: 0 }}>
-                  Identifying exceptional residences and opportunities aligned with each client’s objectives.
-                </p>
-              </div>
-
-              {/* Pillar 2: Advisory */}
-              <div 
-                className="responsive-pillar-card"
-                style={{
-                  padding: '1.8rem 1.5rem',
-                  background: 'rgba(255,255,255,0.025)',
-                  border: '1px solid rgba(255,255,255,0.07)',
-                  borderRadius: '2px'
-                }}
-              >
-                <div style={{
-                  fontSize: '0.65rem',
-                  letterSpacing: '2.5px',
-                  color: 'rgba(255,255,255,0.4)',
-                  fontWeight: 600,
-                  marginBottom: '0.6rem',
-                  textTransform: 'uppercase'
-                }}>
-                  02 / ADVISORY
-                </div>
-                <h3 style={{
-                  fontSize: '1.15rem',
-                  fontFamily: 'var(--font-serif)',
-                  color: '#FFFFFF',
-                  fontWeight: 300,
-                  marginBottom: '0.6rem',
-                  letterSpacing: '1px',
-                  textTransform: 'uppercase'
-                }}>
-                  Advisory
-                </h3>
-                <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, margin: 0 }}>
-                  Providing considered guidance across selection, negotiation and investment strategy.
-                </p>
-              </div>
-
-              {/* Pillar 3: Access */}
-              <div 
-                className="responsive-pillar-card"
-                style={{
-                  padding: '1.8rem 1.5rem',
-                  background: 'rgba(255,255,255,0.025)',
-                  border: '1px solid rgba(255,255,255,0.07)',
-                  borderRadius: '2px'
-                }}
-              >
-                <div style={{
-                  fontSize: '0.65rem',
-                  letterSpacing: '2.5px',
-                  color: 'rgba(255,255,255,0.4)',
-                  fontWeight: 600,
-                  marginBottom: '0.6rem',
-                  textTransform: 'uppercase'
-                }}>
-                  03 / ACCESS
-                </div>
-                <h3 style={{
-                  fontSize: '1.15rem',
-                  fontFamily: 'var(--font-serif)',
-                  color: '#FFFFFF',
-                  fontWeight: 300,
-                  marginBottom: '0.6rem',
-                  letterSpacing: '1px',
-                  textTransform: 'uppercase'
-                }}>
-                  Access
-                </h3>
-                <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, margin: 0 }}>
-                  Connecting clients with curated opportunities and trusted relationships beyond the conventional market.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-      </RevealSection>
-
-      {/* ── 4. CURATED HIGHLIGHTS / EDITORIAL SELECTIONS (Top 6 Display Right After Advisory) ── */}
+      {/* ── 3. CURATED HIGHLIGHTS / EDITORIAL SELECTIONS ── */}
       <RevealSection>
         <section style={{
           background: '#FFFFFF',
@@ -559,6 +406,159 @@ export default function Home() {
               ))}
             </div>
 
+          </div>
+        </section>
+      </RevealSection>
+
+      {/* ── 4. ADVISORY PHILOSOPHY SECTION (Acquisition / Advisory / Access) ── */}
+      <RevealSection>
+        <section style={{
+          padding: 'clamp(3.5rem, 6vw, 5rem) 1.5rem',
+          background: '#0B0B0B',
+          color: '#FFFFFF',
+          borderBottom: '1px solid rgba(255,255,255,0.08)'
+        }}>
+          <div style={{ maxWidth: '1050px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+              <p style={{
+                color: 'rgba(255,255,255,0.45)',
+                fontSize: '0.68rem',
+                letterSpacing: '4px',
+                textTransform: 'uppercase',
+                fontWeight: 600,
+                marginBottom: '0.5rem'
+              }}>
+                Advisory Philosophy
+              </p>
+              <h2 style={{
+                fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)',
+                fontFamily: 'var(--font-serif)',
+                color: '#FFFFFF',
+                textTransform: 'uppercase',
+                letterSpacing: '2px',
+                fontWeight: 300,
+                margin: 0
+              }}>
+                Private Real Estate Advisory
+              </h2>
+            </div>
+
+            <div 
+              className="responsive-pillars-grid"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(260px, 100%), 1fr))',
+                gap: '1.5rem'
+              }}
+            >
+              {/* Pillar 1: Acquisition */}
+              <div 
+                className="responsive-pillar-card"
+                style={{
+                  padding: '1.8rem 1.5rem',
+                  background: 'rgba(255,255,255,0.025)',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                  borderRadius: '2px'
+                }}
+              >
+                <div style={{
+                  fontSize: '0.65rem',
+                  letterSpacing: '2.5px',
+                  color: 'rgba(255,255,255,0.4)',
+                  fontWeight: 600,
+                  marginBottom: '0.6rem',
+                  textTransform: 'uppercase'
+                }}>
+                  01 / ACQUISITION
+                </div>
+                <h3 style={{
+                  fontSize: '1.15rem',
+                  fontFamily: 'var(--font-serif)',
+                  color: '#FFFFFF',
+                  fontWeight: 300,
+                  marginBottom: '0.6rem',
+                  letterSpacing: '1px',
+                  textTransform: 'uppercase'
+                }}>
+                  Acquisition
+                </h3>
+                <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, margin: 0 }}>
+                  Identifying exceptional residences and opportunities aligned with each client’s objectives.
+                </p>
+              </div>
+
+              {/* Pillar 2: Advisory */}
+              <div 
+                className="responsive-pillar-card"
+                style={{
+                  padding: '1.8rem 1.5rem',
+                  background: 'rgba(255,255,255,0.025)',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                  borderRadius: '2px'
+                }}
+              >
+                <div style={{
+                  fontSize: '0.65rem',
+                  letterSpacing: '2.5px',
+                  color: 'rgba(255,255,255,0.4)',
+                  fontWeight: 600,
+                  marginBottom: '0.6rem',
+                  textTransform: 'uppercase'
+                }}>
+                  02 / ADVISORY
+                </div>
+                <h3 style={{
+                  fontSize: '1.15rem',
+                  fontFamily: 'var(--font-serif)',
+                  color: '#FFFFFF',
+                  fontWeight: 300,
+                  marginBottom: '0.6rem',
+                  letterSpacing: '1px',
+                  textTransform: 'uppercase'
+                }}>
+                  Advisory
+                </h3>
+                <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, margin: 0 }}>
+                  Providing considered guidance across selection, negotiation and investment strategy.
+                </p>
+              </div>
+
+              {/* Pillar 3: Access */}
+              <div 
+                className="responsive-pillar-card"
+                style={{
+                  padding: '1.8rem 1.5rem',
+                  background: 'rgba(255,255,255,0.025)',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                  borderRadius: '2px'
+                }}
+              >
+                <div style={{
+                  fontSize: '0.65rem',
+                  letterSpacing: '2.5px',
+                  color: 'rgba(255,255,255,0.4)',
+                  fontWeight: 600,
+                  marginBottom: '0.6rem',
+                  textTransform: 'uppercase'
+                }}>
+                  03 / ACCESS
+                </div>
+                <h3 style={{
+                  fontSize: '1.15rem',
+                  fontFamily: 'var(--font-serif)',
+                  color: '#FFFFFF',
+                  fontWeight: 300,
+                  marginBottom: '0.6rem',
+                  letterSpacing: '1px',
+                  textTransform: 'uppercase'
+                }}>
+                  Access
+                </h3>
+                <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, margin: 0 }}>
+                  Connecting clients with curated opportunities and trusted relationships beyond the conventional market.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
       </RevealSection>

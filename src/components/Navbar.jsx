@@ -59,7 +59,7 @@ export default function Navbar() {
   const buttonStyle = {
     background: shouldShowOpaque ? 'var(--text-dark)' : 'transparent',
     color: '#FFFFFF',
-    border: shouldShowOpaque ? '1px solid var(--text-dark)' : '1px solid rgba(255, 255, 255, 0.7)',
+    border: shouldShowOpaque ? '1px solid var(--text-dark)' : '1px solid rgba(255, 255, 255, 0.75)',
     padding: '0.45rem 1.1rem',
     borderRadius: '2px',
     fontSize: '0.68rem',
@@ -80,8 +80,8 @@ export default function Navbar() {
       backdropFilter: navBlur,
       WebkitBackdropFilter: navBlur,
       transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-      paddingTop: shouldShowOpaque ? '0.4rem' : '0.6rem',
-      paddingBottom: shouldShowOpaque ? '0.4rem' : '0.6rem',
+      paddingTop: shouldShowOpaque ? '0.7rem' : '0.9rem',
+      paddingBottom: shouldShowOpaque ? '0.7rem' : '0.9rem',
       paddingLeft: 'clamp(1rem, 4vw, 3.5rem)',
       paddingRight: 'clamp(1rem, 4vw, 3.5rem)',
       display: 'flex',
@@ -103,7 +103,7 @@ export default function Navbar() {
         }}
         className="navbar-brand-logo"
         onMouseOver={e => {
-          e.currentTarget.style.opacity = '0.8';
+          e.currentTarget.style.opacity = '0.85';
         }}
         onMouseOut={e => {
           e.currentTarget.style.opacity = '1';
@@ -113,7 +113,7 @@ export default function Navbar() {
             src={shouldShowOpaque ? '/logo.png' : '/logo-white.png'} 
             alt="Sharan Estates" 
             style={{ 
-              height: shouldShowOpaque ? '32px' : '36px', 
+              height: shouldShowOpaque ? '42px' : '48px', 
               width: 'auto', 
               objectFit: 'contain',
               display: 'block',
@@ -183,7 +183,7 @@ export default function Navbar() {
         }} 
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
-        {isMobileMenuOpen ? <X size={24} strokeWidth={1.25} /> : <Menu size={24} strokeWidth={1.25} />}
+        {isMobileMenuOpen ? <X size={26} strokeWidth={1.5} color={shouldShowOpaque ? '#000000' : '#FFFFFF'} /> : <Menu size={26} strokeWidth={1.5} color={shouldShowOpaque ? '#000000' : '#FFFFFF'} />}
       </button>
 
       <div className={`mobile-nav-menu ${isMobileMenuOpen ? 'open' : ''}`}>

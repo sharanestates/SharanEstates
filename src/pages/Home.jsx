@@ -4,6 +4,7 @@ import FilterWidget from '../components/FilterWidget';
 import InvestmentAnalytics from '../components/InvestmentAnalytics';
 import Properties from '../components/Properties';
 import ConsultationSection from '../components/ConsultationSection';
+import DeveloperLogos from '../components/DeveloperLogos';
 import RevealSection from '../components/RevealSection';
 import useRealTimeSync from '../components/useRealTimeSync';
 import useSEO from '../components/useSEO';
@@ -302,14 +303,14 @@ export default function Home() {
       <RevealSection>
         <section style={{
           background: '#FFFFFF',
-          padding: 'clamp(3.5rem, 7vw, 5rem) 1.5rem',
+          padding: 'clamp(3.5rem, 7vw, 5.5rem) 1.5rem',
           borderBottom: '1px solid rgba(0,0,0,0.06)'
         }}>
           <div style={{ maxWidth: '1150px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
               <div style={{ width: '35px', height: '1px', background: 'rgba(0,0,0,0.15)', margin: '0 auto 0.75rem' }} />
               <p style={{
-                color: 'rgba(0,0,0,0.45)',
+                color: 'rgba(0,0,0,0.5)',
                 fontSize: '0.68rem',
                 letterSpacing: '3.5px',
                 textTransform: 'uppercase',
@@ -320,47 +321,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px, 100%), 1fr))',
-              gap: '1.25rem',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              {[
-                'EMAAR',
-                'MERAAS',
-                'NAKHEEL',
-                'OMNIYAT',
-                'SELECT GROUP',
-                'ELLINGTON',
-                'H&H DEVELOPMENT',
-                'SOBHA REALTY'
-              ].map((partner) => (
-                <div
-                  key={partner}
-                  style={{
-                    padding: '1.4rem 1rem',
-                    background: '#FDFDFB',
-                    border: '1px solid rgba(0,0,0,0.06)',
-                    borderRadius: '2px',
-                    textAlign: 'center',
-                    transition: 'all 0.3s ease'
-                  }}
-                >
-                  <span style={{
-                    fontFamily: 'var(--font-serif)',
-                    fontSize: '0.88rem',
-                    fontWeight: 500,
-                    letterSpacing: '2.5px',
-                    color: 'rgba(0,0,0,0.7)',
-                    textTransform: 'uppercase'
-                  }}>
-                    {partner}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <DeveloperLogos />
           </div>
         </section>
       </RevealSection>

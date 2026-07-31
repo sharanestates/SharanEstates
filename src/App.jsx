@@ -22,15 +22,15 @@ function App() {
 
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.4,
+      duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      smoothTouch: true,
-      syncTouch: true,
+      smoothTouch: false,
+      syncTouch: false,
       wheelMultiplier: 0.85,
-      touchMultiplier: 1.6,
+      touchMultiplier: 1.0,
       infinite: false,
     });
 
@@ -44,7 +44,13 @@ function App() {
 
     rafId = requestAnimationFrame(raf);
 
+    const resizeObserver = new ResizeObserver(() => {
+      lenis.resize();
+    });
+    resizeObserver.observe(document.body);
+
     return () => {
+      resizeObserver.disconnect();
       lenis.destroy();
       cancelAnimationFrame(rafId);
       window.lenis = null;
@@ -56,6 +62,7 @@ function App() {
     window.scrollTo(0, 0);
     if (window.lenis) {
       window.lenis.scrollTo(0, { immediate: true });
+      setTimeout(() => window.lenis?.resize(), 300);
     }
   }, [location.pathname]);
 

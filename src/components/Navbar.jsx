@@ -87,18 +87,20 @@ export default function Navbar() {
       boxShadow: navShadow,
       backdropFilter: navBlur,
       WebkitBackdropFilter: navBlur,
-      transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-      paddingTop: shouldShowOpaque ? '0.7rem' : '0.9rem',
-      paddingBottom: shouldShowOpaque ? '0.7rem' : '0.9rem',
-      paddingLeft: 'clamp(1rem, 4vw, 3.5rem)',
-      paddingRight: 'clamp(1rem, 4vw, 3.5rem)',
+      transition: 'all 0.3s ease',
+      paddingTop: isMobile ? '0.35rem' : (shouldShowOpaque ? '0.45rem' : '0.6rem'),
+      paddingBottom: isMobile ? '0.35rem' : (shouldShowOpaque ? '0.45rem' : '0.6rem'),
+      paddingLeft: isMobile ? '1rem' : 'clamp(1.5rem, 4vw, 3.5rem)',
+      paddingRight: isMobile ? '1rem' : 'clamp(1.5rem, 4vw, 3.5rem)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
       position: 'fixed',
       top: 0,
       left: 0,
-      width: '100%'
+      right: 0,
+      width: '100%',
+      boxSizing: 'border-box'
     }}>
       <Link to="/" onClick={handleLogoClick} style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
         <div style={{
@@ -121,7 +123,7 @@ export default function Navbar() {
             src={shouldShowOpaque ? '/logo.png' : '/logo-white.png'} 
             alt="Sharan Estates" 
             style={{ 
-              height: shouldShowOpaque ? '42px' : '48px', 
+              height: isMobile ? '26px' : (shouldShowOpaque ? '32px' : '36px'), 
               width: 'auto', 
               objectFit: 'contain',
               display: 'block',
@@ -185,13 +187,17 @@ export default function Navbar() {
           background: 'none', 
           border: 'none', 
           cursor: 'pointer',
-          padding: '0.5rem',
+          padding: '0.3rem',
+          margin: 0,
+          display: isMobile ? 'flex' : 'none',
+          alignItems: 'center',
+          justifyContent: 'center',
           color: shouldShowOpaque ? 'var(--text-dark)' : '#FFFFFF',
           transition: 'color 0.3s ease'
         }} 
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
-        {isMobileMenuOpen ? <X size={26} strokeWidth={1.5} color={shouldShowOpaque ? '#000000' : '#FFFFFF'} /> : <Menu size={26} strokeWidth={1.5} color={shouldShowOpaque ? '#000000' : '#FFFFFF'} />}
+        {isMobileMenuOpen ? <X size={22} strokeWidth={1.5} color={shouldShowOpaque ? '#000000' : '#FFFFFF'} /> : <Menu size={22} strokeWidth={1.5} color={shouldShowOpaque ? '#000000' : '#FFFFFF'} />}
       </button>
 
       <div className={`mobile-nav-menu ${isMobileMenuOpen ? 'open' : ''}`}>

@@ -1,76 +1,65 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 export default function Footer() {
-  const [expanded, setExpanded] = useState(false);
-
-  const toggleFooter = () => {
-    setExpanded(!expanded);
-    if (!expanded) {
-      setTimeout(() => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-      }, 150);
-    }
-  };
-
   return (
-    <footer className={`footer-wrapper ${expanded ? 'expanded' : 'collapsed'}`} style={{ background: '#0a0a0a', color: '#FFFFFF', padding: '3rem 0 1.5rem', position: 'relative', overflow: 'hidden' }}>
+    <footer style={{ background: '#0a0a0a', color: '#FFFFFF', paddingTop: '3.5rem', paddingBottom: '0', position: 'relative', overflow: 'hidden' }}>
       
-      {/* Background glow */}
-      <div style={{ position: 'absolute', top: 0, right: 0, width: '40%', height: '40%', background: 'radial-gradient(circle, rgba(0, 0, 0, 0.1) 0%, transparent 70%)', zIndex: 0, filter: 'blur(60px)' }}></div>
-      <div style={{ position: 'absolute', bottom: 0, left: 0, width: '40%', height: '40%', background: 'radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%)', zIndex: 0, filter: 'blur(60px)' }}></div>
+      {/* Background radial subtle glows */}
+      <div style={{ position: 'absolute', top: 0, right: 0, width: '35%', height: '35%', background: 'radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%)', pointerEvents: 'none', filter: 'blur(50px)' }}></div>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, width: '35%', height: '35%', background: 'radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%)', pointerEvents: 'none', filter: 'blur(50px)' }}></div>
 
-      <div className="container" style={{ position: 'relative', zIndex: 1, maxWidth: '1200px', margin: '0 auto' }}>
+      <div className="footer-inner-container" style={{ position: 'relative', zIndex: 1, maxWidth: '1200px', margin: '0 auto', padding: '0 2.5rem', boxSizing: 'border-box' }}>
         
+        {/* ── DESKTOP LAYOUT ─────────────────────────────────────── */}
+        {/* Row 1: Brand left + Nav columns right */}
+        <div className="footer-desktop-top-row">
 
-
-        {/* Footer Main Grid */}
-        <div className="footer-grid-mobile" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(240px, 100%), 1fr))', gap: '2rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-          
-          {/* Brand */}
-          <div className="footer-col-mobile" style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              marginBottom: '1.25rem',
-              width: 'fit-content'
-            }}>
-              <img 
-                src="/logo-white.png" 
-                alt="Sharan Estates" 
-                style={{ height: '38px', width: 'auto', objectFit: 'contain' }} 
-              />
-            </div>
-            <p className="footer-desc-mobile" style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, fontSize: '0.85rem', marginBottom: '1.25rem' }}>
-              Elevating real estate investment through visionary PropTech, interactive 3D modeling, and unparalleled global market intelligence.
+          {/* Brand + Description + Socials */}
+          <div className="footer-brand-col">
+            <img 
+              src="/logo-white.png" 
+              alt="Sharan Estates" 
+              className="footer-logo-img"
+            />
+            <p className="footer-brand-desc">
+              Sharan Real Estate was founded on the belief that exceptional real estate is built on trust, discretion, and enduring relationships. Delivering bespoke advisory to homeowners and private investors worldwide.
             </p>
-            <div className="footer-socials-mobile" style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
+            <div className="footer-social-links">
               {['Twitter', 'LinkedIn', 'Instagram'].map(social => (
-                <a key={social} href="#" style={{ color: '#FFF', textDecoration: 'none', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 600, transition: 'color 0.3s' }}
-                   onMouseOver={(e) => { e.target.style.color = 'rgba(255,255,255,0.6)'; }}
-                   onMouseOut={(e) => { e.target.style.color = '#FFF'; }}>
+                <a 
+                  key={social} 
+                  href="#" 
+                  className="footer-social-link"
+                  onMouseOver={(e) => { e.target.style.color = '#FFFFFF'; }}
+                  onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.65)'; }}
+                >
                   {social}
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Navigation links group */}
-          <div className="footer-nav-group-mobile" style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-            {/* Explore Links */}
-            <div style={{ flex: '1 1 120px', display: 'flex', flexDirection: 'column' }}>
-              <h3 className="footer-h3-mobile" style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#FFFFFF', marginBottom: '1rem', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>Explore</h3>
-              <ul className="footer-links-list-mobile" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+          {/* Nav Columns */}
+          <div className="footer-nav-cols">
+
+            {/* Explore */}
+            <div className="footer-nav-col">
+              <h4 className="footer-nav-heading">Explore</h4>
+              <ul className="footer-nav-list">
                 {[
-                  { name: 'Buy', path: '/listings/ready' },
-                  { name: 'New Developments', path: '/listings/off-plan' },
+                  { name: 'Buy Ready Properties', path: '/listings/ready' },
+                  { name: 'New Developments & Off-Plan', path: '/listings/off-plan' },
                   { name: 'Sell With Us', path: '/list-with-us' },
-                  { name: 'Private Client Enquiry', path: '/contact' },
+                  { name: 'Private Client Advisory', path: '/contact' },
                 ].map(link => (
                   <li key={link.name}>
-                    <Link to={link.path} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.85rem', transition: 'color 0.3s, transform 0.3s', display: 'inline-block' }} 
-                       onMouseOver={(e) => { e.target.style.color = '#FFF'; e.target.style.transform = 'translateX(4px)'; }}
-                       onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.7)'; e.target.style.transform = 'translateX(0)'; }}>
+                    <Link 
+                      to={link.path} 
+                      className="footer-nav-link"
+                      onMouseOver={(e) => { e.target.style.color = '#FFFFFF'; e.target.style.transform = 'translateX(4px)'; }}
+                      onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.65)'; e.target.style.transform = 'translateX(0)'; }}
+                    >
                       {link.name}
                     </Link>
                   </li>
@@ -78,66 +67,178 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Resources Links */}
-            <div style={{ flex: '1 1 120px', display: 'flex', flexDirection: 'column' }}>
-              <h3 className="footer-h3-mobile" style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#FFFFFF', marginBottom: '1rem', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>Resources</h3>
-              <ul className="footer-links-list-mobile" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+            {/* Resources */}
+            <div className="footer-nav-col">
+              <h4 className="footer-nav-heading">Resources</h4>
+              <ul className="footer-nav-list">
                 {[
-                  { name: 'Area Guide', path: '/area-guide' },
-                  { name: 'Market Trends', path: '/market-trends' },
-                  { name: 'Blogs', path: '/blogs' },
-                  { name: 'About Us', path: '/about' },
+                  { name: 'Dubai Area Guide', path: '/area-guide' },
+                  { name: 'Market Intelligence', path: '/market-trends' },
+                  { name: 'Perspectives & Articles', path: '/blogs' },
+                  { name: 'About Sharan Estates', path: '/about' },
                 ].map(link => (
                   <li key={link.name}>
-                    <Link to={link.path} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.85rem', transition: 'color 0.3s, transform 0.3s', display: 'inline-block' }} 
-                       onMouseOver={(e) => { e.target.style.color = '#FFF'; e.target.style.transform = 'translateX(4px)'; }}
-                       onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.7)'; e.target.style.transform = 'translateX(0)'; }}>
+                    <Link 
+                      to={link.path} 
+                      className="footer-nav-link"
+                      onMouseOver={(e) => { e.target.style.color = '#FFFFFF'; e.target.style.transform = 'translateX(4px)'; }}
+                      onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.65)'; e.target.style.transform = 'translateX(0)'; }}
+                    >
                       {link.name}
                     </Link>
                   </li>
                 ))}
               </ul>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Thin Divider */}
+        <div className="footer-divider"></div>
+
+        {/* Row 2: Newsletter full-width */}
+        <div className="footer-newsletter-row">
+          <div className="footer-newsletter-text">
+            <h4 className="footer-nav-heading" style={{ marginBottom: '0.35rem' }}>Private Newsletter</h4>
+            <p className="footer-newsletter-desc">
+              Subscribe to receive discreet access to curated off-market portfolios and exclusive market insights.
+            </p>
+          </div>
+          <div className="footer-newsletter-form">
+            <input 
+              type="email" 
+              placeholder="Enter your email address" 
+              className="footer-email-input"
+            />
+            <button 
+              className="footer-subscribe-btn"
+              onMouseOver={(e) => e.currentTarget.style.background = 'var(--primary-color)'}
+              onMouseOut={(e) => e.currentTarget.style.background = '#FFFFFF'}
+            >
+              Subscribe
+            </button>
+          </div>
+        </div>
+
+        {/* Thin Divider */}
+        <div className="footer-divider"></div>
+
+        {/* ── MOBILE LAYOUT ─────────────────────────────────────── */}
+        {/* Mobile-only vertical stack (hidden on desktop) */}
+        <div className="footer-mobile-stack">
+
+          <div className="footer-section-brand">
+            <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+              <img src="/logo-white.png" alt="Sharan Estates" className="footer-logo-img" />
+            </div>
+            <p className="footer-brand-desc">
+              Sharan Real Estate was founded on the belief that exceptional real estate is built on trust, discretion, and enduring relationships.
+            </p>
+            <div className="footer-social-links">
+              {['Twitter', 'LinkedIn', 'Instagram'].map(social => (
+                <a key={social} href="#" className="footer-social-link"
+                  onMouseOver={(e) => { e.target.style.color = '#FFFFFF'; }}
+                  onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.65)'; }}>
+                  {social}
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Newsletter */}
-          <div className="footer-col-mobile" style={{ display: 'flex', flexDirection: 'column' }}>
-            <h3 className="footer-h3-mobile" style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#FFFFFF', marginBottom: '1rem', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>Private Newsletter</h3>
-            <p className="footer-desc-mobile" style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, fontSize: '0.85rem', marginBottom: '1rem' }}>
-              Subscribe to gain access to exclusive off-market listings and market insights.
+          <div className="footer-divider"></div>
+
+          <div className="footer-nav-col">
+            <h4 className="footer-nav-heading">Explore</h4>
+            <ul className="footer-nav-list">
+              {[
+                { name: 'Buy Ready Properties', path: '/listings/ready' },
+                { name: 'New Developments & Off-Plan', path: '/listings/off-plan' },
+                { name: 'Sell With Us', path: '/list-with-us' },
+                { name: 'Private Client Advisory', path: '/contact' },
+              ].map(link => (
+                <li key={link.name}>
+                  <Link to={link.path} className="footer-nav-link"
+                    onMouseOver={(e) => { e.target.style.color = '#FFF'; }}
+                    onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.65)'; }}>
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="footer-divider"></div>
+
+          <div className="footer-nav-col">
+            <h4 className="footer-nav-heading">Resources</h4>
+            <ul className="footer-nav-list">
+              {[
+                { name: 'Dubai Area Guide', path: '/area-guide' },
+                { name: 'Market Intelligence', path: '/market-trends' },
+                { name: 'Perspectives & Articles', path: '/blogs' },
+                { name: 'About Sharan Estates', path: '/about' },
+              ].map(link => (
+                <li key={link.name}>
+                  <Link to={link.path} className="footer-nav-link"
+                    onMouseOver={(e) => { e.target.style.color = '#FFF'; }}
+                    onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.65)'; }}>
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="footer-divider"></div>
+
+          <div className="footer-newsletter-section-mobile">
+            <h4 className="footer-nav-heading">Private Newsletter</h4>
+            <p className="footer-newsletter-desc">
+              Subscribe to receive discreet access to curated off-market portfolios and market insights.
             </p>
-            <div className="footer-newsletter-input-mobile" style={{ display: 'flex', gap: '0.4rem', width: '100%', maxWidth: '100%', background: 'rgba(255,255,255,0.05)', padding: '0.3rem', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.08)', boxSizing: 'border-box' }}>
-              <input type="email" placeholder="Enter your email address" style={{ flex: 1, minWidth: 0, padding: '0.5rem 0.75rem', borderRadius: '4px', border: 'none', background: 'transparent', color: '#FFF', outline: 'none', fontSize: '0.8rem', width: '100%' }} />
-              <button style={{ padding: '0.5rem 0.85rem', borderRadius: '4px', background: '#FFF', color: '#000', border: 'none', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.3s ease', fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}
-                      onMouseOver={(e) => e.target.style.background = 'var(--primary-color)'}
-                      onMouseOut={(e) => e.target.style.background = '#FFF'}>
+            <div className="footer-newsletter-form">
+              <input type="email" placeholder="Enter your email address" className="footer-email-input" />
+              <button className="footer-subscribe-btn"
+                onMouseOver={(e) => e.currentTarget.style.background = 'var(--primary-color)'}
+                onMouseOut={(e) => e.currentTarget.style.background = '#FFFFFF'}>
                 Subscribe
               </button>
             </div>
           </div>
 
+          <div className="footer-divider"></div>
         </div>
 
-        {/* Disclaimer and bottom section */}
-        <div className="footer-bottom-wrapper" style={{ marginTop: '1.5rem' }}>
-          <div className="footer-disclaimer-container" style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-            <div>
-              <p style={{ color: 'rgba(255,255,255,0.22)', fontSize: '0.54rem', lineHeight: 1.5, margin: 0, textAlign: 'center' }}>
-                Disclaimer: Sharan Estates is a real estate agency licensed by the Real Estate Regulatory Agency (RERA) under License Number 1067808 and ORN: 30498. The content provided on this website is for informational purposes only. Renders, virtual tours, and images are for illustrative and representational purposes only and subject to change by developers. Read our full <Link to="/privacy-policy" style={{ color: 'rgba(255,255,255,0.45)', textDecoration: 'underline' }}>Disclaimer & Privacy Policy</Link> and <Link to="/terms-of-service" style={{ color: 'rgba(255,255,255,0.45)', textDecoration: 'underline' }}>Terms of Service</Link>.
-              </p>
-            </div>
-          </div>
-
-          <div className="footer-copyright-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-            <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem', margin: 0 }}>
-              &copy; 2026 Sharan Estates. All rights reserved.
-            </p>
-            <div style={{ display: 'flex', gap: '2rem' }}>
-              <Link to="/privacy-policy" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none', fontSize: '0.75rem', transition: 'color 0.3s' }} onMouseOver={e=>e.target.style.color='#FFF'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.4)'}>Privacy Policy</Link>
-              <Link to="/terms-of-service" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none', fontSize: '0.75rem', transition: 'color 0.3s' }} onMouseOver={e=>e.target.style.color='#FFF'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.4)'}>Terms of Service</Link>
-            </div>
+        {/* ── BOTTOM LEGAL BAR (shared) ─────────────────────────── */}
+        <div className="footer-legal-section">
+          <p className="footer-disclaimer-text">
+            Disclaimer: Sharan Estates is a real estate agency licensed by the Real Estate Regulatory Agency (RERA) under License Number 1067808 and ORN: 30498. The content provided on this website is for informational purposes only. Renders, virtual tours, and images are for illustrative and representational purposes only and subject to change by developers.
+          </p>
+          <div className="footer-legal-links">
+            <Link to="/privacy-policy" className="footer-legal-link"
+              onMouseOver={e=>e.target.style.color='#FFF'} 
+              onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.6)'}>
+              Privacy Policy
+            </Link>
+            <span className="footer-legal-sep">|</span>
+            <Link to="/terms-of-service" className="footer-legal-link"
+              onMouseOver={e=>e.target.style.color='#FFF'} 
+              onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.6)'}>
+              Terms of Service
+            </Link>
           </div>
         </div>
+
+        {/* Bottom copyright bar */}
+        <div className="footer-copyright-bar">
+          <p className="footer-copyright-text">
+            &copy; 2026 Sharan Estates. All rights reserved.
+          </p>
+        </div>
+
+        {/* Mobile scroll buffer */}
+        <div className="footer-scroll-buffer"></div>
 
       </div>
     </footer>

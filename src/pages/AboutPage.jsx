@@ -351,7 +351,7 @@ export default function AboutPage() {
               margin: '0 auto 2.25rem'
             }} />
 
-            {/* Exact Paragraph 3 Text */}
+            {/* Philosophy — focused on how we operate, distinct from Founder section */}
             <p style={{
               fontSize: 'clamp(1.05rem, 2.4vw, 1.25rem)',
               color: 'rgba(255,255,255,0.85)',
@@ -362,7 +362,7 @@ export default function AboutPage() {
               fontWeight: 300,
               letterSpacing: '0.4px'
             }}>
-              Our approach is measured, insightful, and deeply personal—combining market intelligence with an unwavering commitment to excellence. Every relationship is built for the long term, and every decision is guided by the confidence that lasting value is never accidental.
+              We operate at the intersection of market intelligence and discretion — rigorously analysing opportunity, moving with precision, and advising without compromise. At Sharan Estates, lasting value is never accidental; it is the result of careful judgment applied consistently.
             </p>
           </div>
         </section>
@@ -533,10 +533,10 @@ export default function AboutPage() {
               }}>
                 <div style={{ height: '320px', overflow: 'hidden', position: 'relative' }}>
                   <img
-                    src="/luxury_flats.webp"
-                    alt="Luxury Residences"
+                    src="/dubai_luxury_1.webp"
+                    alt="Dubai Luxury Skyline"
                     loading="lazy"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.95)' }}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', filter: 'brightness(0.97)' }}
                   />
                 </div>
                 <div style={{ padding: '1rem 0.5rem 0.5rem', textAlign: 'center' }}>
@@ -563,10 +563,10 @@ export default function AboutPage() {
               }}>
                 <div style={{ height: '320px', overflow: 'hidden', position: 'relative' }}>
                   <img
-                    src="/modern_infrastructure.webp"
-                    alt="Modern Infrastructure"
+                    src="/exclusive_villa.webp"
+                    alt="Exclusive Villa"
                     loading="lazy"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.95)' }}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', filter: 'brightness(0.97)' }}
                   />
                 </div>
                 <div style={{ padding: '1rem 0.5rem 0.5rem', textAlign: 'center' }}>
@@ -588,14 +588,14 @@ export default function AboutPage() {
         </section>
       </RevealSection>
 
-      {/* ── 6. CALL TO ACTION (Classic Private Advisory Banner) ── */}
+      {/* ── 6. CALL TO ACTION (Dark Private Advisory Banner — matches blog newsletter) ── */}
       <RevealSection>
         <section style={{
-          background: '#0D0D0D',
+          background: 'var(--primary-dark)',
           color: '#FFFFFF',
           padding: 'clamp(4.5rem, 9vw, 6.5rem) 1.5rem',
           textAlign: 'center',
-          borderTop: '1px solid rgba(255,255,255,0.1)'
+          borderTop: '1px solid rgba(255,255,255,0.06)'
         }}>
           <div style={{ maxWidth: '750px', margin: '0 auto' }}>
             <div style={{ width: '40px', height: '1px', background: 'rgba(255,255,255,0.4)', margin: '0 auto 1.5rem' }} />
@@ -637,7 +637,6 @@ export default function AboutPage() {
             <div style={{ display: 'flex', justifyContent: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
               <Link
                 to="/list-with-us"
-                className="btn-solid"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -650,7 +649,8 @@ export default function AboutPage() {
                   textDecoration: 'none',
                   background: '#FFFFFF',
                   color: '#000000',
-                  fontWeight: 600
+                  fontWeight: 600,
+                  transition: 'opacity 0.3s ease'
                 }}
               >
                 List Your Property

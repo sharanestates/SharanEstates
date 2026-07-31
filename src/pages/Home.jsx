@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import FilterWidget from '../components/FilterWidget';
-import InvestmentAnalytics from '../components/InvestmentAnalytics';
 import Properties from '../components/Properties';
 import ConsultationSection from '../components/ConsultationSection';
 import DeveloperLogos from '../components/DeveloperLogos';
@@ -22,10 +20,6 @@ export default function Home() {
     'Sharan Estates provides private real estate advisory in Dubai, curating exceptional off-plan developments, luxury villas, and signature residences for global investors.'
   );
 
-  const [propertyValue, setPropertyValue] = useState(500000);
-  const [downPayment, setDownPayment] = useState(100000);
-  const [interestRate, setInterestRate] = useState(4.5);
-  const [tenure, setTenure] = useState(20);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [properties, setProperties] = useState([]);
 
@@ -75,16 +69,69 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const principal = Math.max(0, propertyValue - downPayment);
-  const monthlyRate = interestRate / 100 / 12;
-  const months = tenure * 12;
-  const emi = principal > 0 && monthlyRate > 0 
-    ? (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1) 
-    : 0;
+  // Top 5 Editorial Selection Properties
+  const starredProperties = properties.filter(p => p.starred);
+  const editorialProperties = starredProperties.length >= 5 
+    ? starredProperties.slice(0, 5) 
+    : (properties.length > 0 
+        ? properties.slice(0, 5) 
+        : [
+            {
+              id: 1,
+              title: 'WASL AT JUMEIRAH GOLF ESTATES',
+              location: 'Jumeirah Golf Estates, Dubai',
+              beds: 4,
+              baths: 4,
+              price: 'AED 4,800,000',
+              description: 'WASL at Jumeirah Golf Estates brings premium townhouses and luxury villas.',
+              image: '/light_exterior.webp',
+            },
+            {
+              id: 2,
+              title: 'EMAAR SOUTH RESIDENCES',
+              location: 'Emaar South, Dubai',
+              beds: 3,
+              baths: 3,
+              price: 'AED 2,100,000',
+              description: 'Emaar South Residences offer modern townhouses and golf course apartments.',
+              image: '/dubai_luxury_1.webp',
+            },
+            {
+              id: 3,
+              title: 'THE OASIS & THE HEIGHTS BY EMAAR',
+              location: 'The Oasis, Dubai',
+              beds: 5,
+              baths: 6,
+              price: 'AED 12,000,000',
+              description: 'The Oasis and The Heights by Emaar are master-planned luxury developments.',
+              image: '/exclusive_villa.webp',
+            },
+            {
+              id: 4,
+              title: 'PALM JUMEIRAH SIGNATURE VILLA',
+              location: 'Palm Jumeirah, Dubai',
+              beds: 6,
+              baths: 7,
+              price: 'AED 38,500,000',
+              description: 'Exclusive beachfront estate offering panoramic Arabian Gulf views and private beach access.',
+              image: '/sunset_villa.webp',
+            },
+            {
+              id: 5,
+              title: 'DOWNTOWN ROYAL PENTHOUSE',
+              location: 'Downtown Dubai, Dubai',
+              beds: 4,
+              baths: 5,
+              price: 'AED 24,000,000',
+              description: 'Duplex sky residence featuring unobstructed vistas of the Burj Khalifa.',
+              image: '/dubai_luxury_2.webp',
+            },
+          ]);
 
   return (
-    <div>
-      {/* ── HERO SECTION WITH CINEMATIC IMAGE SLIDESHOW ── */}
+    <div style={{ background: '#FFFFFF', color: '#111111' }}>
+      
+      {/* ── 1. HERO SECTION WITH CINEMATIC IMAGE SLIDESHOW ── */}
       <section className="hero-section-wrapper">
         
         {/* Full Viewport Background Slideshow */}
@@ -123,11 +170,11 @@ export default function Home() {
 
               {/* Action CTA Buttons */}
               <div className="hero-cta-buttons">
-                <Link to="/listings/off-plan" className="hero-cta-btn btn-solid">
-                  Explore Off-Plan
+                <Link to="/listings/ready" className="hero-cta-btn btn-solid">
+                  Explore Residences →
                 </Link>
-                <Link to="/listings/ready" className="hero-cta-btn btn-outline">
-                  Explore Ready Property
+                <Link to="/contact" className="hero-cta-btn btn-outline">
+                  Private Consultation →
                 </Link>
               </div>
 
@@ -157,28 +204,64 @@ export default function Home() {
 
       </section>
 
-      {/* ── PRIVATE ADVISORY PILLARS (Sleek, Compact & Editorial) ── */}
+      {/* ── 2. STANDARD OF EXCELLENCE SECTION (Shifted immediately after Hero) ── */}
+      <RevealSection>
+        <section className="section" style={{ background: 'var(--primary-light)', padding: '5rem 0', borderBottom: '1px solid var(--border-color)', position: 'relative' }}>
+          <div className="container" style={{ maxWidth: '960px', margin: '0 auto', textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', letterSpacing: '5px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1.5rem' }}>
+              The Standard of Excellence
+            </p>
+            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', marginBottom: '2.5rem', letterSpacing: '1px', lineHeight: 1.3, fontWeight: 300 }}>
+              "Architecture should speak of its time and place, but yearn for timelessness."
+            </h2>
+            <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', lineHeight: 1.85, maxWidth: '720px', margin: '0 auto 3rem', fontWeight: 400 }}>
+              Sharan Private Advisory represents a bespoke approach to real estate advisory. We work with discerning clients seeking exceptional residences across Dubai, providing considered guidance, curated opportunities and trusted access.
+            </p>
+            <Link to="/about" className="btn-classic" style={{ 
+              background: 'transparent', 
+              color: 'var(--text-dark)', 
+              border: '1px solid var(--text-dark)',
+              padding: '1.1rem 3.2rem',
+              borderRadius: '0',
+              textDecoration: 'none',
+              fontSize: '0.82rem',
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              letterSpacing: '2px',
+              fontFamily: 'var(--font-sans)',
+              cursor: 'pointer',
+              transition: 'all 0.4s ease',
+              display: 'inline-block'
+            }}
+              onMouseOver={(e) => { e.target.style.background = 'var(--text-dark)'; e.target.style.color = '#FFF'; }}
+              onMouseOut={(e) => { e.target.style.background = 'transparent'; e.target.style.color = 'var(--text-dark)'; }}
+            >Discover Our Approach →</Link>
+          </div>
+        </section>
+      </RevealSection>
+
+      {/* ── 3. ADVISORY PHILOSOPHY SECTION (Acquisition / Advisory / Access) ── */}
       <RevealSection>
         <section style={{
-          padding: 'clamp(2.5rem, 5vw, 3.8rem) 1.5rem',
+          padding: 'clamp(3.5rem, 6vw, 5rem) 1.5rem',
           background: '#0B0B0B',
           color: '#FFFFFF',
           borderBottom: '1px solid rgba(255,255,255,0.08)'
         }}>
           <div style={{ maxWidth: '1050px', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
               <p style={{
                 color: 'rgba(255,255,255,0.45)',
-                fontSize: '0.65rem',
-                letterSpacing: '3.5px',
+                fontSize: '0.68rem',
+                letterSpacing: '4px',
                 textTransform: 'uppercase',
                 fontWeight: 600,
-                marginBottom: '0.4rem'
+                marginBottom: '0.5rem'
               }}>
                 Advisory Philosophy
               </p>
               <h2 style={{
-                fontSize: 'clamp(1.3rem, 3vw, 1.9rem)',
+                fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)',
                 fontFamily: 'var(--font-serif)',
                 color: '#FFFFFF',
                 textTransform: 'uppercase',
@@ -190,106 +273,118 @@ export default function Home() {
               </h2>
             </div>
 
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(250px, 100%), 1fr))',
-              gap: '1.25rem'
-            }}>
+            <div 
+              className="responsive-pillars-grid"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(260px, 100%), 1fr))',
+                gap: '1.5rem'
+              }}
+            >
               {/* Pillar 1: Acquisition */}
-              <div style={{
-                padding: '1.5rem 1.25rem',
-                background: 'rgba(255,255,255,0.025)',
-                border: '1px solid rgba(255,255,255,0.07)',
-                borderRadius: '2px'
-              }}>
+              <div 
+                className="responsive-pillar-card"
+                style={{
+                  padding: '1.8rem 1.5rem',
+                  background: 'rgba(255,255,255,0.025)',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                  borderRadius: '2px'
+                }}
+              >
                 <div style={{
                   fontSize: '0.65rem',
                   letterSpacing: '2.5px',
                   color: 'rgba(255,255,255,0.4)',
                   fontWeight: 600,
-                  marginBottom: '0.5rem',
+                  marginBottom: '0.6rem',
                   textTransform: 'uppercase'
                 }}>
                   01 / ACQUISITION
                 </div>
                 <h3 style={{
-                  fontSize: '1.1rem',
+                  fontSize: '1.15rem',
                   fontFamily: 'var(--font-serif)',
                   color: '#FFFFFF',
                   fontWeight: 300,
-                  marginBottom: '0.5rem',
+                  marginBottom: '0.6rem',
                   letterSpacing: '1px',
                   textTransform: 'uppercase'
                 }}>
                   Acquisition
                 </h3>
-                <p style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, margin: 0 }}>
+                <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, margin: 0 }}>
                   Identifying exceptional residences and opportunities aligned with each client’s objectives.
                 </p>
               </div>
 
               {/* Pillar 2: Advisory */}
-              <div style={{
-                padding: '1.5rem 1.25rem',
-                background: 'rgba(255,255,255,0.025)',
-                border: '1px solid rgba(255,255,255,0.07)',
-                borderRadius: '2px'
-              }}>
+              <div 
+                className="responsive-pillar-card"
+                style={{
+                  padding: '1.8rem 1.5rem',
+                  background: 'rgba(255,255,255,0.025)',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                  borderRadius: '2px'
+                }}
+              >
                 <div style={{
                   fontSize: '0.65rem',
                   letterSpacing: '2.5px',
                   color: 'rgba(255,255,255,0.4)',
                   fontWeight: 600,
-                  marginBottom: '0.5rem',
+                  marginBottom: '0.6rem',
                   textTransform: 'uppercase'
                 }}>
                   02 / ADVISORY
                 </div>
                 <h3 style={{
-                  fontSize: '1.1rem',
+                  fontSize: '1.15rem',
                   fontFamily: 'var(--font-serif)',
                   color: '#FFFFFF',
                   fontWeight: 300,
-                  marginBottom: '0.5rem',
+                  marginBottom: '0.6rem',
                   letterSpacing: '1px',
                   textTransform: 'uppercase'
                 }}>
                   Advisory
                 </h3>
-                <p style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, margin: 0 }}>
+                <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, margin: 0 }}>
                   Providing considered guidance across selection, negotiation and investment strategy.
                 </p>
               </div>
 
               {/* Pillar 3: Access */}
-              <div style={{
-                padding: '1.5rem 1.25rem',
-                background: 'rgba(255,255,255,0.025)',
-                border: '1px solid rgba(255,255,255,0.07)',
-                borderRadius: '2px'
-              }}>
+              <div 
+                className="responsive-pillar-card"
+                style={{
+                  padding: '1.8rem 1.5rem',
+                  background: 'rgba(255,255,255,0.025)',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                  borderRadius: '2px'
+                }}
+              >
                 <div style={{
                   fontSize: '0.65rem',
                   letterSpacing: '2.5px',
                   color: 'rgba(255,255,255,0.4)',
                   fontWeight: 600,
-                  marginBottom: '0.5rem',
+                  marginBottom: '0.6rem',
                   textTransform: 'uppercase'
                 }}>
                   03 / ACCESS
                 </div>
                 <h3 style={{
-                  fontSize: '1.1rem',
+                  fontSize: '1.15rem',
                   fontFamily: 'var(--font-serif)',
                   color: '#FFFFFF',
                   fontWeight: 300,
-                  marginBottom: '0.5rem',
+                  marginBottom: '0.6rem',
                   letterSpacing: '1px',
                   textTransform: 'uppercase'
                 }}>
                   Access
                 </h3>
-                <p style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, margin: 0 }}>
+                <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, margin: 0 }}>
                   Connecting clients with curated opportunities and trusted relationships beyond the conventional market.
                 </p>
               </div>
@@ -298,11 +393,184 @@ export default function Home() {
         </section>
       </RevealSection>
 
-      {/* ── SELECTED DEVELOPERS & PARTNERS SECTION ── */}
+      {/* ── 4. CURATED HIGHLIGHTS / EDITORIAL SELECTIONS (Top 6 Display Right After Advisory) ── */}
       <RevealSection>
         <section style={{
           background: '#FFFFFF',
-          padding: 'clamp(3.5rem, 7vw, 5.5rem) 1.5rem',
+          padding: 'clamp(4.5rem, 8vw, 6.5rem) 1.5rem',
+          borderBottom: '1px solid rgba(0,0,0,0.06)'
+        }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            
+            {/* Header */}
+            <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+              <p style={{
+                color: 'rgba(0,0,0,0.5)',
+                fontSize: '0.68rem',
+                letterSpacing: '4.5px',
+                textTransform: 'uppercase',
+                fontWeight: 600,
+                marginBottom: '0.75rem'
+              }}>
+                CURATED HIGHLIGHTS
+              </p>
+              <h2 style={{
+                fontSize: 'clamp(1.8rem, 4vw, 2.8rem)',
+                fontFamily: 'var(--font-serif)',
+                color: '#111111',
+                textTransform: 'uppercase',
+                letterSpacing: '1.5px',
+                fontWeight: 300,
+                margin: 0
+              }}>
+                EDITORIAL SELECTIONS
+              </h2>
+              <div style={{ width: '40px', height: '1px', background: 'rgba(0,0,0,0.2)', margin: '1.25rem auto 0' }} />
+            </div>
+
+            {/* 5 Compact Property Cards Grid */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px, 100%), 1fr))',
+              gap: '1.25rem',
+            }}>
+              {editorialProperties.map((prop) => (
+                <Link
+                  key={prop.id}
+                  to={`/property/${prop.id}`}
+                  style={{ textDecoration: 'none', color: 'inherit' }}
+                >
+                  <div
+                    style={{
+                      background: '#FFFFFF',
+                      border: '1px solid rgba(0, 0, 0, 0.08)',
+                      borderRadius: '2px',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      height: '100%',
+                      boxShadow: '0 4px 16px rgba(0, 0, 0, 0.02)',
+                      transition: 'transform 0.35s ease, box-shadow 0.35s ease',
+                    }}
+                    className="editorial-card-item"
+                  >
+                    {/* Property Image Container */}
+                    <div style={{ height: '175px', position: 'relative', overflow: 'hidden', background: '#F5F5F3' }}>
+                      <img
+                        src={prop.image || '/dubai_luxury_1.webp'}
+                        alt={prop.title}
+                        loading="lazy"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          transition: 'transform 0.5s ease',
+                        }}
+                      />
+
+                      {/* Top Right Star Badge */}
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: '0.75rem',
+                          right: '0.75rem',
+                          background: '#FFFFFF',
+                          color: '#000000',
+                          width: '28px',
+                          height: '28px',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          boxShadow: '0 4px 10px rgba(0, 0, 0, 0.12)',
+                          fontSize: '0.8rem',
+                        }}
+                        title="Starred Highlight"
+                      >
+                        ★
+                      </div>
+
+                      {/* Bottom Left Location Badge */}
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '0.75rem',
+                        left: '0.75rem',
+                        background: '#FFFFFF',
+                        color: '#000000',
+                        padding: '0.25rem 0.55rem',
+                        fontSize: '0.55rem',
+                        fontWeight: 600,
+                        letterSpacing: '1.2px',
+                        textTransform: 'uppercase',
+                        border: '1px solid rgba(0,0,0,0.12)',
+                        borderRadius: '2px',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+                      }}>
+                        {prop.location}
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div style={{ padding: '1.1rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '0.85rem' }}>
+                      <div>
+                        <h3 style={{
+                          fontSize: '0.92rem',
+                          fontFamily: 'var(--font-serif)',
+                          color: '#111111',
+                          fontWeight: 400,
+                          letterSpacing: '0.5px',
+                          textTransform: 'uppercase',
+                          margin: '0 0 0.45rem',
+                          lineHeight: 1.3,
+                        }}>
+                          {prop.title}
+                        </h3>
+
+                        <p style={{
+                          fontSize: '0.78rem',
+                          color: 'rgba(0, 0, 0, 0.6)',
+                          lineHeight: 1.55,
+                          margin: 0,
+                        }}>
+                          {prop.description ? (prop.description.substring(0, 75) + '...') : ''}
+                        </p>
+                      </div>
+
+                      {/* Footer Specs & Price */}
+                      <div style={{
+                        display: 'flex',
+                        justify: 'space-between',
+                        alignItems: 'center',
+                        borderTop: '1px solid rgba(0, 0, 0, 0.07)',
+                        paddingTop: '0.75rem',
+                        marginTop: '0.25rem',
+                      }}>
+                        <span style={{ fontSize: '0.72rem', color: 'rgba(0, 0, 0, 0.65)', fontWeight: 500 }}>
+                          🛏️ {prop.beds || 3} Beds | 🚿 {prop.baths || 3} Baths
+                        </span>
+                        <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#111111' }}>
+                          {prop.price}
+                        </span>
+                      </div>
+                    </div>
+
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+          </div>
+        </section>
+      </RevealSection>
+
+      {/* ── 5. FEATURED PROPERTIES FULL CATALOG ── */}
+      <Properties />
+
+      {/* ── 6. SELECTED DEVELOPERS & PARTNERS SECTION ── */}
+      <RevealSection>
+        <section style={{
+          background: '#FFFFFF',
+          padding: 'clamp(4rem, 8vw, 6rem) 1.5rem',
           borderBottom: '1px solid rgba(0,0,0,0.06)'
         }}>
           <div style={{ maxWidth: '1150px', margin: '0 auto' }}>
@@ -325,205 +593,157 @@ export default function Home() {
         </section>
       </RevealSection>
 
-      {/* About Us Teaser Section */}
+      {/* ── 7. THE SHARAN DIFFERENCE ("Why Sharan") ── */}
       <RevealSection>
-        <section className="section" style={{ background: 'var(--primary-light)', padding: '4.5rem 0', borderBottom: '1px solid var(--border-color)', position: 'relative' }}>
-          <div className="container" style={{ maxWidth: '960px', margin: '0 auto', textAlign: 'center' }}>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', letterSpacing: '5px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1.5rem' }}>
-              The Standard of Excellence
-            </p>
-            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', marginBottom: '2.5rem', letterSpacing: '1px', lineHeight: 1.3, fontWeight: 300 }}>
-              "Architecture should speak of its time and place, but yearn for timelessness."
-            </h2>
-            <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', lineHeight: 1.85, maxWidth: '680px', margin: '0 auto 3rem', fontWeight: 400 }}>
-              Sharan Estates represents a bespoke approach to real estate advisory. We serve high-net-worth clients globally, providing unparalleled access to Dubai's most prestigious residences.
-            </p>
-            <Link to="/about" className="btn-classic" style={{ 
-              background: 'transparent', 
-              color: 'var(--text-dark)', 
-              border: '1px solid var(--text-dark)',
-              padding: '1.1rem 3.2rem',
-              borderRadius: '0',
-              textDecoration: 'none',
-              fontSize: '0.82rem',
-              fontWeight: 600,
-              textTransform: 'uppercase',
-              letterSpacing: '2px',
-              fontFamily: 'var(--font-sans)',
-              cursor: 'pointer',
-              transition: 'all 0.4s ease',
-              display: 'inline-block'
-            }}
-              onMouseOver={(e) => { e.target.style.background = 'var(--text-dark)'; e.target.style.color = '#FFF'; }}
-              onMouseOut={(e) => { e.target.style.background = 'transparent'; e.target.style.color = 'var(--text-dark)'; }}
-            >Discover Our Story</Link>
-          </div>
-        </section>
-      </RevealSection>
-
-      {/* Featured Properties Portfolio */}
-      <Properties />
-
-      {/* Curated Editorial Highlights (Starred Catalogs) */}
-      {(() => {
-        const starredProperties = properties.filter(p => p.starred);
-        const displayProperties = starredProperties.slice(0, 6);
-
-        return displayProperties.length > 0 && (
-          <RevealSection>
-            <section style={{ background: '#FFFFFF', padding: '4.5rem 0', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)' }}>
-              <div className="container">
-                <div style={{ textAlign: 'center', marginBottom: '4.5rem' }}>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.82rem', letterSpacing: '5px', textTransform: 'uppercase', fontWeight: 600, marginBottom: '1.25rem' }}>
-                    Curated Highlights
-                  </p>
-                  <h2 style={{ fontSize: '2.6rem', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: 300 }}>
-                    Editorial Selections
-                  </h2>
-                  <div style={{ width: '40px', height: '1px', background: 'var(--text-dark)', margin: '1.5rem auto 0' }} />
-                </div>
-
-                <div className="highlights-grid">
-                  {displayProperties.map((prop) => (
-                    <div key={prop.id} style={{ display: 'flex' }}>
-                      <Link to={`/property/${prop.id}`} style={{ textDecoration: 'none', width: '100%', display: 'flex', flexDirection: 'column' }}>
-                        <div className="classic-property-card" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%' }}>
-                          <div style={{ height: '210px', background: `url(${prop.image}) center/cover`, position: 'relative' }}>
-                            <div style={{ 
-                              position: 'absolute', 
-                              top: '1rem', 
-                              right: '1rem', 
-                              background: '#FFFFFF', 
-                              color: '#000000', 
-                              width: '32px', 
-                              height: '32px', 
-                              borderRadius: '50%', 
-                              display: 'flex', 
-                              alignItems: 'center', 
-                              justifyContent: 'center', 
-                              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.12)' 
-                            }} title="Starred Highlight">
-                              <span style={{ fontSize: '1.05rem', lineHeight: 1 }}>★</span>
-                            </div>
-                            <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', background: '#FFFFFF', color: '#000000', padding: '0.3rem 0.6rem', fontSize: '0.58rem', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', border: '1px solid rgba(0,0,0,0.12)', borderRadius: '2px' }}>
-                              {prop.location}
-                            </div>
-                          </div>
-                          <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                            <h3 style={{ color: 'var(--text-dark)', fontSize: '1.15rem', marginBottom: '0.4rem', fontFamily: 'var(--font-serif)', letterSpacing: '0.5px', fontWeight: 300 }}>{prop.title}</h3>
-                            <p style={{ color: 'var(--text-muted)', lineHeight: 1.55, flex: 1, fontSize: '0.78rem', marginBottom: '1.2rem' }}>{prop.description ? (prop.description.substring(0, 85) + '...') : ''}</p>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', borderTop: '1px solid rgba(0,0,0,0.08)', paddingTop: '0.9rem' }}>
-                              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                🛏️ {prop.beds} Beds | 🚿 {prop.baths} Baths
-                              </span>
-                              <span style={{ color: 'var(--text-dark)', fontWeight: 700, fontSize: '1.05rem' }}>
-                                {prop.price}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-          </RevealSection>
-        );
-      })()}
-
-      {/* Interactive Cost Calculator & 3D Building Scanner Section */}
-      <RevealSection>
-        <section id="calculator" className="section advisory-section" style={{ background: 'var(--bg-lighter)', padding: '4.5rem 0' }}>
-          <div className="container">
-            <div className="advisory-heading-container" style={{ textAlign: 'center', marginBottom: '4.5rem' }}>
-              <h2 style={{ fontSize: '2.6rem', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', marginBottom: '1rem', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: 300 }}>Advisory Tools</h2>
-              <p className="hide-on-mobile" style={{ color: 'var(--text-muted)', fontSize: '0.95rem', maxWidth: '600px', margin: '0 auto', lineHeight: 1.65 }}>
-                Plan your next investment with our mortgage cost estimator and explore residential units dynamically using our 3D Building Scanner.
+        <section 
+          className="responsive-difference-section"
+          style={{
+            padding: 'clamp(5rem, 9vw, 7rem) 1.5rem',
+            background: '#0B0B0B',
+            color: '#FFFFFF',
+            borderBottom: '1px solid rgba(255,255,255,0.08)',
+          }}
+        >
+          <div style={{ maxWidth: '1140px', margin: '0 auto' }}>
+            <div className="responsive-difference-header" style={{ textAlign: 'center', marginBottom: '4rem' }}>
+              <p style={{
+                fontSize: '0.68rem',
+                letterSpacing: '4.5px',
+                textTransform: 'uppercase',
+                color: 'rgba(255, 255, 255, 0.45)',
+                fontWeight: 600,
+                marginBottom: '0.85rem',
+              }}>
+                THE SHARAN DIFFERENCE
               </p>
+
+              <h2 style={{
+                fontSize: 'clamp(1.8rem, 4vw, 2.8rem)',
+                fontFamily: 'var(--font-serif)',
+                fontWeight: 300,
+                letterSpacing: '1.5px',
+                textTransform: 'uppercase',
+                color: '#FFFFFF',
+                margin: 0,
+              }}>
+                More Than Access. A More Considered Perspective.
+              </h2>
+              <div style={{ width: '40px', height: '1px', background: 'rgba(255, 255, 255, 0.2)', margin: '1.25rem auto 0' }} />
             </div>
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', justifyContent: 'center', alignItems: 'stretch', maxWidth: '1050px', margin: '0 auto' }}>
-              
-              {/* Left side: Investment Estimator Mortgage Calculator */}
-              <div style={{ flex: '1 1 500px', display: 'flex' }} className="w-full-mobile">
-                <div style={{ width: '100%', display: 'flex' }}>
-                  <div className="classic-property-card" style={{ padding: '2.5rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderRadius: '4px' }}>
-                    
-                    <div>
-                      <h3 style={{ fontSize: '1.6rem', color: 'var(--text-dark)', fontFamily: 'var(--font-serif)', marginBottom: '0.5rem', fontWeight: 300, textTransform: 'uppercase', letterSpacing: '1px' }}>Investment Estimator</h3>
-                      <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginBottom: '2.5rem' }}>Calculate estimated monthly mortgage values dynamically based on property price.</p>
-                      
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', marginBottom: '2.5rem' }}>
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                            <label style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.85rem' }}>Property Value (AED)</label>
-                            <span style={{ color: 'var(--primary-dark)', fontWeight: 'bold' }}>AED {propertyValue.toLocaleString()}</span>
-                          </div>
-                          <input type="range" min="100000" max="5000000" step="50000" value={propertyValue} onChange={(e) => setPropertyValue(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary-color)' }} />
-                        </div>
-
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                            <label style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.85rem' }}>Down Payment (AED)</label>
-                            <span style={{ color: 'var(--primary-dark)', fontWeight: 'bold' }}>AED {downPayment.toLocaleString()}</span>
-                          </div>
-                          <input type="range" min="0" max={propertyValue} step="10000" value={downPayment} onChange={(e) => setDownPayment(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary-color)' }} />
-                        </div>
-
-                        <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-                          <div style={{ flex: 1, minWidth: '140px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                              <label style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.85rem' }}>Interest Rate (%)</label>
-                              <span style={{ color: 'var(--primary-dark)', fontWeight: 'bold', fontSize: '0.85rem' }}>{interestRate}%</span>
-                            </div>
-                            <input type="range" min="1" max="10" step="0.1" value={interestRate} onChange={(e) => setInterestRate(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary-color)' }} />
-                          </div>
-                          <div style={{ flex: 1, minWidth: '140px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                              <label style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.85rem' }}>Tenure</label>
-                              <span style={{ color: 'var(--primary-dark)', fontWeight: 'bold', fontSize: '0.85rem' }}>{tenure} Yrs</span>
-                            </div>
-                            <input type="range" min="5" max="30" step="1" value={tenure} onChange={(e) => setTenure(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--primary-color)' }} />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Calculated EMI Display */}
-                    <div className="emi-card-mobile" style={{ background: 'var(--text-dark)', color: '#FFF', borderRadius: '4px', padding: '2rem', textAlign: 'center' }}>
-                      <h3 className="emi-title-mobile" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', marginBottom: '0.65rem', textTransform: 'uppercase', letterSpacing: '1.5px' }}>Estimated Monthly Cost</h3>
-                      <div className="emi-value-mobile" style={{ fontSize: '2.4rem', fontWeight: 600, color: '#FFFFFF', marginBottom: '0.65rem', fontFamily: 'var(--font-serif)', letterSpacing: '1px' }}>
-                        AED {Math.round(emi).toLocaleString()}
-                      </div>
-                      <p className="emi-desc-mobile" style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.82rem', margin: 0 }}>
-                        Principal Loan: AED {(propertyValue - downPayment > 0 ? propertyValue - downPayment : 0).toLocaleString()}
-                      </p>
-                    </div>
-
-                  </div>
-                </div>
+            <div 
+              className="responsive-difference-grid"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(240px, 100%), 1fr))',
+                gap: '1.75rem',
+              }}
+            >
+              {/* Point 1 */}
+              <div
+                style={{
+                  padding: '2.2rem 1.75rem',
+                  background: 'rgba(255, 255, 255, 0.025)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '2px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.85rem',
+                  transition: 'transform 0.35s ease, border-color 0.35s ease',
+                }}
+                className="editorial-card-item responsive-difference-card"
+              >
+                <span style={{ fontSize: '0.75rem', letterSpacing: '2.5px', color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>
+                  01
+                </span>
+                <h3 style={{ fontSize: '0.92rem', letterSpacing: '2px', textTransform: 'uppercase', color: '#FFFFFF', margin: 0, fontWeight: 600 }}>
+                  INDEPENDENT PERSPECTIVE
+                </h3>
+                <p style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.65)', lineHeight: 1.7, margin: 0 }}>
+                  Advice focused strictly on the client's long-term objectives rather than simply closing a transaction.
+                </p>
               </div>
 
-              {/* Right side: Investment Analytics Card */}
-              <div className="hide-on-mobile" style={{ flex: '1 1 500px', display: 'flex', justifyContent: 'center', alignItems: 'stretch' }}>
-                <div style={{ width: '100%', display: 'flex' }}>
-                  <InvestmentAnalytics 
-                    propertyValue={propertyValue} 
-                    downPayment={downPayment} 
-                    interestRate={interestRate} 
-                    tenure={tenure} 
-                    emi={emi}
-                  />
-                </div>
+              {/* Point 2 */}
+              <div
+                style={{
+                  padding: '2.2rem 1.75rem',
+                  background: 'rgba(255, 255, 255, 0.025)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '2px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.85rem',
+                  transition: 'transform 0.35s ease, border-color 0.35s ease',
+                }}
+                className="editorial-card-item responsive-difference-card"
+              >
+                <span style={{ fontSize: '0.75rem', letterSpacing: '2.5px', color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>
+                  02
+                </span>
+                <h3 style={{ fontSize: '0.92rem', letterSpacing: '2px', textTransform: 'uppercase', color: '#FFFFFF', margin: 0, fontWeight: 600 }}>
+                  CURATED OPPORTUNITIES
+                </h3>
+                <p style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.65)', lineHeight: 1.7, margin: 0 }}>
+                  A hand-selected portfolio of prime residences and off-market assets rather than an overwhelming catalogue.
+                </p>
               </div>
 
+              {/* Point 3 */}
+              <div
+                style={{
+                  padding: '2.2rem 1.75rem',
+                  background: 'rgba(255, 255, 255, 0.025)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '2px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.85rem',
+                  transition: 'transform 0.35s ease, border-color 0.35s ease',
+                }}
+                className="editorial-card-item responsive-difference-card"
+              >
+                <span style={{ fontSize: '0.75rem', letterSpacing: '2.5px', color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>
+                  03
+                </span>
+                <h3 style={{ fontSize: '0.92rem', letterSpacing: '2px', textTransform: 'uppercase', color: '#FFFFFF', margin: 0, fontWeight: 600 }}>
+                  PRIVATE ACCESS
+                </h3>
+                <p style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.65)', lineHeight: 1.7, margin: 0 }}>
+                  Direct lines to confidential pre-launch releases, private sellers, and developer leadership across Dubai.
+                </p>
+              </div>
+
+              {/* Point 4 */}
+              <div
+                style={{
+                  padding: '2.2rem 1.75rem',
+                  background: 'rgba(255, 255, 255, 0.025)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '2px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.85rem',
+                  transition: 'transform 0.35s ease, border-color 0.35s ease',
+                }}
+                className="editorial-card-item responsive-difference-card"
+              >
+                <span style={{ fontSize: '0.75rem', letterSpacing: '2.5px', color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>
+                  04
+                </span>
+                <h3 style={{ fontSize: '0.92rem', letterSpacing: '2px', textTransform: 'uppercase', color: '#FFFFFF', margin: 0, fontWeight: 600 }}>
+                  DISCREET SERVICE
+                </h3>
+                <p style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.65)', lineHeight: 1.7, margin: 0 }}>
+                  A personal, highly attentive and confidential advisory experience throughout every step of your acquisition.
+                </p>
+              </div>
             </div>
           </div>
         </section>
       </RevealSection>
 
-      {/* Bespoke Advisory Consultation Section */}
+      {/* ── 8. PRIVATE CLIENT ADVISORY / CONSULTATION SECTION (Kept at end) ── */}
       <RevealSection>
         <ConsultationSection />
       </RevealSection>

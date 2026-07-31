@@ -52,7 +52,7 @@ export default function ConsultationSection() {
           
           <div className={`show-on-mobile-only ${showMobileForm ? 'hide-form-mobile' : ''}`} style={{ width: '100%' }}>
             <button onClick={() => setShowMobileForm(true)} className="btn-solid consultation-toggle-btn" style={{ width: '100%', padding: '1.2rem', fontSize: '0.9rem' }}>
-              REQUEST CONSULTATION
+              REQUEST PRIVATE CONSULTATION →
             </button>
           </div>
 
@@ -103,7 +103,7 @@ export default function ConsultationSection() {
               </div>
 
               <button type="button" className="btn-solid" style={{ width: '100%', padding: '1.2rem', fontSize: '0.9rem', letterSpacing: '1.5px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}>
-                REQUEST ADVISORY INVITATION →
+                REQUEST PRIVATE CONSULTATION →
               </button>
             </form>
           </div>

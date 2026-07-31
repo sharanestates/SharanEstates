@@ -599,7 +599,7 @@ export default function BlogsPage() {
                 e.currentTarget.style.color = '#000000';
               }}
             >
-              Subscribe
+              Subscribe to Insights →
             </button>
           </div>
           <p style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.35)', marginTop: '0.75rem' }}>

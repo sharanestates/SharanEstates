@@ -336,7 +336,7 @@ export default function ConsultancyForm() {
                         e.currentTarget.style.background = 'var(--primary-color)';
                       }}
                     >
-                      <span>{loading ? 'Submitting...' : 'Request Invitation'}</span>
+                      <span>{loading ? 'Submitting...' : 'Request Private Consultation'}</span>
                       <ArrowRight size={16} />
                     </button>
                   </div>

@@ -17,6 +17,10 @@ import AreaDetailPage from './pages/AreaDetailPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsPage from './pages/TermsPage';
 
+import AdvisoryPage from './pages/AdvisoryPage';
+import ContactPage from './pages/ContactPage';
+import WhatsAppButton from './components/WhatsAppButton';
+
 function App() {
   const location = useLocation();
 
@@ -73,7 +77,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<PlaceholderPage title="Contact Us" description="Reach out to our luxury consultants to discuss your real estate portfolio." email="contactus@sharanestates.com" />} />
+          <Route path="/advisory" element={<AdvisoryPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/careers" element={<CareersPage />} />
           <Route path="/list-with-us" element={<ListWithUsPage />} />
           <Route path="/area-guide" element={<AreaGuidePage />} />
@@ -89,6 +94,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
+      <WhatsAppButton />
     </div>
   );
 }

@@ -1,0 +1,9 @@
+# Robots.txt for Sharan Private Advisory
+User-agent: *
+Allow: /
+
+# Disallow admin routes from indexing
+Disallow: /admin
+Disallow: /api/
+
+Sitemap: https://sharanestates.com/sitemap.xml

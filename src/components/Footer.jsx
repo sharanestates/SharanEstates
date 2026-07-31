@@ -95,7 +95,7 @@ export default function Footer() {
         </div>
 
         {/* Thin Divider */}
-        <div className="footer-divider"></div>
+        <div className="footer-divider footer-divider-desktop-only"></div>
 
         {/* Row 2: Newsletter full-width */}
         <div className="footer-newsletter-row">
@@ -116,13 +116,13 @@ export default function Footer() {
               onMouseOver={(e) => e.currentTarget.style.background = 'var(--primary-color)'}
               onMouseOut={(e) => e.currentTarget.style.background = '#FFFFFF'}
             >
-              Subscribe
+              Subscribe →
             </button>
           </div>
         </div>
 
         {/* Thin Divider */}
-        <div className="footer-divider"></div>
+        <div className="footer-divider footer-divider-desktop-only"></div>
 
         {/* ── MOBILE LAYOUT ─────────────────────────────────────── */}
         {/* Mobile-only vertical stack (hidden on desktop) */}
@@ -202,7 +202,7 @@ export default function Footer() {
               <button className="footer-subscribe-btn"
                 onMouseOver={(e) => e.currentTarget.style.background = 'var(--primary-color)'}
                 onMouseOut={(e) => e.currentTarget.style.background = '#FFFFFF'}>
-                Subscribe
+                Subscribe →
               </button>
             </div>
           </div>

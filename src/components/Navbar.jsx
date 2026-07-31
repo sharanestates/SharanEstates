@@ -123,7 +123,8 @@ export default function Navbar() {
             src={shouldShowOpaque ? '/logo.png' : '/logo-white.png'} 
             alt="Sharan Estates" 
             style={{ 
-              height: isMobile ? '26px' : (shouldShowOpaque ? '32px' : '36px'), 
+              height: isMobile ? '40px' : (shouldShowOpaque ? '48px' : '56px'), 
+              maxHeight: '56px',
               width: 'auto', 
               objectFit: 'contain',
               display: 'block',

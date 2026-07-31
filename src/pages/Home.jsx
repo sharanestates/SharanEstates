@@ -157,29 +157,28 @@ export default function Home() {
 
       </section>
 
-      {/* ── PRIVATE REAL ESTATE ADVISORY (3 PILLARS SECTION) ── */}
+      {/* ── PRIVATE ADVISORY PILLARS (Sleek, Compact & Editorial) ── */}
       <RevealSection>
         <section style={{
-          background: '#0D0D0D',
+          padding: 'clamp(2.5rem, 5vw, 3.8rem) 1.5rem',
+          background: '#0B0B0B',
           color: '#FFFFFF',
-          padding: 'clamp(4.5rem, 9vw, 6.5rem) 1.5rem',
           borderBottom: '1px solid rgba(255,255,255,0.08)'
         }}>
-          <div style={{ maxWidth: '1150px', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: 'clamp(3rem, 6vw, 4.5rem)' }}>
-              <div style={{ width: '40px', height: '1px', background: 'rgba(255,255,255,0.4)', margin: '0 auto 1rem' }} />
+          <div style={{ maxWidth: '1050px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
               <p style={{
-                color: 'rgba(255,255,255,0.55)',
-                fontSize: '0.7rem',
-                letterSpacing: '4px',
+                color: 'rgba(255,255,255,0.45)',
+                fontSize: '0.65rem',
+                letterSpacing: '3.5px',
                 textTransform: 'uppercase',
                 fontWeight: 600,
-                marginBottom: '0.75rem'
+                marginBottom: '0.4rem'
               }}>
                 Advisory Philosophy
               </p>
               <h2 style={{
-                fontSize: 'clamp(1.6rem, 4vw, 2.6rem)',
+                fontSize: 'clamp(1.3rem, 3vw, 1.9rem)',
                 fontFamily: 'var(--font-serif)',
                 color: '#FFFFFF',
                 textTransform: 'uppercase',
@@ -193,104 +192,104 @@ export default function Home() {
 
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))',
-              gap: '2.5rem'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(250px, 100%), 1fr))',
+              gap: '1.25rem'
             }}>
               {/* Pillar 1: Acquisition */}
               <div style={{
-                padding: '2.5rem 2rem',
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                padding: '1.5rem 1.25rem',
+                background: 'rgba(255,255,255,0.025)',
+                border: '1px solid rgba(255,255,255,0.07)',
                 borderRadius: '2px'
               }}>
                 <div style={{
-                  fontSize: '0.72rem',
-                  letterSpacing: '3px',
-                  color: 'rgba(255,255,255,0.45)',
+                  fontSize: '0.65rem',
+                  letterSpacing: '2.5px',
+                  color: 'rgba(255,255,255,0.4)',
                   fontWeight: 600,
-                  marginBottom: '1rem',
+                  marginBottom: '0.5rem',
                   textTransform: 'uppercase'
                 }}>
                   01 / ACQUISITION
                 </div>
                 <h3 style={{
-                  fontSize: '1.35rem',
+                  fontSize: '1.1rem',
                   fontFamily: 'var(--font-serif)',
                   color: '#FFFFFF',
                   fontWeight: 300,
-                  marginBottom: '1rem',
+                  marginBottom: '0.5rem',
                   letterSpacing: '1px',
                   textTransform: 'uppercase'
                 }}>
                   Acquisition
                 </h3>
-                <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.75, margin: 0 }}>
+                <p style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, margin: 0 }}>
                   Identifying exceptional residences and opportunities aligned with each client’s objectives.
                 </p>
               </div>
 
               {/* Pillar 2: Advisory */}
               <div style={{
-                padding: '2.5rem 2rem',
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                padding: '1.5rem 1.25rem',
+                background: 'rgba(255,255,255,0.025)',
+                border: '1px solid rgba(255,255,255,0.07)',
                 borderRadius: '2px'
               }}>
                 <div style={{
-                  fontSize: '0.72rem',
-                  letterSpacing: '3px',
-                  color: 'rgba(255,255,255,0.45)',
+                  fontSize: '0.65rem',
+                  letterSpacing: '2.5px',
+                  color: 'rgba(255,255,255,0.4)',
                   fontWeight: 600,
-                  marginBottom: '1rem',
+                  marginBottom: '0.5rem',
                   textTransform: 'uppercase'
                 }}>
                   02 / ADVISORY
                 </div>
                 <h3 style={{
-                  fontSize: '1.35rem',
+                  fontSize: '1.1rem',
                   fontFamily: 'var(--font-serif)',
                   color: '#FFFFFF',
                   fontWeight: 300,
-                  marginBottom: '1rem',
+                  marginBottom: '0.5rem',
                   letterSpacing: '1px',
                   textTransform: 'uppercase'
                 }}>
                   Advisory
                 </h3>
-                <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.75, margin: 0 }}>
+                <p style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, margin: 0 }}>
                   Providing considered guidance across selection, negotiation and investment strategy.
                 </p>
               </div>
 
               {/* Pillar 3: Access */}
               <div style={{
-                padding: '2.5rem 2rem',
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                padding: '1.5rem 1.25rem',
+                background: 'rgba(255,255,255,0.025)',
+                border: '1px solid rgba(255,255,255,0.07)',
                 borderRadius: '2px'
               }}>
                 <div style={{
-                  fontSize: '0.72rem',
-                  letterSpacing: '3px',
-                  color: 'rgba(255,255,255,0.45)',
+                  fontSize: '0.65rem',
+                  letterSpacing: '2.5px',
+                  color: 'rgba(255,255,255,0.4)',
                   fontWeight: 600,
-                  marginBottom: '1rem',
+                  marginBottom: '0.5rem',
                   textTransform: 'uppercase'
                 }}>
                   03 / ACCESS
                 </div>
                 <h3 style={{
-                  fontSize: '1.35rem',
+                  fontSize: '1.1rem',
                   fontFamily: 'var(--font-serif)',
                   color: '#FFFFFF',
                   fontWeight: 300,
-                  marginBottom: '1rem',
+                  marginBottom: '0.5rem',
                   letterSpacing: '1px',
                   textTransform: 'uppercase'
                 }}>
                   Access
                 </h3>
-                <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.75, margin: 0 }}>
+                <p style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, margin: 0 }}>
                   Connecting clients with curated opportunities and trusted relationships beyond the conventional market.
                 </p>
               </div>

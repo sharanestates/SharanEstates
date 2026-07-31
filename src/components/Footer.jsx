@@ -25,7 +25,7 @@ export default function Footer() {
 
 
         {/* Footer Main Grid */}
-        <div className="footer-grid-mobile" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+        <div className="footer-grid-mobile" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(240px, 100%), 1fr))', gap: '2rem', paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
           
           {/* Brand */}
           <div className="footer-col-mobile" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -38,15 +38,15 @@ export default function Footer() {
               <img 
                 src="/logo-white.png" 
                 alt="Sharan Estates" 
-                style={{ height: '42px', width: 'auto', objectFit: 'contain' }} 
+                style={{ height: '38px', width: 'auto', objectFit: 'contain' }} 
               />
             </div>
-            <p className="footer-desc-mobile" style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.8, fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+            <p className="footer-desc-mobile" style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, fontSize: '0.85rem', marginBottom: '1.25rem' }}>
               Elevating real estate investment through visionary PropTech, interactive 3D modeling, and unparalleled global market intelligence.
             </p>
-            <div className="footer-socials-mobile" style={{ display: 'flex', gap: '1.5rem' }}>
+            <div className="footer-socials-mobile" style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
               {['Twitter', 'LinkedIn', 'Instagram'].map(social => (
-                <a key={social} href="#" style={{ color: '#FFF', textDecoration: 'none', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 600, transition: 'color 0.3s' }}
+                <a key={social} href="#" style={{ color: '#FFF', textDecoration: 'none', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 600, transition: 'color 0.3s' }}
                    onMouseOver={(e) => { e.target.style.color = 'rgba(255,255,255,0.6)'; }}
                    onMouseOut={(e) => { e.target.style.color = '#FFF'; }}>
                   {social}
@@ -55,12 +55,12 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Navigation links group (Explore & Resources columns side-by-side with tighter gap) */}
-          <div className="footer-nav-group-mobile" style={{ display: 'flex', gap: '1.8rem', flex: '1 1 auto', minWidth: '280px' }}>
+          {/* Navigation links group */}
+          <div className="footer-nav-group-mobile" style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
             {/* Explore Links */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-              <h3 className="footer-h3-mobile" style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#FFFFFF', marginBottom: '1.25rem', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>Explore</h3>
-              <ul className="footer-links-list-mobile" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+            <div style={{ flex: '1 1 120px', display: 'flex', flexDirection: 'column' }}>
+              <h3 className="footer-h3-mobile" style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#FFFFFF', marginBottom: '1rem', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>Explore</h3>
+              <ul className="footer-links-list-mobile" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
                 {[
                   { name: 'Buy', path: '/listings/ready' },
                   { name: 'New Developments', path: '/listings/off-plan' },
@@ -68,8 +68,8 @@ export default function Footer() {
                   { name: 'Private Client Enquiry', path: '/contact' },
                 ].map(link => (
                   <li key={link.name}>
-                    <Link to={link.path} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.3s, transform 0.3s', display: 'inline-block' }} 
-                       onMouseOver={(e) => { e.target.style.color = '#FFF'; e.target.style.transform = 'translateX(5px)'; }}
+                    <Link to={link.path} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.85rem', transition: 'color 0.3s, transform 0.3s', display: 'inline-block' }} 
+                       onMouseOver={(e) => { e.target.style.color = '#FFF'; e.target.style.transform = 'translateX(4px)'; }}
                        onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.7)'; e.target.style.transform = 'translateX(0)'; }}>
                       {link.name}
                     </Link>
@@ -79,9 +79,9 @@ export default function Footer() {
             </div>
 
             {/* Resources Links */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-              <h3 className="footer-h3-mobile" style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#FFFFFF', marginBottom: '1.25rem', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>Resources</h3>
-              <ul className="footer-links-list-mobile" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+            <div style={{ flex: '1 1 120px', display: 'flex', flexDirection: 'column' }}>
+              <h3 className="footer-h3-mobile" style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#FFFFFF', marginBottom: '1rem', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>Resources</h3>
+              <ul className="footer-links-list-mobile" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
                 {[
                   { name: 'Area Guide', path: '/area-guide' },
                   { name: 'Market Trends', path: '/market-trends' },
@@ -89,8 +89,8 @@ export default function Footer() {
                   { name: 'About Us', path: '/about' },
                 ].map(link => (
                   <li key={link.name}>
-                    <Link to={link.path} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.3s, transform 0.3s', display: 'inline-block' }} 
-                       onMouseOver={(e) => { e.target.style.color = '#FFF'; e.target.style.transform = 'translateX(5px)'; }}
+                    <Link to={link.path} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.85rem', transition: 'color 0.3s, transform 0.3s', display: 'inline-block' }} 
+                       onMouseOver={(e) => { e.target.style.color = '#FFF'; e.target.style.transform = 'translateX(4px)'; }}
                        onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.7)'; e.target.style.transform = 'translateX(0)'; }}>
                       {link.name}
                     </Link>
@@ -102,13 +102,13 @@ export default function Footer() {
 
           {/* Newsletter */}
           <div className="footer-col-mobile" style={{ display: 'flex', flexDirection: 'column' }}>
-            <h3 className="footer-h3-mobile" style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#FFFFFF', marginBottom: '1.25rem', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>Private Newsletter</h3>
-            <p className="footer-desc-mobile" style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.8, fontSize: '0.9rem', marginBottom: '1.25rem' }}>
-              Subscribe to gain access to exclusive off-market listings, early-stage off-plan releases, and deep market insights.
+            <h3 className="footer-h3-mobile" style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#FFFFFF', marginBottom: '1rem', fontFamily: 'var(--font-serif)', fontWeight: 300 }}>Private Newsletter</h3>
+            <p className="footer-desc-mobile" style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, fontSize: '0.85rem', marginBottom: '1rem' }}>
+              Subscribe to gain access to exclusive off-market listings and market insights.
             </p>
-            <div className="footer-newsletter-input-mobile" style={{ display: 'flex', gap: '0.4rem', width: '100%', maxWidth: '380px', background: 'rgba(255,255,255,0.05)', padding: '0.3rem', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <input type="email" placeholder="Enter your email address" style={{ flex: 1, minWidth: 0, padding: '0.5rem 1rem', borderRadius: '4px', border: 'none', background: 'transparent', color: '#FFF', outline: 'none', fontSize: '0.82rem' }} />
-              <button style={{ padding: '0.5rem 1rem', borderRadius: '4px', background: '#FFF', color: '#000', border: 'none', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.3s ease', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}
+            <div className="footer-newsletter-input-mobile" style={{ display: 'flex', gap: '0.4rem', width: '100%', maxWidth: '100%', background: 'rgba(255,255,255,0.05)', padding: '0.3rem', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.08)', boxSizing: 'border-box' }}>
+              <input type="email" placeholder="Enter your email address" style={{ flex: 1, minWidth: 0, padding: '0.5rem 0.75rem', borderRadius: '4px', border: 'none', background: 'transparent', color: '#FFF', outline: 'none', fontSize: '0.8rem', width: '100%' }} />
+              <button style={{ padding: '0.5rem 0.85rem', borderRadius: '4px', background: '#FFF', color: '#000', border: 'none', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.3s ease', fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}
                       onMouseOver={(e) => e.target.style.background = 'var(--primary-color)'}
                       onMouseOut={(e) => e.target.style.background = '#FFF'}>
                 Subscribe

@@ -23,7 +23,15 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [location.pathname]);
 
-  const shouldShowOpaque = isScrolled || !isHomePage;
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const shouldShowOpaque = isMobile || isScrolled || !isHomePage;
 
   const handleLogoClick = (e) => {
     if (location.pathname === '/') {

@@ -131,6 +131,8 @@ export default function Home() {
               muted
               loop
               playsInline
+              preload="auto"
+              poster="/hero_poster.webp"
               style={{
                 position: 'absolute',
                 inset: 0,
@@ -140,7 +142,8 @@ export default function Home() {
                 objectPosition: 'center center',
               }}
             >
-              <source src="/landingPageVideo.mp4" type="video/mp4" />
+              <source src="/landingPageVideo.webm" type="video/webm" />
+              <source src="/landingPageVideo_compressed.mp4" type="video/mp4" />
             </video>
           </div>
         </div>

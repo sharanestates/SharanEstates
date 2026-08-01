@@ -162,7 +162,7 @@ export default function AboutPage() {
                   fontStyle: 'italic',
                   margin: 0
                 }}>
-                  "Creating places of permanence, security, and opportunity for discerning private capital and families."
+                  "Creating places of permanence, security, and opportunity for discerning clients and families."
                 </p>
               </div>
 
@@ -304,7 +304,7 @@ export default function AboutPage() {
                   textTransform: 'uppercase',
                   fontStyle: 'italic'
                 }}>
-                  SHĀRĀN
+                  Aakriti Trehan
                 </div>
               </div>
             </div>
@@ -362,7 +362,7 @@ export default function AboutPage() {
               fontWeight: 300,
               letterSpacing: '0.4px'
             }}>
-              We operate at the intersection of market intelligence and discretion — rigorously analysing opportunity, moving with precision, and advising without compromise. At Sharan Estates, lasting value is never accidental; it is the result of careful judgment applied consistently.
+              We believe exceptional real estate decisions begin with careful listening, thoughtful judgment and a clear understanding of what matters to each client. Our approach is measured, personal and focused on long-term value.
             </p>
           </div>
         </section>
@@ -454,7 +454,7 @@ export default function AboutPage() {
                   letterSpacing: '2px',
                   marginBottom: '1rem'
                 }}>
-                  02 / PERMANENCE
+                  02 / CURATION
                 </div>
                 <h3 style={{
                   fontSize: '1.25rem',
@@ -465,10 +465,10 @@ export default function AboutPage() {
                   letterSpacing: '1px',
                   textTransform: 'uppercase'
                 }}>
-                  Places of Shelter & Security
+                  Exceptional Opportunities
                 </h3>
                 <p style={{ fontSize: '0.88rem', color: 'rgba(0,0,0,0.65)', lineHeight: 1.7, margin: 0 }}>
-                  Guided by the Sanskrit ethos of <em>Sharan</em>, we identify prime residential and commercial real estate that promises security, legacy, and long-term capital protection.
+                  We carefully curate a select portfolio of exceptional properties — identifying opportunities that align with each client's unique vision, lifestyle, and long-term ambitions.
                 </p>
               </div>
 
@@ -487,7 +487,7 @@ export default function AboutPage() {
                   letterSpacing: '2px',
                   marginBottom: '1rem'
                 }}>
-                  03 / INTELLIGENCE
+                  03 / PERSPECTIVE
                 </div>
                 <h3 style={{
                   fontSize: '1.25rem',
@@ -498,10 +498,10 @@ export default function AboutPage() {
                   letterSpacing: '1px',
                   textTransform: 'uppercase'
                 }}>
-                  Data-Driven Advisory
+                  Considered Advisory
                 </h3>
                 <p style={{ fontSize: '0.88rem', color: 'rgba(0,0,0,0.65)', lineHeight: 1.7, margin: 0 }}>
-                  We pair institutional-grade market analytics and PropTech simulations with deep local expertise across Dubai's most coveted master developments.
+                  Grounded in deep market knowledge and genuine curiosity, we offer counsel that is measured, independent and focused on long-term value — not short-term transactions.
                 </p>
               </div>
             </div>
@@ -578,7 +578,7 @@ export default function AboutPage() {
                     fontWeight: 600,
                     margin: 0
                   }}>
-                    Bespoke Advisory for Private Capital
+                    Bespoke Advisory for Discerning Clients
                   </p>
                 </div>
               </div>
@@ -631,12 +631,12 @@ export default function AboutPage() {
               maxWidth: '560px',
               margin: '0 auto 2.5rem'
             }}>
-              Whether seeking a personal residence or expanding an institutional portfolio, our senior advisory team is at your service.
+              Whether you're seeking an exceptional residence or exploring your next acquisition, our advisory team is here to understand your vision and guide you with discretion.
             </p>
 
             <div style={{ display: 'flex', justifyContent: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
               <Link
-                to="/list-with-us"
+                to="/contact"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -653,7 +653,7 @@ export default function AboutPage() {
                   transition: 'opacity 0.3s ease'
                 }}
               >
-                List Your Property
+                Begin a Private Conversation →
               </Link>
               <a
                 href="mailto:contactus@sharanestates.com"

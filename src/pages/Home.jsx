@@ -7,12 +7,7 @@ import RevealSection from '../components/RevealSection';
 import useRealTimeSync from '../components/useRealTimeSync';
 import useSEO from '../components/useSEO';
 
-const bgImages = [
-  '/dubai_luxury_1.webp',
-  '/dubai_luxury_2.webp',
-  '/dubai_luxury_3.webp',
-  '/dubai_luxury_4.webp'
-];
+
 
 export default function Home() {
   useSEO(
@@ -20,15 +15,7 @@ export default function Home() {
     'Sharan Estates provides private real estate advisory in Dubai, curating exceptional off-plan developments, luxury villas, and signature residences for global investors.'
   );
 
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [properties, setProperties] = useState([]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % bgImages.length);
-    }, 6500);
-    return () => clearInterval(timer);
-  }, []);
 
   const loadProperties = () => {
     const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
@@ -131,21 +118,30 @@ export default function Home() {
   return (
     <div style={{ background: '#FFFFFF', color: '#111111' }}>
       
-      {/* ── 1. HERO SECTION WITH CINEMATIC IMAGE SLIDESHOW ── */}
+      {/* ── 1. HERO SECTION WITH CINEMATIC VIDEO BACKGROUND ── */}
       <section className="hero-section-wrapper">
         
-        {/* Full Viewport Background Slideshow */}
+        {/* Full Viewport Background Video */}
         <div className="hero-slideshow-container" style={{ overflow: 'hidden' }}>
           <div className="hero-overlay"></div>
           <div className="cinematic-vignette"></div>
           <div ref={slideshowRef} style={{ position: 'absolute', inset: '-30px', width: 'calc(100% + 60px)', height: 'calc(100% + 60px)', willChange: 'transform' }}>
-            {bgImages.map((img, idx) => (
-              <div 
-                key={img} 
-                className={`cinematic-slide ${idx === currentSlide ? 'active' : ''} ${idx % 2 === 0 ? 'zoom-in' : 'zoom-out'}`}
-                style={{ backgroundImage: `url(${img})`, opacity: idx === currentSlide ? 1 : 0 }}
-              />
-            ))}
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center center',
+              }}
+            >
+              <source src="/landingPageVideo.mp4" type="video/mp4" />
+            </video>
           </div>
         </div>
 

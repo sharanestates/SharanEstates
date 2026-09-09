@@ -3,7 +3,7 @@ import React from 'react';
 export default function WhatsAppButton() {
   return (
     <a
-      href="https://wa.me/971500000000?text=Hello%2C%20I%20would%20like%20to%20inquire%20about%20Sharan%20Private%20Advisory%20services."
+      href="https://wa.me/971545501096?text=Hello%2C%20I%20would%20like%20to%20inquire%20about%20Sharan%20Private%20Advisory%20services."
       target="_blank"
       rel="noopener noreferrer"
       aria-label="WhatsApp the Advisory Team"

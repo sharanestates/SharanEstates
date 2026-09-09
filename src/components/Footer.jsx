@@ -91,6 +91,37 @@ export default function Footer() {
               </ul>
             </div>
 
+            {/* Contact */}
+            <div className="footer-nav-col">
+              <h4 className="footer-nav-heading">Contact</h4>
+              <ul className="footer-nav-list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                <li style={{ marginBottom: '0.75rem' }}>
+                  <p style={{ fontSize: '0.68rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontWeight: 600, margin: '0 0 0.3rem' }}>Phone</p>
+                  <a href="tel:+97145709599" className="footer-nav-link"
+                    onMouseOver={(e) => { e.target.style.color = '#FFFFFF'; }}
+                    onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.65)'; }}>
+                    +971 4 570 9599
+                  </a>
+                </li>
+                <li style={{ marginBottom: '0.75rem' }}>
+                  <p style={{ fontSize: '0.68rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontWeight: 600, margin: '0 0 0.3rem' }}>WhatsApp</p>
+                  <a href="https://wa.me/971545501096" target="_blank" rel="noopener noreferrer" className="footer-nav-link"
+                    onMouseOver={(e) => { e.target.style.color = '#FFFFFF'; }}
+                    onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.65)'; }}>
+                    +971 54 550 1096
+                  </a>
+                </li>
+                <li>
+                  <p style={{ fontSize: '0.68rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontWeight: 600, margin: '0 0 0.3rem' }}>Email</p>
+                  <a href="mailto:contactus@sharanestates.com" className="footer-nav-link"
+                    onMouseOver={(e) => { e.target.style.color = '#FFFFFF'; }}
+                    onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.65)'; }}>
+                    contactus@sharanestates.com
+                  </a>
+                </li>
+              </ul>
+            </div>
+
           </div>
         </div>
 
@@ -187,6 +218,39 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
+            </ul>
+          </div>
+
+          <div className="footer-divider"></div>
+
+          {/* Contact — mobile */}
+          <div className="footer-nav-col">
+            <h4 className="footer-nav-heading">Contact</h4>
+            <ul className="footer-nav-list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+              <li style={{ marginBottom: '0.75rem' }}>
+                <p style={{ fontSize: '0.68rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontWeight: 600, margin: '0 0 0.3rem' }}>Phone</p>
+                <a href="tel:+97145709599" className="footer-nav-link"
+                  onMouseOver={(e) => { e.target.style.color = '#FFFFFF'; }}
+                  onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.65)'; }}>
+                  +971 4 570 9599
+                </a>
+              </li>
+              <li style={{ marginBottom: '0.75rem' }}>
+                <p style={{ fontSize: '0.68rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontWeight: 600, margin: '0 0 0.3rem' }}>WhatsApp</p>
+                <a href="https://wa.me/971545501096" target="_blank" rel="noopener noreferrer" className="footer-nav-link"
+                  onMouseOver={(e) => { e.target.style.color = '#FFFFFF'; }}
+                  onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.65)'; }}>
+                  +971 54 550 1096
+                </a>
+              </li>
+              <li>
+                <p style={{ fontSize: '0.68rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontWeight: 600, margin: '0 0 0.3rem' }}>Email</p>
+                <a href="mailto:contactus@sharanestates.com" className="footer-nav-link"
+                  onMouseOver={(e) => { e.target.style.color = '#FFFFFF'; }}
+                  onMouseOut={(e) => { e.target.style.color = 'rgba(255,255,255,0.65)'; }}>
+                  contactus@sharanestates.com
+                </a>
+              </li>
             </ul>
           </div>
 

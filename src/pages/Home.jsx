@@ -153,10 +153,12 @@ export default function Home() {
                   opacity: currentSlide === idx ? 1 : 0,
                   transition: 'opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1)',
                   pointerEvents: 'none',
+                  overflow: 'hidden',
                 }}
               >
                 {backdrop.type === 'video' ? (
                   <video
+                    key={currentSlide === idx ? `vid-active-${idx}` : `vid-idle-${idx}`}
                     autoPlay
                     muted
                     loop
@@ -168,6 +170,11 @@ export default function Home() {
                       height: '100%',
                       objectFit: 'cover',
                       objectPosition: 'center center',
+                      transformOrigin: idx % 3 === 0 ? 'center center' : idx % 3 === 1 ? 'top center' : 'bottom center',
+                      animation: currentSlide === idx
+                        ? `${idx % 2 === 0 ? 'kenBurnsZoomIn' : 'kenBurnsZoomOut'} 7.5s cubic-bezier(0.25, 1, 0.5, 1) forwards`
+                        : 'none',
+                      willChange: 'transform',
                     }}
                   >
                     <source src="/landingPageVideo.webm" type="video/webm" />
@@ -175,44 +182,24 @@ export default function Home() {
                   </video>
                 ) : (
                   <img
+                    key={currentSlide === idx ? `img-active-${idx}` : `img-idle-${idx}`}
                     src={backdrop.src}
-                    alt={backdrop.label}
+                    alt=""
                     style={{
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
                       objectPosition: 'center center',
+                      transformOrigin: idx % 3 === 0 ? 'center center' : idx % 3 === 1 ? 'top center' : 'bottom center',
+                      animation: currentSlide === idx
+                        ? `${idx % 2 === 0 ? 'kenBurnsZoomIn' : 'kenBurnsZoomOut'} 7.5s cubic-bezier(0.25, 1, 0.5, 1) forwards`
+                        : 'none',
+                      willChange: 'transform',
                     }}
                   />
                 )}
               </div>
             ))}
-          </div>
-
-          {/* Subtle Ambient Brand & Landmark Pill */}
-          <div style={{
-            position: 'absolute',
-            bottom: '2.5rem',
-            right: '2.5rem',
-            zIndex: 8,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            background: 'rgba(0, 0, 0, 0.55)',
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            padding: '0.45rem 1.1rem',
-            borderRadius: '2px',
-            color: '#FFFFFF',
-            fontSize: '0.62rem',
-            letterSpacing: '2.5px',
-            textTransform: 'uppercase',
-            fontWeight: 600,
-            pointerEvents: 'none',
-          }}>
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#FFFFFF', opacity: 0.8 }} />
-            {heroBackdrops[currentSlide]?.label}
           </div>
         </div>
 

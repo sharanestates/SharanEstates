@@ -328,7 +328,7 @@ export default function AboutPage() {
               fontWeight: 600,
               marginBottom: '1.25rem'
             }}>
-              Our Philosophy
+              Advisory Philosophy
             </p>
 
             <h2 style={{
@@ -341,7 +341,7 @@ export default function AboutPage() {
               lineHeight: 1.25,
               marginBottom: '2rem'
             }}>
-              Measured. Insightful. Deeply Personal.
+              Private Real Estate Advisory
             </h2>
 
             <div style={{
@@ -351,7 +351,7 @@ export default function AboutPage() {
               margin: '0 auto 2.25rem'
             }} />
 
-            {/* Philosophy — focused on how we operate, distinct from Founder section */}
+            {/* Philosophy — consistent with front page advisory philosophy */}
             <p style={{
               fontSize: 'clamp(1.05rem, 2.4vw, 1.25rem)',
               color: 'rgba(255,255,255,0.85)',
@@ -362,7 +362,7 @@ export default function AboutPage() {
               fontWeight: 300,
               letterSpacing: '0.4px'
             }}>
-              We believe exceptional real estate decisions begin with careful listening, thoughtful judgment and a clear understanding of what matters to each client. Our approach is measured, personal and focused on long-term value.
+              Exceptional real estate decisions begin with careful listening, thoughtful judgment, and a clear understanding of what matters to each client. Our approach is measured, personal, and focused on enduring value.
             </p>
           </div>
         </section>
@@ -421,7 +421,7 @@ export default function AboutPage() {
                   letterSpacing: '2px',
                   marginBottom: '1rem'
                 }}>
-                  01 / DISCRETION
+                  01 / ACQUISITION
                 </div>
                 <h3 style={{
                   fontSize: '1.25rem',
@@ -432,10 +432,10 @@ export default function AboutPage() {
                   letterSpacing: '1px',
                   textTransform: 'uppercase'
                 }}>
-                  Trust & Confidentiality
+                  Acquisition
                 </h3>
                 <p style={{ fontSize: '0.88rem', color: 'rgba(0,0,0,0.65)', lineHeight: 1.7, margin: 0 }}>
-                  We safeguard client privacy with uncompromising discretion, acting as confidential advisors to ultra-high-net-worth individuals and private funds.
+                  Identifying exceptional residences and opportunities aligned with each client’s objectives.
                 </p>
               </div>
 
@@ -454,7 +454,7 @@ export default function AboutPage() {
                   letterSpacing: '2px',
                   marginBottom: '1rem'
                 }}>
-                  02 / CURATION
+                  02 / ADVISORY
                 </div>
                 <h3 style={{
                   fontSize: '1.25rem',
@@ -465,10 +465,10 @@ export default function AboutPage() {
                   letterSpacing: '1px',
                   textTransform: 'uppercase'
                 }}>
-                  Exceptional Opportunities
+                  Advisory
                 </h3>
                 <p style={{ fontSize: '0.88rem', color: 'rgba(0,0,0,0.65)', lineHeight: 1.7, margin: 0 }}>
-                  We carefully curate a select portfolio of exceptional properties — identifying opportunities that align with each client's unique vision, lifestyle, and long-term ambitions.
+                  Providing considered guidance across selection, negotiation and investment strategy.
                 </p>
               </div>
 
@@ -487,7 +487,7 @@ export default function AboutPage() {
                   letterSpacing: '2px',
                   marginBottom: '1rem'
                 }}>
-                  03 / PERSPECTIVE
+                  03 / ACCESS
                 </div>
                 <h3 style={{
                   fontSize: '1.25rem',
@@ -498,10 +498,10 @@ export default function AboutPage() {
                   letterSpacing: '1px',
                   textTransform: 'uppercase'
                 }}>
-                  Considered Advisory
+                  Access
                 </h3>
                 <p style={{ fontSize: '0.88rem', color: 'rgba(0,0,0,0.65)', lineHeight: 1.7, margin: 0 }}>
-                  Grounded in deep market knowledge and genuine curiosity, we offer counsel that is measured, independent and focused on long-term value — not short-term transactions.
+                  Connecting clients to pre-launch allocations, off-market opportunities, and landmark developer relationships.
                 </p>
               </div>
             </div>

@@ -6,11 +6,262 @@ import useSEO from '../components/useSEO';
 
 const defaultCategories = ['All', 'Market Trends', 'Investment', 'Guides', 'Architecture', 'Lifestyle', 'News'];
 
-function FeaturedCard({ post, index }) {
+function ArticleModal({ post, onClose }) {
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = 'unset';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose]);
+
+  if (!post) return null;
+
+  // Render markdown-like sections cleanly
+  const paragraphs = (post.content || post.excerpt || '').split('\n\n');
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 9999,
+        background: 'rgba(0, 0, 0, 0.82)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '1.5rem',
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: '#FFFFFF',
+          color: '#111111',
+          width: '100%',
+          maxWidth: '860px',
+          maxHeight: '90vh',
+          overflowY: 'auto',
+          borderRadius: '4px',
+          boxShadow: '0 25px 70px rgba(0, 0, 0, 0.45)',
+          position: 'relative',
+          animation: 'fadeSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+        }}
+      >
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          aria-label="Close article"
+          style={{
+            position: 'absolute',
+            top: '1.25rem',
+            right: '1.25rem',
+            zIndex: 10,
+            background: 'rgba(0, 0, 0, 0.65)',
+            color: '#FFFFFF',
+            border: 'none',
+            borderRadius: '50%',
+            width: '38px',
+            height: '38px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'background 0.2s, transform 0.2s',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = '#000000'; e.currentTarget.style.transform = 'scale(1.08)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(0,0,0,0.65)'; e.currentTarget.style.transform = 'scale(1)'; }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+
+        {/* Hero Image */}
+        <div style={{ position: 'relative', height: '320px', width: '100%', overflow: 'hidden', background: '#111111' }}>
+          <img
+            src={post.image}
+            alt={post.title}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.parentElement.style.background = 'linear-gradient(135deg, #111111 0%, #2a2a2a 100%)';
+            }}
+          />
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%)',
+          }} />
+          <div style={{
+            position: 'absolute',
+            bottom: '1.5rem',
+            left: '2rem',
+            right: '2rem',
+          }}>
+            <span style={{
+              display: 'inline-block',
+              padding: '0.25rem 0.8rem',
+              background: '#FFFFFF',
+              color: '#000000',
+              borderRadius: '2px',
+              fontSize: '0.62rem',
+              fontWeight: 700,
+              letterSpacing: '2px',
+              textTransform: 'uppercase',
+              marginBottom: '0.6rem',
+            }}>
+              {post.category}
+            </span>
+            <div style={{ display: 'flex', gap: '1rem', color: 'rgba(255,255,255,0.85)', fontSize: '0.75rem' }}>
+              <span>{post.date}</span>
+              <span>•</span>
+              <span>{post.readTime}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Article Body */}
+        <div style={{ padding: 'clamp(2rem, 5vw, 3.5rem)' }}>
+          <h1 style={{
+            fontFamily: 'var(--font-serif)',
+            fontSize: 'clamp(1.6rem, 3.5vw, 2.3rem)',
+            fontWeight: 400,
+            lineHeight: 1.3,
+            color: '#111111',
+            margin: '0 0 1.5rem',
+            letterSpacing: '0.5px',
+          }}>
+            {post.title}
+          </h1>
+
+          {/* Executive Summary callout */}
+          <div style={{
+            padding: '1.25rem 1.5rem',
+            background: 'rgba(0, 0, 0, 0.03)',
+            borderLeft: '3px solid #111111',
+            borderRadius: '2px',
+            marginBottom: '2rem',
+          }}>
+            <p style={{
+              fontSize: '0.92rem',
+              fontStyle: 'italic',
+              color: '#333333',
+              lineHeight: 1.7,
+              margin: 0,
+            }}>
+              "{post.excerpt}"
+            </p>
+          </div>
+
+          {/* Formatted Content */}
+          <div style={{ fontSize: '0.95rem', lineHeight: 1.85, color: '#333333' }}>
+            {paragraphs.map((para, idx) => {
+              if (para.startsWith('### ')) {
+                return (
+                  <h3
+                    key={idx}
+                    style={{
+                      fontFamily: 'var(--font-serif)',
+                      fontSize: '1.35rem',
+                      fontWeight: 600,
+                      color: '#111111',
+                      marginTop: '2rem',
+                      marginBottom: '0.75rem',
+                      letterSpacing: '0.5px',
+                    }}
+                  >
+                    {para.replace('### ', '')}
+                  </h3>
+                );
+              }
+              return (
+                <p key={idx} style={{ marginBottom: '1.25rem', whiteSpace: 'pre-line' }}>
+                  {para}
+                </p>
+              );
+            })}
+          </div>
+
+          {/* Advisory Consultation Box */}
+          <div style={{
+            marginTop: '3.5rem',
+            padding: '2rem',
+            background: '#0B0B0B',
+            color: '#FFFFFF',
+            borderRadius: '3px',
+            textAlign: 'center',
+          }}>
+            <p style={{
+              fontSize: '0.65rem',
+              letterSpacing: '3px',
+              textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.5)',
+              fontWeight: 600,
+              marginBottom: '0.5rem',
+            }}>
+              Private Real Estate Advisory
+            </p>
+            <h3 style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: '1.4rem',
+              fontWeight: 300,
+              textTransform: 'uppercase',
+              letterSpacing: '1.5px',
+              margin: '0 0 0.8rem',
+            }}>
+              Discuss Opportunities With Sharan Estates
+            </h3>
+            <p style={{
+              fontSize: '0.85rem',
+              color: 'rgba(255,255,255,0.7)',
+              maxWidth: '540px',
+              margin: '0 auto 1.5rem',
+              lineHeight: 1.65,
+            }}>
+              Connect directly with our advisory partners for confidential guidance on acquisitions, market intelligence, and private allocations.
+            </p>
+            <Link
+              to="/contact"
+              onClick={onClose}
+              style={{
+                display: 'inline-block',
+                padding: '0.85rem 2.2rem',
+                background: '#FFFFFF',
+                color: '#000000',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                letterSpacing: '2px',
+                textTransform: 'uppercase',
+                textDecoration: 'none',
+                borderRadius: '2px',
+                transition: 'background 0.3s, color 0.3s',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.85)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#FFFFFF'; }}
+            >
+              Request Private Consultation →
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FeaturedCard({ post, index, onClick }) {
   const [hovered, setHovered] = useState(false);
 
   return (
     <article
+      onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className="classic-property-card"
@@ -123,11 +374,12 @@ function FeaturedCard({ post, index }) {
   );
 }
 
-function BlogListCard({ post, index }) {
+function BlogListCard({ post, index, onClick }) {
   const [hovered, setHovered] = useState(false);
 
   return (
     <article
+      onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className="classic-property-card"
@@ -218,18 +470,19 @@ function BlogListCard({ post, index }) {
         </p>
 
         <div style={{
-          marginTop: '0.75rem',
+          marginTop: '1rem',
           display: 'flex',
           alignItems: 'center',
-          gap: hovered ? '0.8rem' : '0.5rem',
+          gap: '0.4rem',
           color: '#000000',
           fontSize: '0.68rem',
           fontWeight: 600,
           letterSpacing: '1.5px',
           textTransform: 'uppercase',
           transition: 'gap 0.3s',
+          ...(hovered ? { gap: '0.7rem' } : {}),
         }}>
-          Read More
+          Read Article
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
           </svg>
@@ -238,7 +491,6 @@ function BlogListCard({ post, index }) {
     </article>
   );
 }
-
 
 export default function BlogsPage() {
   useSEO(
@@ -249,6 +501,7 @@ export default function BlogsPage() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [blogPosts, setBlogPosts] = useState([]);
+  const [selectedPost, setSelectedPost] = useState(null);
 
   const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
 
@@ -318,68 +571,74 @@ export default function BlogsPage() {
 
           <div style={{
             position: 'relative',
-            zIndex: 1,
+            zIndex: 2,
             textAlign: 'center',
-            padding: 'clamp(7rem, 14vw, 9rem) 1.5rem clamp(4rem, 8vw, 5rem)',
-            maxWidth: '760px',
+            padding: '2rem 1.5rem',
+            maxWidth: '750px',
           }}>
-            <div style={{ width: '40px', height: '1px', background: 'rgba(255,255,255,0.5)', margin: '0 auto 1.5rem' }} />
             <p style={{
-              color: 'rgba(255,255,255,0.6)',
-              fontSize: '0.7rem',
+              color: 'rgba(255,255,255,0.45)',
+              fontSize: '0.72rem',
               letterSpacing: '4px',
               textTransform: 'uppercase',
               fontWeight: 600,
-              marginBottom: '1.5rem',
+              marginBottom: '1rem',
             }}>
-              Insights & Analysis
+              Perspectives &amp; Intelligence
             </p>
+
             <h1 style={{
-              fontSize: 'clamp(1.8rem, 4.5vw, 3.2rem)',
-              color: '#FFFFFF',
+              fontSize: 'clamp(2.2rem, 5.5vw, 3.8rem)',
               fontFamily: 'var(--font-serif)',
-              letterSpacing: '3px',
+              color: '#FFFFFF',
+              fontWeight: 300,
+              letterSpacing: '2px',
               textTransform: 'uppercase',
               lineHeight: 1.15,
-              marginBottom: '1.75rem',
-              fontWeight: 300,
+              marginBottom: '1.25rem',
             }}>
-              The Sharan Estates<br />
-              <span style={{ color: '#FFFFFF' }}>Journal</span>
+              Market Insights
             </h1>
+
             <p style={{
-              color: 'rgba(255,255,255,0.65)',
+              color: 'rgba(255,255,255,0.5)',
               fontSize: '0.95rem',
               lineHeight: 1.8,
-              maxWidth: '520px',
+              maxWidth: '560px',
               margin: '0 auto',
             }}>
-              Expert perspectives on Dubai's luxury real estate landscape — market intelligence, investment strategies, and lifestyle insights for discerning investors.
+              Expert perspectives on Dubai's luxury real estate landscape, investment intelligence, and regulatory architecture.
             </p>
           </div>
         </section>
       </RevealSection>
 
-      {/* ── FILTERS BAR ── */}
+      {/* ── FILTER TABS + SEARCH BAR ── */}
       <section style={{
         background: '#FFFFFF',
-        borderBottom: '1px solid rgba(0, 0, 0,0.15)',
+        borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
         position: 'sticky',
-        top: '0',
+        top: '64px',
         zIndex: 50,
       }}>
         <div style={{
-          maxWidth: '1100px',
+          maxWidth: '1200px',
           margin: '0 auto',
           padding: '1rem 1.5rem',
           display: 'flex',
-          justifyContent: 'space-between',
           alignItems: 'center',
+          justifyContent: 'space-between',
           gap: '1.5rem',
           flexWrap: 'wrap',
         }}>
-          {/* Category Filters */}
-          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', borderBottom: '1px solid rgba(0, 0, 0, 0.08)' }}>
+          {/* Categories */}
+          <div style={{
+            display: 'flex',
+            gap: '1.5rem',
+            overflowX: 'auto',
+            paddingBottom: '0.2rem',
+            scrollbarWidth: 'none',
+          }}>
             {categories.map(cat => {
               const isActive = activeCategory === cat;
               return (
@@ -387,16 +646,17 @@ export default function BlogsPage() {
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
                   style={{
-                    padding: '0.6rem 0',
+                    background: 'none',
                     border: 'none',
-                    background: 'transparent',
-                    color: isActive ? '#000000' : 'rgba(0, 0, 0, 0.45)',
-                    fontSize: '0.72rem',
-                    fontWeight: isActive ? 600 : 500,
+                    padding: '0.4rem 0',
                     cursor: 'pointer',
+                    fontSize: '0.75rem',
+                    fontWeight: isActive ? 700 : 500,
+                    letterSpacing: '1.5px',
+                    color: isActive ? '#000000' : 'rgba(0, 0, 0, 0.45)',
                     position: 'relative',
+                    whiteSpace: 'nowrap',
                     transition: 'color 0.3s ease',
-                    letterSpacing: '2px',
                     textTransform: 'uppercase',
                     outline: 'none',
                   }}
@@ -404,7 +664,6 @@ export default function BlogsPage() {
                   onMouseOut={(e) => { if (!isActive) e.target.style.color = 'rgba(0, 0, 0, 0.45)'; }}
                 >
                   {cat}
-                  {/* Elegant Golden Line */}
                   <div style={{
                     position: 'absolute',
                     bottom: '-1px',
@@ -478,7 +737,7 @@ export default function BlogsPage() {
                 gap: '1.5rem',
               }} className="featured-blog-grid">
                 {featuredPosts.map((post, i) => (
-                  <FeaturedCard key={post.id} post={post} index={i} />
+                  <FeaturedCard key={post.id} post={post} index={i} onClick={() => setSelectedPost(post)} />
                 ))}
               </div>
             </div>
@@ -509,7 +768,7 @@ export default function BlogsPage() {
               gap: '1rem',
             }}>
               {remainingPosts.map((post, i) => (
-                <BlogListCard key={post.id} post={post} index={i} />
+                <BlogListCard key={post.id} post={post} index={i} onClick={() => setSelectedPost(post)} />
               ))}
             </div>
 
@@ -521,6 +780,11 @@ export default function BlogsPage() {
           </div>
         </section>
       </RevealSection>
+
+      {/* ── ARTICLE MODAL READER ── */}
+      {selectedPost && (
+        <ArticleModal post={selectedPost} onClose={() => setSelectedPost(null)} />
+      )}
 
       {/* ── NEWSLETTER CTA ── */}
       <RevealSection>

@@ -35,10 +35,10 @@ const fallbackProperties = [
     id: 1,
     title: "The Concrete Oasis Villa",
     price: "AED 18,500,000",
-    image: "/listing_villa.webp",
-    description: "A solid, modern architectural masterpiece with brutalist aesthetics and warm wood accents. Features double-height glass panels, a private infinity pool, and golf course views.",
+    image: "/areas/emirates_hills.webp",
+    description: "A solid, modern architectural masterpiece situated in prestigious Emirates Hills with brutalist aesthetics and warm wood accents. Features double-height glass panels, a private infinity pool, landscaped private gardens, and panoramic golf course & lake views.",
     beds: 5, baths: 6, size: "6,500 Sq. Ft.",
-    category: "villas", type: "ready", location: "Emirates Hills", status: "Available",
+    category: "villas", type: "ready", location: "Emirates Hills, Dubai", status: "Available",
     floors: [
       { id: 3, name: "Rooftop Terrace", flats: [{ name: "Sky Lounge Suite", price: "AED 4,000,000", size: "1,500 Sq. Ft.", beds: 2, baths: 2, status: "Available" }] },
       { id: 2, name: "Level 2 - Bedrooms", flats: [{ name: "Master Suite A", price: "AED 8,500,000", size: "2,200 Sq. Ft.", beds: 4, baths: 4, status: "Sold" }, { name: "Guest Room B", price: "AED 6,000,000", size: "1,800 Sq. Ft.", beds: 3, baths: 3, status: "Available" }] },
@@ -49,10 +49,10 @@ const fallbackProperties = [
     id: 2,
     title: "Palm Crescent Estate",
     price: "AED 32,000,000",
-    image: "/listing_villa.webp",
-    description: "An ultra-premium beachfront villa on the Palm Jumeirah crescent with private beach access, a temperature-controlled infinity pool, cinema room, and panoramic Arabian Gulf views.",
+    image: "/areas/palm_jumeirah.webp",
+    description: "An ultra-premium beachfront estate situated on the Palm Jumeirah crescent with private beach access, a temperature-controlled infinity pool, cinema room, and panoramic Arabian Gulf and Dubai skyline views.",
     beds: 7, baths: 8, size: "12,000 Sq. Ft.",
-    category: "villas", type: "ready", location: "Palm Jumeirah", status: "Available",
+    category: "villas", type: "ready", location: "Palm Jumeirah, Dubai", status: "Available",
     floors: [
       { id: 2, name: "Upper Floor", flats: [{ name: "Master Wing", price: "AED 18,000,000", size: "5,000 Sq. Ft.", beds: 4, baths: 5, status: "Available" }] },
       { id: 1, name: "Ground Floor", flats: [{ name: "Entertainment Wing", price: "AED 14,000,000", size: "7,000 Sq. Ft.", beds: 3, baths: 3, status: "Available" }] }
@@ -62,10 +62,10 @@ const fallbackProperties = [
     id: 3,
     title: "Al Barari Sanctuary Villa",
     price: "AED 22,750,000",
-    image: "/listing_villa.webp",
+    image: "/exclusive_villa.webp",
     description: "Set within lush botanical gardens, this eco-luxury villa blends natural stone with organic architecture. Features a private spa, outdoor kitchen, and koi pond courtyard.",
     beds: 6, baths: 7, size: "8,900 Sq. Ft.",
-    category: "villas", type: "ready", location: "Al Barari", status: "Available",
+    category: "villas", type: "ready", location: "Al Barari, Dubai", status: "Available",
     floors: [
       { id: 2, name: "Private Quarters", flats: [{ name: "Master Suite", price: "AED 12,000,000", size: "3,500 Sq. Ft.", beds: 3, baths: 4, status: "Available" }, { name: "Guest Pavilion", price: "AED 5,000,000", size: "2,000 Sq. Ft.", beds: 2, baths: 2, status: "Available" }] },
       { id: 1, name: "Ground Living", flats: [{ name: "Grand Hall & Garden", price: "AED 5,750,000", size: "3,400 Sq. Ft.", beds: 1, baths: 1, status: "Available" }] }

@@ -42,6 +42,24 @@ export default function Home() {
   const slideshowRef = useRef(null);
   const heroCardRef = useRef(null);
 
+  const heroBackdrops = [
+    { type: 'video', src: '/landingPageVideo.mp4', label: 'THE EDITION DUBAI' },
+    { type: 'image', src: '/baccarat_residences.jpg', label: 'BACCARAT RESIDENCES' },
+    { type: 'image', src: '/ritz_carlton_valet.jpg', label: 'THE RITZ-CARLTON RESIDENCES' },
+    { type: 'image', src: '/aman_residences.jpg', label: 'AMAN RESIDENCES DUBAI' },
+    { type: 'image', src: '/rosewood_residences.jpg', label: 'ROSEWOOD & CARLYLE' },
+    { type: 'image', src: '/areas/emirates_hills.webp', label: 'EMIRATES HILLS ESTATE' },
+    { type: 'image', src: '/areas/palm_jumeirah.webp', label: 'PALM JUMEIRAH FRONDS' },
+  ];
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroBackdrops.length);
+    }, 6500);
+    return () => clearInterval(timer);
+  }, [heroBackdrops.length]);
+
   useEffect(() => {
     const handleScroll = () => {
       const scrolled = window.scrollY;
@@ -126,25 +144,75 @@ export default function Home() {
           <div className="hero-overlay"></div>
           <div className="cinematic-vignette"></div>
           <div ref={slideshowRef} style={{ position: 'absolute', inset: '-30px', width: 'calc(100% + 60px)', height: 'calc(100% + 60px)', willChange: 'transform' }}>
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              poster="/hero_poster.webp"
-              style={{
-                position: 'absolute',
-                inset: 0,
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'center center',
-              }}
-            >
-              <source src="/landingPageVideo.webm" type="video/webm" />
-              <source src="/landingPageVideo_compressed.mp4" type="video/mp4" />
-            </video>
+            {heroBackdrops.map((backdrop, idx) => (
+              <div
+                key={idx}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  opacity: currentSlide === idx ? 1 : 0,
+                  transition: 'opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1)',
+                  pointerEvents: 'none',
+                }}
+              >
+                {backdrop.type === 'video' ? (
+                  <video
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    poster="/hero_poster.webp"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      objectPosition: 'center center',
+                    }}
+                  >
+                    <source src="/landingPageVideo.webm" type="video/webm" />
+                    <source src="/landingPageVideo_compressed.mp4" type="video/mp4" />
+                  </video>
+                ) : (
+                  <img
+                    src={backdrop.src}
+                    alt={backdrop.label}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      objectPosition: 'center center',
+                    }}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Subtle Ambient Brand & Landmark Pill */}
+          <div style={{
+            position: 'absolute',
+            bottom: '2.5rem',
+            right: '2.5rem',
+            zIndex: 8,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            background: 'rgba(0, 0, 0, 0.55)',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            padding: '0.45rem 1.1rem',
+            borderRadius: '2px',
+            color: '#FFFFFF',
+            fontSize: '0.62rem',
+            letterSpacing: '2.5px',
+            textTransform: 'uppercase',
+            fontWeight: 600,
+            pointerEvents: 'none',
+          }}>
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#FFFFFF', opacity: 0.8 }} />
+            {heroBackdrops[currentSlide]?.label}
           </div>
         </div>
 

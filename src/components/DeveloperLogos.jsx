@@ -58,33 +58,36 @@ const OmniyatLogo = () => (
   </svg>
 );
 
-const SelectGroupLogo = () => (
-  <svg viewBox="0 0 200 60" fill="currentColor" style={{ height: '38px', width: 'auto' }}>
-    {/* Bracketed 'S' monogram */}
-    <text x="100" y="22" textAnchor="middle" fontFamily="'Cormorant Garamond', Georgia, serif"
-      fontSize="14" fontWeight="400" letterSpacing="6">SELECT</text>
-    {/* Thin rule */}
-    <line x1="62" y1="28" x2="138" y2="28" stroke="currentColor" strokeWidth="0.8" opacity="0.5" />
+const ModonLogo = () => (
+  <svg viewBox="0 0 200 56" fill="currentColor" style={{ height: '36px', width: 'auto' }}>
+    {/* Distinctive architectural M-arch monogram */}
+    <path d="M82 22 L88 10 L100 24 L112 10 L118 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+    <circle cx="100" cy="8" r="2.5" fill="currentColor" />
+    {/* Wordmark */}
     <text x="100" y="48" textAnchor="middle" fontFamily="'Cormorant Garamond', Georgia, serif"
-      fontSize="14" fontWeight="400" letterSpacing="6">GROUP</text>
+      fontSize="18" fontWeight="700" letterSpacing="6">MODON</text>
   </svg>
 );
 
-const EllingtonLogo = () => (
-  <svg viewBox="0 0 210 60" fill="currentColor" style={{ height: '38px', width: 'auto' }}>
-    {/* E monogram square */}
-    <rect x="83" y="3" width="16" height="16" fill="currentColor" />
-    <rect x="85" y="7" width="9" height="1.5" fill="white" />
-    <rect x="85" y="10" width="7" height="1.5" fill="white" />
-    <rect x="85" y="13" width="9" height="1.5" fill="white" />
+const AldarLogo = () => (
+  <svg viewBox="0 0 200 56" fill="currentColor" style={{ height: '36px', width: 'auto' }}>
+    {/* Iconic faceted triangular emblem */}
+    <polygon points="100,5 114,24 86,24" fill="none" stroke="currentColor" strokeWidth="1.8" />
+    <polygon points="100,12 108,24 92,24" fill="currentColor" opacity="0.6" />
     {/* Wordmark */}
-    <text x="105" y="16" textAnchor="start" fontFamily="'Cormorant Garamond', Georgia, serif"
-      fontSize="14" fontWeight="600" letterSpacing="2">ELLINGTON</text>
-    {/* Subtitle */}
-    <text x="105" y="30" textAnchor="start" fontFamily="'Cormorant Garamond', Georgia, serif"
-      fontSize="9" fontWeight="400" letterSpacing="3" opacity="0.55">PROPERTIES</text>
-    {/* Thin bottom rule */}
-    <line x1="83" y1="36" x2="175" y2="36" stroke="currentColor" strokeWidth="0.7" opacity="0.3" />
+    <text x="100" y="48" textAnchor="middle" fontFamily="'Cormorant Garamond', Georgia, serif"
+      fontSize="18" fontWeight="700" letterSpacing="6">ALDAR</text>
+  </svg>
+);
+
+const WaslLogo = () => (
+  <svg viewBox="0 0 200 56" fill="currentColor" style={{ height: '36px', width: 'auto' }}>
+    {/* Flowing geometric luxury ribbon emblem */}
+    <path d="M85 16 Q100 6 115 16 Q100 26 85 16 Z" fill="none" stroke="currentColor" strokeWidth="1.6" />
+    <circle cx="100" cy="16" r="3" fill="currentColor" />
+    {/* Wordmark */}
+    <text x="100" y="48" textAnchor="middle" fontFamily="'Cormorant Garamond', Georgia, serif"
+      fontSize="18" fontWeight="600" letterSpacing="6">WASL</text>
   </svg>
 );
 
@@ -115,14 +118,15 @@ const SobhaLogo = () => (
 
 export default function DeveloperLogos() {
   const partners = [
-    { name: 'EMAAR',          Logo: EmaarLogo },
-    { name: 'MERAAS',         Logo: MeraasLogo },
-    { name: 'NAKHEEL',        Logo: NakhéelLogo },
-    { name: 'OMNIYAT',        Logo: OmniyatLogo },
-    { name: 'SELECT GROUP',   Logo: SelectGroupLogo },
-    { name: 'ELLINGTON',      Logo: EllingtonLogo },
-    { name: 'H&H DEVELOPMENT',Logo: HHLogo },
-    { name: 'SOBHA REALTY',   Logo: SobhaLogo },
+    { name: 'EMAAR',           Logo: EmaarLogo },
+    { name: 'MERAAS',          Logo: MeraasLogo },
+    { name: 'NAKHEEL',         Logo: NakhéelLogo },
+    { name: 'OMNIYAT',         Logo: OmniyatLogo },
+    { name: 'MODON',           Logo: ModonLogo },
+    { name: 'ALDAR',           Logo: AldarLogo },
+    { name: 'WASL',            Logo: WaslLogo },
+    { name: 'H&H DEVELOPMENT', Logo: HHLogo },
+    { name: 'SOBHA REALTY',    Logo: SobhaLogo },
   ];
 
   return (

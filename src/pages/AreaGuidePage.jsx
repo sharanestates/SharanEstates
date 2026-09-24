@@ -355,7 +355,7 @@ export default function AreaGuidePage() {
             maxWidth: '560px',
             margin: '0 auto 2.5rem',
           }}>
-            As the Dubai 2040 Urban Master Plan reshapes the city, understanding where to invest has never mattered more. Explore our curated guide to Dubai's most prestigious districts.
+            As the Dubai 2040 Urban Master Plan and the Dubai Economic Agenda (D33) reshape the city, understanding where to invest has never mattered more. Explore our curated guide to Dubai's most prestigious districts.
           </p>
 
           {/* Search Bar */}
@@ -415,10 +415,10 @@ export default function AreaGuidePage() {
           gap: '2rem',
         }}>
           {[
-            { value: '12+', label: 'Premium Areas' },
-            { value: '2040', label: 'Urban Vision' },
-            { value: '$2B+', label: 'Portfolio Managed' },
-            { value: '30+', label: 'Nationalities Served' },
+            { value: '12+', label: 'Curated Districts' },
+            { value: '2040', label: 'Urban Master Plan' },
+            { value: 'D33', label: 'Economic Agenda' },
+            { value: '$2B+', label: 'Portfolio Advisory' },
           ].map((stat, i) => (
             <div key={i} style={{ textAlign: 'center', minWidth: '130px' }}>
               <div style={{
@@ -566,7 +566,7 @@ export default function AreaGuidePage() {
             lineHeight: 1.85,
             marginBottom: '1.25rem',
           }}>
-            As the Dubai 2040 Urban Master Plan reshapes entire corridors of the city and Al Maktoum International Airport expands into the world's largest aviation hub, understanding where you want to be in Dubai has never mattered more.
+            As the Dubai 2040 Urban Master Plan and the Dubai Economic Agenda (D33) reshape entire corridors of the city and Al Maktoum International Airport expands into the world's largest aviation hub, understanding where you want to be in Dubai has never mattered more.
           </p>
           <p style={{
             color: 'rgba(255,255,255,0.5)',

@@ -5,12 +5,22 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') });
 let pool;
 
 if (process.env.DATABASE_URL) {
+  let connStr = process.env.DATABASE_URL;
+  // If running locally outside Render, internal Render hostname (dpg-*) cannot resolve via public DNS.
+  // Seamlessly bridge to local PostgreSQL port 5432 so the exact Render .env works locally!
+  const isRenderInternal = connStr.includes('dpg-') && !connStr.includes('.render.com');
+  const isLocalEnv = !process.env.RENDER;
+
+  if (isLocalEnv && isRenderInternal) {
+    connStr = connStr.replace(/@dpg-[^:/]+/, '@localhost:5432');
+    console.log('Local environment: bridged internal Render DB host to local PostgreSQL (localhost:5432).');
+  }
+
+  const isLocal = connStr.includes('localhost') || connStr.includes('127.0.0.1');
   console.log('Connecting to PostgreSQL using DATABASE_URL...');
   pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL.includes('localhost') || process.env.DATABASE_URL.includes('127.0.0.1')
-      ? false
-      : { rejectUnauthorized: false }
+    connectionString: connStr,
+    ssl: isLocal ? false : { rejectUnauthorized: false }
   });
 } else {
   console.log('No DATABASE_URL configured. Using memory/JSON fallback.');

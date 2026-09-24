@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 export default function AdminLogin({ onLoginSuccess }) {
   const [username, setUsername] = useState('');
@@ -52,75 +52,60 @@ export default function AdminLogin({ onLoginSuccess }) {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: 'radial-gradient(circle at center, #1e1b18 0%, #0f0f11 100%)',
+      background: '#FAFAFA',
       padding: '2rem',
       position: 'relative',
-      overflow: 'hidden'
+      fontFamily: 'var(--font-sans)'
     }}>
-      {/* Decorative Blur Spheres for premium look */}
       <div style={{
-        position: 'absolute',
-        width: '300px',
-        height: '300px',
-        borderRadius: '50%',
-        background: 'rgba(0, 0, 0, 0.1)',
-        filter: 'blur(80px)',
-        top: '10%',
-        left: '20%',
-        zIndex: 0
-      }} />
-      <div style={{
-        position: 'absolute',
-        width: '400px',
-        height: '400px',
-        borderRadius: '50%',
-        background: 'rgba(181, 155, 106, 0.05)',
-        filter: 'blur(100px)',
-        bottom: '10%',
-        right: '15%',
-        zIndex: 0
-      }} />
-
-      <div className="glossy-glass" style={{
         width: '100%',
-        maxWidth: '450px',
+        maxWidth: '440px',
         padding: '3rem 2.5rem',
-        zIndex: 1,
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        background: 'rgba(255, 255, 255, 0.03)',
-        boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5)'
+        background: '#FFFFFF',
+        borderRadius: '6px',
+        border: '1px solid #E5E7EB',
+        boxShadow: '0 20px 50px rgba(0, 0, 0, 0.05)'
       }}>
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <img
+            src="/logo.png"
+            alt="Sharan Estates"
+            style={{ height: '48px', width: 'auto', margin: '0 auto 1.25rem', display: 'block' }}
+          />
           <h2 style={{
-            fontSize: '2.2rem',
-            color: '#FFFFFF',
-            fontFamily: 'var(--font-logo)',
+            fontSize: '1.8rem',
+            color: '#000000',
+            fontFamily: 'var(--font-serif)',
             letterSpacing: '1px',
-            marginBottom: '0.5rem'
+            marginBottom: '0.4rem',
+            textTransform: 'uppercase',
+            fontWeight: 300
           }}>
-            SHARAN ESTATES
+            Advisory Console
           </h2>
           <p style={{
-            color: '#FFFFFF',
-            fontSize: '0.85rem',
+            color: '#64748B',
+            fontSize: '0.75rem',
             letterSpacing: '2px',
             textTransform: 'uppercase',
-            fontWeight: 600
+            fontWeight: 600,
+            margin: 0
           }}>
-            Admin Control Panel
+            Private Client Wealth Management
           </p>
         </div>
 
         {error && (
           <div style={{
-            background: 'rgba(239, 68, 68, 0.1)',
-            border: '1px solid rgba(239, 68, 68, 0.2)',
-            color: '#fca5a5',
+            background: '#FEF2F2',
+            border: '1px solid #FECACA',
+            color: '#DC2626',
             padding: '0.8rem 1rem',
-            borderRadius: '8px',
-            fontSize: '0.9rem',
+            borderRadius: '4px',
+            fontSize: '0.85rem',
             marginBottom: '1.5rem',
-            textAlign: 'center'
+            textAlign: 'center',
+            fontWeight: 500
           }}>
             {error}
           </div>
@@ -130,14 +115,14 @@ export default function AdminLogin({ onLoginSuccess }) {
           <div style={{ marginBottom: '1.5rem' }}>
             <label style={{
               display: 'block',
-              color: 'rgba(255, 255, 255, 0.7)',
-              fontSize: '0.85rem',
+              color: '#475569',
+              fontSize: '0.75rem',
               fontWeight: 600,
               textTransform: 'uppercase',
               letterSpacing: '1px',
               marginBottom: '0.5rem'
             }}>
-              Username
+              Administrator Username
             </label>
             <input
               type="text"
@@ -147,25 +132,26 @@ export default function AdminLogin({ onLoginSuccess }) {
               onChange={(e) => setUsername(e.target.value)}
               style={{
                 width: '100%',
-                padding: '0.9rem 1.2rem',
-                borderRadius: '8px',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                background: 'rgba(255, 255, 255, 0.05)',
-                color: '#FFFFFF',
-                fontSize: '1rem',
+                padding: '0.85rem 1rem',
+                borderRadius: '3px',
+                border: '1px solid #CBD5E1',
+                background: '#FFFFFF',
+                color: '#0F172A',
+                fontSize: '0.95rem',
                 outline: 'none',
-                transition: 'border-color 0.3s'
+                boxSizing: 'border-box',
+                transition: 'border-color 0.2s'
               }}
-              onFocus={(e) => e.target.style.borderColor = 'var(--primary-color)'}
-              onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
+              onFocus={(e) => e.target.style.borderColor = '#000000'}
+              onBlur={(e) => e.target.style.borderColor = '#CBD5E1'}
             />
           </div>
 
-          <div style={{ marginBottom: '2.5rem' }}>
+          <div style={{ marginBottom: '2rem' }}>
             <label style={{
               display: 'block',
-              color: 'rgba(255, 255, 255, 0.7)',
-              fontSize: '0.85rem',
+              color: '#475569',
+              fontSize: '0.75rem',
               fontWeight: 600,
               textTransform: 'uppercase',
               letterSpacing: '1px',
@@ -176,45 +162,73 @@ export default function AdminLogin({ onLoginSuccess }) {
             <input
               type="password"
               required
-              placeholder="Enter password"
+              placeholder="••••••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               style={{
                 width: '100%',
-                padding: '0.9rem 1.2rem',
-                borderRadius: '8px',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                background: 'rgba(255, 255, 255, 0.05)',
-                color: '#FFFFFF',
-                fontSize: '1rem',
+                padding: '0.85rem 1rem',
+                borderRadius: '3px',
+                border: '1px solid #CBD5E1',
+                background: '#FFFFFF',
+                color: '#0F172A',
+                fontSize: '0.95rem',
                 outline: 'none',
-                transition: 'border-color 0.3s'
+                boxSizing: 'border-box',
+                transition: 'border-color 0.2s'
               }}
-              onFocus={(e) => e.target.style.borderColor = 'var(--primary-color)'}
-              onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
+              onFocus={(e) => e.target.style.borderColor = '#000000'}
+              onBlur={(e) => e.target.style.borderColor = '#CBD5E1'}
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="btn-solid"
             style={{
               width: '100%',
-              padding: '1rem',
-              borderRadius: '8px',
-              fontSize: '0.95rem',
-              fontWeight: '700',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
+              padding: '0.9rem',
+              borderRadius: '2px',
+              border: '1px solid #000000',
+              background: '#000000',
+              color: '#FFFFFF',
+              fontSize: '0.8rem',
+              fontWeight: 600,
+              letterSpacing: '2px',
+              textTransform: 'uppercase',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.7 : 1,
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              if (!loading) e.currentTarget.style.background = '#262626';
+            }}
+            onMouseOut={(e) => {
+              if (!loading) e.currentTarget.style.background = '#000000';
             }}
           >
-            {loading ? 'AUTHENTICATING...' : 'ACCESS DASHBOARD'}
+            {loading ? 'Authenticating...' : 'Sign In to Console'}
           </button>
         </form>
+
+        <div style={{ textAlign: 'center', marginTop: '2rem', borderTop: '1px solid #F1F5F9', paddingTop: '1.25rem' }}>
+          <Link
+            to="/"
+            style={{
+              color: '#64748B',
+              fontSize: '0.75rem',
+              letterSpacing: '1px',
+              textTransform: 'uppercase',
+              textDecoration: 'none',
+              fontWeight: 600,
+              transition: 'color 0.2s'
+            }}
+            onMouseOver={(e) => e.target.style.color = '#000000'}
+            onMouseOut={(e) => e.target.style.color = '#64748B'}
+          >
+            ← Return to Public Website
+          </Link>
+        </div>
       </div>
     </div>
   );

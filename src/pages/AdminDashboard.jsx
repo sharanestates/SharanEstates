@@ -145,7 +145,7 @@ export default function AdminDashboard() {
     if (!silent) setLoading(true);
     setError('');
     try {
-      // 1. Fetch Properties (High limit for admin management)
+      // 1. Fetch Properties
       const propsRes = await fetch(`${API_BASE}/properties?limit=500`);
       if (!propsRes.ok) throw new Error('Failed to fetch properties from server');
       const propsData = await propsRes.json();
@@ -806,125 +806,128 @@ export default function AdminDashboard() {
       <style>{`
         .admin-luxury-suite {
           min-height: 100vh;
-          background: #090A0D;
-          color: #E2E8F0;
+          background: #FFFFFF;
+          color: #111827;
           font-family: var(--font-sans);
-          padding-top: 5rem;
+          padding-top: 5.5rem;
           padding-bottom: 6rem;
         }
         .admin-glass-card {
-          background: rgba(18, 20, 26, 0.7);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 8px;
-          transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+          background: #FFFFFF;
+          border: 1px solid #E5E7EB;
+          border-radius: 4px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+          transition: all 0.25s ease;
         }
         .admin-glass-card:hover {
-          border-color: rgba(197, 168, 128, 0.3);
+          border-color: #CBD5E1;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
         }
         .admin-nav-tab {
           padding: 0.85rem 1.4rem;
-          font-size: 0.82rem;
-          letter-spacing: 1.5px;
+          font-size: 0.76rem;
+          letter-spacing: 1.2px;
           text-transform: uppercase;
           font-weight: 600;
           cursor: pointer;
-          color: #8E9BAE;
+          color: #64748B;
+          border: none;
           border-bottom: 2px solid transparent;
-          transition: all 0.25s ease;
+          transition: all 0.2s ease;
           display: inline-flex;
           align-items: center;
           gap: 0.6rem;
           white-space: nowrap;
+          background: transparent;
         }
         .admin-nav-tab.active {
-          color: #FFFFFF;
-          border-bottom-color: #C5A880;
-          background: rgba(197, 168, 128, 0.06);
+          color: #000000;
+          border-bottom-color: #000000;
+          background: rgba(0, 0, 0, 0.02);
         }
-        .admin-btn-gold {
-          background: #C5A880;
-          color: #0A0A0C;
-          border: 1px solid #C5A880;
+        .admin-btn-primary {
+          background: #000000;
+          color: #FFFFFF;
+          border: 1px solid #000000;
           padding: 0.6rem 1.25rem;
           font-size: 0.72rem;
-          font-weight: 700;
+          font-weight: 600;
           letter-spacing: 1.2px;
           text-transform: uppercase;
-          border-radius: 4px;
+          border-radius: 2px;
           cursor: pointer;
-          transition: all 0.25s ease;
+          transition: all 0.2s ease;
           display: inline-flex;
           align-items: center;
           gap: 0.5rem;
         }
-        .admin-btn-gold:hover {
-          background: #D8BD97;
-          border-color: #D8BD97;
+        .admin-btn-primary:hover {
+          background: #262626;
+          border-color: #262626;
           transform: translateY(-1px);
+          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
         }
-        .admin-btn-dark {
-          background: rgba(255, 255, 255, 0.06);
-          color: #FFFFFF;
-          border: 1px solid rgba(255, 255, 255, 0.14);
+        .admin-btn-secondary {
+          background: #FFFFFF;
+          color: #0F172A;
+          border: 1px solid #CBD5E1;
           padding: 0.6rem 1.1rem;
           font-size: 0.72rem;
           font-weight: 600;
           letter-spacing: 1px;
           text-transform: uppercase;
-          border-radius: 4px;
+          border-radius: 2px;
           cursor: pointer;
-          transition: all 0.25s ease;
+          transition: all 0.2s ease;
           display: inline-flex;
           align-items: center;
           gap: 0.5rem;
         }
-        .admin-btn-dark:hover {
-          background: rgba(255, 255, 255, 0.12);
-          border-color: rgba(255, 255, 255, 0.3);
+        .admin-btn-secondary:hover {
+          background: #F8FAFC;
+          border-color: #94A3B8;
         }
         .admin-pill-filter {
           padding: 0.35rem 0.85rem;
-          border-radius: 30px;
-          font-size: 0.72rem;
+          border-radius: 20px;
+          font-size: 0.7rem;
           letter-spacing: 0.8px;
           text-transform: uppercase;
           cursor: pointer;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          color: #94A3B8;
+          background: #F1F5F9;
+          border: 1px solid #E2E8F0;
+          color: #475569;
           transition: all 0.2s ease;
         }
         .admin-pill-filter.active {
-          background: rgba(197, 168, 128, 0.2);
-          border-color: #C5A880;
+          background: #000000;
+          border-color: #000000;
           color: #FFFFFF;
           font-weight: 600;
         }
         .admin-input-luxury {
-          background: rgba(10, 11, 15, 0.8);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          color: #FFFFFF;
-          border-radius: 4px;
+          background: #FFFFFF;
+          border: 1px solid #CBD5E1;
+          color: #0F172A;
+          border-radius: 2px;
           padding: 0.7rem 0.9rem;
           font-size: 0.88rem;
           outline: none;
-          transition: border-color 0.2s ease;
+          transition: border-color 0.2s ease, box-shadow 0.2s ease;
           width: 100%;
           box-sizing: border-box;
         }
         .admin-input-luxury:focus {
-          border-color: #C5A880;
-          box-shadow: 0 0 0 1px #C5A880;
+          border-color: #000000;
+          box-shadow: 0 0 0 1px #000000;
         }
         .admin-modal-backdrop {
           position: fixed;
           inset: 0;
           z-index: 9999;
-          background: rgba(5, 6, 8, 0.85);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
+          background: rgba(0, 0, 0, 0.6);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -932,62 +935,63 @@ export default function AdminDashboard() {
           overflow-y: auto;
         }
         .admin-modal-container {
-          background: #111319;
-          border: 1px solid rgba(255, 255, 255, 0.14);
-          border-radius: 8px;
+          background: #FFFFFF;
+          border: 1px solid #E2E8F0;
+          border-radius: 4px;
           width: 100%;
           max-width: 920px;
           max-height: 90vh;
           overflow-y: auto;
-          box-shadow: 0 35px 80px rgba(0, 0, 0, 0.75);
+          box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
           display: flex;
           flex-direction: column;
+          color: #0F172A;
         }
         .admin-table-row {
-          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-          transition: background 0.2s ease;
+          border-bottom: 1px solid #F1F5F9;
+          transition: background 0.15s ease;
         }
         .admin-table-row:hover {
-          background: rgba(255, 255, 255, 0.02);
+          background: #F8FAFC;
         }
       `}</style>
 
       <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 2rem' }}>
 
         {/* ── TOP EXECUTIVE BANNER ── */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '1.8rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.2rem', flexWrap: 'wrap', gap: '1.5rem', borderBottom: '1px solid #E2E8F0', paddingBottom: '1.8rem' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.4rem' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 10px #10B981' }} />
-              <span style={{ fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase', color: '#10B981', fontWeight: 600 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#059669', boxShadow: '0 0 8px rgba(5, 150, 105, 0.4)' }} />
+              <span style={{ fontSize: '0.68rem', letterSpacing: '2px', textTransform: 'uppercase', color: '#059669', fontWeight: 700 }}>
                 Real-Time Cloud Database Synchronized
               </span>
             </div>
-            <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(2rem, 3.5vw, 2.7rem)', color: '#FFFFFF', margin: 0, letterSpacing: '1px' }}>
+            <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(2rem, 3.5vw, 2.6rem)', color: '#000000', margin: 0, letterSpacing: '1.2px', textTransform: 'uppercase', fontWeight: 300 }}>
               Shārān Advisory Suite
             </h1>
-            <p style={{ color: '#8E9BAE', fontSize: '0.85rem', marginTop: '0.3rem', margin: 0 }}>
+            <p style={{ color: '#64748B', fontSize: '0.85rem', marginTop: '0.35rem', margin: 0 }}>
               Curate, edit and command private luxury real estate portfolios, off-plan developer catalogs, and high-net-worth investor inquiries.
             </p>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-            <div style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)', padding: '0.5rem 1rem', borderRadius: '4px', fontSize: '0.75rem', color: '#CBD5E1' }}>
-              <span style={{ color: '#8E9BAE', marginRight: '0.4rem' }}>Identity:</span>
-              <strong style={{ color: '#FFFFFF' }}>{currentAdminUser}</strong>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
+            <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.5rem 0.9rem', borderRadius: '2px', fontSize: '0.75rem', color: '#475569' }}>
+              <span style={{ color: '#94A3B8', marginRight: '0.4rem' }}>Identity:</span>
+              <strong style={{ color: '#0F172A' }}>{currentAdminUser}</strong>
             </div>
 
             <a
               href="/"
               target="_blank"
               rel="noopener noreferrer"
-              className="admin-btn-dark"
+              className="admin-btn-secondary"
               style={{ textDecoration: 'none' }}
             >
               <ExternalLink size={14} /> View Live Website
             </a>
 
-            <button onClick={handleLogout} className="admin-btn-dark" style={{ borderColor: 'rgba(239, 68, 68, 0.3)', color: '#F87171' }}>
+            <button onClick={handleLogout} className="admin-btn-secondary" style={{ borderColor: '#FECACA', color: '#DC2626', background: '#FEF2F2' }}>
               <LogOut size={14} /> Sign Out
             </button>
           </div>
@@ -995,22 +999,22 @@ export default function AdminDashboard() {
 
         {/* ── NOTIFICATION TOASTS ── */}
         {error && (
-          <div style={{ background: 'rgba(239, 68, 68, 0.12)', border: '1px solid #EF4444', color: '#FCA5A5', padding: '1rem 1.25rem', borderRadius: '6px', marginBottom: '1.8rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', color: '#DC2626', padding: '0.9rem 1.25rem', borderRadius: '4px', marginBottom: '1.8rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
               <AlertCircle size={18} />
-              <span style={{ fontSize: '0.88rem' }}>{error}</span>
+              <span style={{ fontSize: '0.88rem', fontWeight: 500 }}>{error}</span>
             </div>
-            <button onClick={() => setError('')} style={{ background: 'none', border: 'none', color: '#FCA5A5', cursor: 'pointer' }}>✕</button>
+            <button onClick={() => setError('')} style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer' }}>✕</button>
           </div>
         )}
 
         {successMsg && (
-          <div style={{ background: 'rgba(16, 185, 129, 0.12)', border: '1px solid #10B981', color: '#6EE7B7', padding: '1rem 1.25rem', borderRadius: '6px', marginBottom: '1.8rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ background: '#ECFDF5', border: '1px solid #A7F3D0', color: '#047857', padding: '0.9rem 1.25rem', borderRadius: '4px', marginBottom: '1.8rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
               <CheckCircle2 size={18} />
-              <span style={{ fontSize: '0.88rem' }}>{successMsg}</span>
+              <span style={{ fontSize: '0.88rem', fontWeight: 500 }}>{successMsg}</span>
             </div>
-            <button onClick={() => setSuccessMsg('')} style={{ background: 'none', border: 'none', color: '#6EE7B7', cursor: 'pointer' }}>✕</button>
+            <button onClick={() => setSuccessMsg('')} style={{ background: 'none', border: 'none', color: '#047857', cursor: 'pointer' }}>✕</button>
           </div>
         )}
 
@@ -1018,11 +1022,11 @@ export default function AdminDashboard() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.2rem', marginBottom: '2.5rem' }}>
           
           <div className="admin-glass-card" style={{ padding: '1.4rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
-              <span style={{ fontSize: '0.7rem', letterSpacing: '1.8px', textTransform: 'uppercase', color: '#8E9BAE', fontWeight: 600 }}>Total Portfolio</span>
-              <Building2 size={18} color="#C5A880" />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+              <span style={{ fontSize: '0.68rem', letterSpacing: '1.8px', textTransform: 'uppercase', color: '#64748B', fontWeight: 600 }}>Total Portfolio</span>
+              <Building2 size={18} color="#0F172A" />
             </div>
-            <div style={{ fontSize: '2.2rem', fontWeight: 300, color: '#FFFFFF', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>
+            <div style={{ fontSize: '2.2rem', fontWeight: 300, color: '#000000', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>
               {properties.length}
             </div>
             <p style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '0.5rem', margin: 0 }}>
@@ -1031,11 +1035,11 @@ export default function AdminDashboard() {
           </div>
 
           <div className="admin-glass-card" style={{ padding: '1.4rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
-              <span style={{ fontSize: '0.7rem', letterSpacing: '1.8px', textTransform: 'uppercase', color: '#8E9BAE', fontWeight: 600 }}>Ready Estates</span>
-              <Sparkles size={18} color="#10B981" />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+              <span style={{ fontSize: '0.68rem', letterSpacing: '1.8px', textTransform: 'uppercase', color: '#64748B', fontWeight: 600 }}>Ready Estates</span>
+              <Sparkles size={18} color="#059669" />
             </div>
-            <div style={{ fontSize: '2.2rem', fontWeight: 300, color: '#FFFFFF', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>
+            <div style={{ fontSize: '2.2rem', fontWeight: 300, color: '#000000', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>
               {readyProperties.length}
             </div>
             <p style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '0.5rem', margin: 0 }}>
@@ -1044,11 +1048,11 @@ export default function AdminDashboard() {
           </div>
 
           <div className="admin-glass-card" style={{ padding: '1.4rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
-              <span style={{ fontSize: '0.7rem', letterSpacing: '1.8px', textTransform: 'uppercase', color: '#8E9BAE', fontWeight: 600 }}>Master Catalogs</span>
-              <Layers size={18} color="#38BDF8" />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+              <span style={{ fontSize: '0.68rem', letterSpacing: '1.8px', textTransform: 'uppercase', color: '#64748B', fontWeight: 600 }}>Master Catalogs</span>
+              <Layers size={18} color="#0284C7" />
             </div>
-            <div style={{ fontSize: '2.2rem', fontWeight: 300, color: '#FFFFFF', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>
+            <div style={{ fontSize: '2.2rem', fontWeight: 300, color: '#000000', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>
               {offPlanProperties.length}
             </div>
             <p style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '0.5rem', margin: 0 }}>
@@ -1057,24 +1061,24 @@ export default function AdminDashboard() {
           </div>
 
           <div className="admin-glass-card" style={{ padding: '1.4rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
-              <span style={{ fontSize: '0.7rem', letterSpacing: '1.8px', textTransform: 'uppercase', color: '#8E9BAE', fontWeight: 600 }}>Client Inquiries</span>
-              <MessageSquare size={18} color="#F59E0B" />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+              <span style={{ fontSize: '0.68rem', letterSpacing: '1.8px', textTransform: 'uppercase', color: '#64748B', fontWeight: 600 }}>Client Inquiries</span>
+              <MessageSquare size={18} color="#D97706" />
             </div>
-            <div style={{ fontSize: '2.2rem', fontWeight: 300, color: '#FFFFFF', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>
+            <div style={{ fontSize: '2.2rem', fontWeight: 300, color: '#000000', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>
               {inquiries.length}
             </div>
-            <p style={{ fontSize: '0.72rem', color: pendingInquiriesCount > 0 ? '#F59E0B' : '#64748B', marginTop: '0.5rem', margin: 0 }}>
+            <p style={{ fontSize: '0.72rem', color: pendingInquiriesCount > 0 ? '#D97706' : '#64748B', marginTop: '0.5rem', margin: 0, fontWeight: pendingInquiriesCount > 0 ? 600 : 400 }}>
               {pendingInquiriesCount} Pending Client Follow-up{pendingInquiriesCount !== 1 ? 's' : ''}
             </p>
           </div>
 
           <div className="admin-glass-card" style={{ padding: '1.4rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
-              <span style={{ fontSize: '0.7rem', letterSpacing: '1.8px', textTransform: 'uppercase', color: '#8E9BAE', fontWeight: 600 }}>Curated Highlights</span>
-              <Star size={18} color="#EAB308" />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+              <span style={{ fontSize: '0.68rem', letterSpacing: '1.8px', textTransform: 'uppercase', color: '#64748B', fontWeight: 600 }}>Curated Highlights</span>
+              <Star size={18} color="#CA8A04" />
             </div>
-            <div style={{ fontSize: '2.2rem', fontWeight: 300, color: '#FFFFFF', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>
+            <div style={{ fontSize: '2.2rem', fontWeight: 300, color: '#000000', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>
               {starredPropertiesCount}
             </div>
             <p style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '0.5rem', margin: 0 }}>
@@ -1085,8 +1089,8 @@ export default function AdminDashboard() {
         </div>
 
         {/* ── SEGMENTED NAVIGATION BAR ── */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', marginBottom: '1.8rem', overflowX: 'auto' }}>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #E2E8F0', marginBottom: '1.8rem', overflowX: 'auto' }}>
+          <div style={{ display: 'flex', gap: '0.25rem' }}>
             <button
               onClick={() => { setActiveTab('ready-listings'); setSearchQuery(''); }}
               className={`admin-nav-tab ${activeTab === 'ready-listings' ? 'active' : ''}`}
@@ -1105,7 +1109,7 @@ export default function AdminDashboard() {
             >
               <Mail size={15} /> Inquiries ({inquiries.length})
               {pendingInquiriesCount > 0 && (
-                <span style={{ background: '#F59E0B', color: '#000', borderRadius: '10px', padding: '0.1rem 0.45rem', fontSize: '0.62rem', fontWeight: 700 }}>
+                <span style={{ background: '#F59E0B', color: '#FFFFFF', borderRadius: '10px', padding: '0.1rem 0.45rem', fontSize: '0.62rem', fontWeight: 700 }}>
                   {pendingInquiriesCount}
                 </span>
               )}
@@ -1120,7 +1124,7 @@ export default function AdminDashboard() {
 
           <button
             onClick={() => fetchData(null, false)}
-            className="admin-btn-dark"
+            className="admin-btn-secondary"
             style={{ padding: '0.45rem 0.8rem', fontSize: '0.68rem', marginBottom: '0.4rem' }}
             title="Refresh database"
           >
@@ -1133,8 +1137,8 @@ export default function AdminDashboard() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.8rem', flexWrap: 'wrap', gap: '1rem' }}>
             
             {/* Search Input */}
-            <div style={{ position: 'relative', flex: '1', minWidth: '280px', maxWidth: '420px' }}>
-              <Search size={16} color="#8E9BAE" style={{ position: 'absolute', left: '0.9rem', top: '50%', transform: 'translateY(-50%)' }} />
+            <div style={{ position: 'relative', flex: '1', minWidth: '280px', maxWidth: '400px' }}>
+              <Search size={16} color="#94A3B8" style={{ position: 'absolute', left: '0.9rem', top: '50%', transform: 'translateY(-50%)' }} />
               <input
                 type="text"
                 placeholder="Search by title, location, developer, price..."
@@ -1146,7 +1150,7 @@ export default function AdminDashboard() {
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  style={{ position: 'absolute', right: '0.8rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#8E9BAE', cursor: 'pointer' }}
+                  style={{ position: 'absolute', right: '0.8rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer' }}
                 >
                   ✕
                 </button>
@@ -1169,7 +1173,7 @@ export default function AdminDashboard() {
                 className={`admin-pill-filter ${starredOnlyFilter ? 'active' : ''}`}
                 style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
               >
-                <Star size={12} fill={starredOnlyFilter ? '#C5A880' : 'none'} color={starredOnlyFilter ? '#C5A880' : 'currentColor'} /> Starred Only
+                <Star size={12} fill={starredOnlyFilter ? '#CA8A04' : 'none'} color={starredOnlyFilter ? '#CA8A04' : 'currentColor'} /> Starred Only
               </button>
             </div>
 
@@ -1177,16 +1181,16 @@ export default function AdminDashboard() {
             <div style={{ display: 'flex', gap: '0.75rem' }}>
               <button
                 onClick={() => handleOpenCreateForm(activeTab === 'offplan-listings' ? 'off-plan' : 'ready')}
-                className="admin-btn-gold"
+                className="admin-btn-primary"
               >
                 <Plus size={15} /> Add {activeTab === 'offplan-listings' ? 'Catalog' : 'Property'}
               </button>
 
               <button
                 onClick={() => setIsUploadOptionOpen(true)}
-                className="admin-btn-dark"
+                className="admin-btn-secondary"
                 disabled={scanningDoc}
-                style={{ borderColor: '#10B981', color: '#10B981' }}
+                style={{ borderColor: '#059669', color: '#059669', background: '#ECFDF5' }}
               >
                 <Sparkles size={14} /> {scanningDoc ? 'Scanning...' : 'AI Scan'}
               </button>
@@ -1200,17 +1204,17 @@ export default function AdminDashboard() {
           <div className="admin-glass-card" style={{ overflow: 'hidden' }}>
             {loading ? (
               <div style={{ textAlign: 'center', padding: '5rem 2rem' }}>
-                <RefreshCw size={28} className="animate-spin" style={{ margin: '0 auto 1rem', color: '#C5A880' }} />
-                <p style={{ color: '#8E9BAE', fontSize: '0.9rem' }}>Loading portfolio from cloud database...</p>
+                <RefreshCw size={28} className="animate-spin" style={{ margin: '0 auto 1rem', color: '#000000' }} />
+                <p style={{ color: '#64748B', fontSize: '0.9rem' }}>Loading portfolio from cloud database...</p>
               </div>
             ) : displayedListings.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-                <Building2 size={36} color="#475569" style={{ margin: '0 auto 1rem' }} />
-                <h3 style={{ color: '#FFFFFF', fontFamily: 'var(--font-serif)', fontSize: '1.25rem' }}>No listings found</h3>
+                <Building2 size={36} color="#CBD5E1" style={{ margin: '0 auto 1rem' }} />
+                <h3 style={{ color: '#000000', fontFamily: 'var(--font-serif)', fontSize: '1.25rem', textTransform: 'uppercase' }}>No listings found</h3>
                 <p style={{ color: '#64748B', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
                   {searchQuery ? `No properties matched "${searchQuery}".` : 'No properties in this category.'}
                 </p>
-                <button onClick={() => handleOpenCreateForm(activeTab === 'offplan-listings' ? 'off-plan' : 'ready')} className="admin-btn-gold">
+                <button onClick={() => handleOpenCreateForm(activeTab === 'offplan-listings' ? 'off-plan' : 'ready')} className="admin-btn-primary">
                   <Plus size={14} /> Create Listing
                 </button>
               </div>
@@ -1218,14 +1222,14 @@ export default function AdminDashboard() {
               <div style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '950px' }}>
                   <thead>
-                    <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)', color: '#8E9BAE', fontSize: '0.7rem', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
-                      <th style={{ padding: '1rem 1.25rem' }}>Residence / Catalog</th>
-                      <th style={{ padding: '1rem' }}>Category</th>
-                      <th style={{ padding: '1rem' }}>Location</th>
-                      <th style={{ padding: '1rem' }}>Pricing</th>
-                      <th style={{ padding: '1rem' }}>Status</th>
-                      <th style={{ padding: '1rem', textAlign: 'center' }}>Curated</th>
-                      <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
+                    <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#64748B', fontSize: '0.7rem', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
+                      <th style={{ padding: '0.9rem 1.25rem' }}>Residence / Catalog</th>
+                      <th style={{ padding: '0.9rem' }}>Category</th>
+                      <th style={{ padding: '0.9rem' }}>Location</th>
+                      <th style={{ padding: '0.9rem' }}>Pricing</th>
+                      <th style={{ padding: '0.9rem' }}>Status</th>
+                      <th style={{ padding: '0.9rem', textAlign: 'center' }}>Curated</th>
+                      <th style={{ padding: '0.9rem', textAlign: 'right' }}>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1241,7 +1245,7 @@ export default function AdminDashboard() {
                           <td style={{ padding: '1rem 1.25rem' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                               
-                              <div style={{ position: 'relative', width: '70px', height: '52px', borderRadius: '4px', overflow: 'hidden', flexShrink: 0, backgroundColor: '#1E232F' }}>
+                              <div style={{ position: 'relative', width: '70px', height: '52px', borderRadius: '2px', overflow: 'hidden', flexShrink: 0, backgroundColor: '#F1F5F9', border: '1px solid #E2E8F0' }}>
                                 <img
                                   src={coverImg}
                                   alt=""
@@ -1257,14 +1261,14 @@ export default function AdminDashboard() {
 
                               <div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                  <h4 style={{ color: '#FFFFFF', fontSize: '0.88rem', fontWeight: 600, margin: 0, letterSpacing: '0.3px' }}>
+                                  <h4 style={{ color: '#0F172A', fontSize: '0.88rem', fontWeight: 600, margin: 0, letterSpacing: '0.3px' }}>
                                     {prop.title}
                                   </h4>
                                   {isStarred && (
                                     <span style={{ color: '#EAB308', fontSize: '0.8rem' }} title="Curated on Homepage">★</span>
                                   )}
                                 </div>
-                                <div style={{ fontSize: '0.72rem', color: '#8E9BAE', marginTop: '0.2rem' }}>
+                                <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '0.2rem' }}>
                                   {prop.type === 'off-plan' ? (
                                     <span>{prop.bedrooms_range || 'Multi-bedroom'} • {prop.handover || 'Handover TBA'}</span>
                                   ) : (
@@ -1278,22 +1282,22 @@ export default function AdminDashboard() {
 
                           {/* Category / Type */}
                           <td style={{ padding: '1rem' }}>
-                            <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#CBD5E1', background: 'rgba(255, 255, 255, 0.04)', padding: '0.25rem 0.6rem', borderRadius: '3px' }}>
+                            <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#334155', background: '#F1F5F9', border: '1px solid #E2E8F0', padding: '0.25rem 0.6rem', borderRadius: '2px', fontWeight: 500 }}>
                               {prop.category}
                             </span>
                           </td>
 
                           {/* Location */}
                           <td style={{ padding: '1rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#94A3B8', fontSize: '0.8rem' }}>
-                              <MapPin size={13} color="#C5A880" />
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#64748B', fontSize: '0.8rem' }}>
+                              <MapPin size={13} color="#0F172A" />
                               <span>{prop.location || 'Dubai, UAE'}</span>
                             </div>
                           </td>
 
                           {/* Price */}
                           <td style={{ padding: '1rem' }}>
-                            <div style={{ color: '#C5A880', fontWeight: 600, fontSize: '0.9rem', letterSpacing: '0.5px' }}>
+                            <div style={{ color: '#000000', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '0.3px' }}>
                               {prop.price}
                             </div>
                           </td>
@@ -1301,15 +1305,15 @@ export default function AdminDashboard() {
                           {/* Status */}
                           <td style={{ padding: '1rem' }}>
                             <span style={{
-                              fontSize: '0.7rem',
-                              fontWeight: 600,
+                              fontSize: '0.68rem',
+                              fontWeight: 700,
                               letterSpacing: '1px',
                               textTransform: 'uppercase',
                               padding: '0.25rem 0.65rem',
-                              borderRadius: '3px',
-                              background: (prop.status || 'Available') === 'Available' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)',
-                              color: (prop.status || 'Available') === 'Available' ? '#34D399' : '#FBBF24',
-                              border: `1px solid ${(prop.status || 'Available') === 'Available' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(245, 158, 11, 0.3)'}`
+                              borderRadius: '2px',
+                              background: (prop.status || 'Available') === 'Available' ? '#ECFDF5' : '#FFFBEB',
+                              color: (prop.status || 'Available') === 'Available' ? '#059669' : '#D97706',
+                              border: `1px solid ${(prop.status || 'Available') === 'Available' ? '#A7F3D0' : '#FDE68A'}`
                             }}>
                               {prop.status || 'Available'}
                             </span>
@@ -1320,45 +1324,36 @@ export default function AdminDashboard() {
                             <button
                               onClick={() => handleToggleStarred(prop)}
                               style={{
-                                background: isStarred ? 'rgba(234, 179, 8, 0.15)' : 'rgba(255, 255, 255, 0.05)',
-                                border: `1px solid ${isStarred ? '#EAB308' : 'rgba(255, 255, 255, 0.12)'}`,
-                                color: isStarred ? '#EAB308' : '#64748B',
+                                background: isStarred ? '#FEF9C3' : '#F8FAFC',
+                                border: `1px solid ${isStarred ? '#FACC15' : '#E2E8F0'}`,
+                                color: isStarred ? '#854D0E' : '#64748B',
                                 padding: '0.35rem 0.75rem',
-                                borderRadius: '4px',
+                                borderRadius: '2px',
                                 cursor: 'pointer',
                                 fontSize: '0.72rem',
                                 display: 'inline-flex',
                                 alignItems: 'center',
                                 gap: '0.3rem',
-                                transition: 'all 0.2s ease'
+                                transition: 'all 0.2s ease',
+                                fontWeight: 600
                               }}
                               title={isStarred ? 'Remove from Homepage Highlight' : 'Feature on Homepage Highlight'}
                             >
-                              <Star size={13} fill={isStarred ? '#EAB308' : 'none'} />
+                              <Star size={13} fill={isStarred ? '#EAB308' : 'none'} color={isStarred ? '#CA8A04' : '#94A3B8'} />
                               <span>{isStarred ? 'Featured' : 'Standard'}</span>
                             </button>
                           </td>
 
                           {/* Action Buttons */}
                           <td style={{ padding: '1rem', textAlign: 'right' }}>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
                               
                               <a
                                 href={`/property/${prop.id}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                style={{
-                                  background: 'rgba(255, 255, 255, 0.05)',
-                                  border: '1px solid rgba(255, 255, 255, 0.12)',
-                                  color: '#CBD5E1',
-                                  padding: '0.35rem 0.65rem',
-                                  borderRadius: '4px',
-                                  textDecoration: 'none',
-                                  fontSize: '0.72rem',
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  gap: '0.3rem'
-                                }}
+                                className="admin-btn-secondary"
+                                style={{ padding: '0.35rem 0.65rem', fontSize: '0.7rem', textDecoration: 'none' }}
                                 title="View on Live Website"
                               >
                                 <ArrowUpRight size={13} /> View
@@ -1366,8 +1361,8 @@ export default function AdminDashboard() {
 
                               <button
                                 onClick={() => handleOpenEditForm(prop)}
-                                className="admin-btn-gold"
-                                style={{ padding: '0.35rem 0.75rem', fontSize: '0.72rem' }}
+                                className="admin-btn-primary"
+                                style={{ padding: '0.35rem 0.75rem', fontSize: '0.7rem' }}
                               >
                                 <Edit3 size={13} /> Edit
                               </button>
@@ -1375,11 +1370,11 @@ export default function AdminDashboard() {
                               <button
                                 onClick={() => handlePropertyDelete(prop.id, prop.title)}
                                 style={{
-                                  background: 'rgba(239, 68, 68, 0.1)',
-                                  border: '1px solid rgba(239, 68, 68, 0.25)',
-                                  color: '#F87171',
+                                  background: '#FEF2F2',
+                                  border: '1px solid #FECACA',
+                                  color: '#DC2626',
                                   padding: '0.35rem 0.6rem',
-                                  borderRadius: '4px',
+                                  borderRadius: '2px',
                                   cursor: 'pointer',
                                   display: 'inline-flex',
                                   alignItems: 'center'
@@ -1407,23 +1402,23 @@ export default function AdminDashboard() {
           <div className="admin-glass-card" style={{ padding: '1.5rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
-                <h3 style={{ color: '#FFFFFF', fontFamily: 'var(--font-serif)', fontSize: '1.4rem', margin: 0 }}>
+                <h3 style={{ color: '#000000', fontFamily: 'var(--font-serif)', fontSize: '1.4rem', margin: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>
                   Client Advisory Enquiries
                 </h3>
-                <p style={{ color: '#8E9BAE', fontSize: '0.82rem', margin: '0.25rem 0 0' }}>
+                <p style={{ color: '#64748B', fontSize: '0.82rem', margin: '0.25rem 0 0' }}>
                   Investor requests received from the private advisory booking modal, floor plan gates, and contact concierge.
                 </p>
               </div>
 
-              <div style={{ fontSize: '0.8rem', color: '#C5A880', background: 'rgba(197, 168, 128, 0.1)', padding: '0.45rem 1rem', borderRadius: '4px', border: '1px solid rgba(197, 168, 128, 0.2)' }}>
+              <div style={{ fontSize: '0.8rem', color: '#0F172A', background: '#F1F5F9', padding: '0.45rem 1rem', borderRadius: '2px', border: '1px solid #E2E8F0', fontWeight: 600 }}>
                 {inquiries.length} Total Leads Recorded
               </div>
             </div>
 
             {inquiries.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-                <Mail size={36} color="#475569" style={{ margin: '0 auto 1rem' }} />
-                <p style={{ color: '#8E9BAE' }}>No client enquiries received yet.</p>
+                <Mail size={36} color="#CBD5E1" style={{ margin: '0 auto 1rem' }} />
+                <p style={{ color: '#64748B' }}>No client enquiries received yet.</p>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -1437,56 +1432,57 @@ export default function AdminDashboard() {
                     <div
                       key={inq.id}
                       style={{
-                        background: 'rgba(255, 255, 255, 0.03)',
-                        border: `1px solid ${isPending ? 'rgba(245, 158, 11, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
-                        borderRadius: '6px',
+                        background: '#FFFFFF',
+                        border: `1px solid ${isPending ? '#FDE68A' : '#E2E8F0'}`,
+                        borderRadius: '4px',
                         padding: '1.25rem 1.5rem',
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         flexWrap: 'wrap',
-                        gap: '1.2rem'
+                        gap: '1.2rem',
+                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.02)'
                       }}
                     >
                       <div style={{ flex: '1', minWidth: '280px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.4rem' }}>
-                          <h4 style={{ color: '#FFFFFF', fontSize: '1rem', fontWeight: 600, margin: 0 }}>
+                          <h4 style={{ color: '#000000', fontSize: '1rem', fontWeight: 600, margin: 0 }}>
                             {inq.name}
                           </h4>
                           <span style={{
                             fontSize: '0.65rem',
                             padding: '0.15rem 0.5rem',
-                            borderRadius: '3px',
+                            borderRadius: '2px',
                             fontWeight: 700,
                             letterSpacing: '1px',
                             textTransform: 'uppercase',
-                            background: isPending ? 'rgba(245, 158, 11, 0.15)' : 'rgba(16, 185, 129, 0.15)',
-                            color: isPending ? '#F59E0B' : '#10B981',
-                            border: `1px solid ${isPending ? 'rgba(245, 158, 11, 0.3)' : 'rgba(16, 185, 129, 0.3)'}`
+                            background: isPending ? '#FFFBEB' : '#ECFDF5',
+                            color: isPending ? '#D97706' : '#059669',
+                            border: `1px solid ${isPending ? '#FDE68A' : '#A7F3D0'}`
                           }}>
                             {status}
                           </span>
-                          {dateStr && <span style={{ color: '#64748B', fontSize: '0.72rem' }}>{dateStr}</span>}
+                          {dateStr && <span style={{ color: '#94A3B8', fontSize: '0.72rem' }}>{dateStr}</span>}
                         </div>
 
-                        <div style={{ display: 'flex', gap: '1.2rem', color: '#94A3B8', fontSize: '0.82rem', marginBottom: '0.6rem', flexWrap: 'wrap' }}>
+                        <div style={{ display: 'flex', gap: '1.2rem', color: '#64748B', fontSize: '0.82rem', marginBottom: '0.6rem', flexWrap: 'wrap' }}>
                           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-                            <Mail size={13} color="#C5A880" /> {inq.email}
+                            <Mail size={13} color="#000000" /> {inq.email}
                           </span>
                           {inq.phone && (
                             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-                              <Phone size={13} color="#C5A880" /> {inq.phone}
+                              <Phone size={13} color="#000000" /> {inq.phone}
                             </span>
                           )}
                           {inq.property_id && (
-                            <span style={{ color: '#C5A880' }}>
+                            <span style={{ color: '#0F172A', fontWeight: 600 }}>
                               Target Property Ref: #{inq.property_id}
                             </span>
                           )}
                         </div>
 
                         {inq.message && (
-                          <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '0.75rem 1rem', borderRadius: '4px', fontSize: '0.82rem', color: '#CBD5E1', fontStyle: 'italic' }}>
+                          <div style={{ background: '#F8FAFC', borderLeft: '3px solid #000000', padding: '0.75rem 1rem', borderRadius: '2px', fontSize: '0.82rem', color: '#334155', fontStyle: 'italic' }}>
                             "{inq.message}"
                           </div>
                         )}
@@ -1503,7 +1499,7 @@ export default function AdminDashboard() {
                               background: '#059669',
                               color: '#fff',
                               padding: '0.45rem 0.85rem',
-                              borderRadius: '4px',
+                              borderRadius: '2px',
                               fontSize: '0.72rem',
                               fontWeight: 600,
                               textDecoration: 'none',
@@ -1518,7 +1514,7 @@ export default function AdminDashboard() {
 
                         <a
                           href={`mailto:${inq.email}?subject=Sharan%20Estates%20Private%20Advisory%20Enquiry`}
-                          className="admin-btn-dark"
+                          className="admin-btn-secondary"
                           style={{ padding: '0.45rem 0.85rem', textDecoration: 'none' }}
                         >
                           <Mail size={13} /> Email
@@ -1528,11 +1524,11 @@ export default function AdminDashboard() {
                           value={status}
                           onChange={e => handleUpdateInquiryStatus(inq.id, e.target.value)}
                           style={{
-                            background: '#1A1D24',
-                            border: '1px solid rgba(255, 255, 255, 0.15)',
-                            color: '#FFFFFF',
+                            background: '#FFFFFF',
+                            border: '1px solid #CBD5E1',
+                            color: '#0F172A',
                             padding: '0.45rem 0.65rem',
-                            borderRadius: '4px',
+                            borderRadius: '2px',
                             fontSize: '0.72rem',
                             cursor: 'pointer',
                             outline: 'none'
@@ -1546,7 +1542,7 @@ export default function AdminDashboard() {
 
                         <button
                           onClick={() => handleDeleteInquiry(inq.id)}
-                          style={{ background: 'none', border: 'none', color: '#64748B', cursor: 'pointer', padding: '0.4rem' }}
+                          style={{ background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer', padding: '0.4rem' }}
                           title="Delete inquiry"
                         >
                           <Trash2 size={15} />
@@ -1566,23 +1562,23 @@ export default function AdminDashboard() {
           <div className="admin-glass-card" style={{ padding: '1.5rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
-                <h3 style={{ color: '#FFFFFF', fontFamily: 'var(--font-serif)', fontSize: '1.4rem', margin: 0 }}>
+                <h3 style={{ color: '#000000', fontFamily: 'var(--font-serif)', fontSize: '1.4rem', margin: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>
                   Publications & Research Insights
                 </h3>
-                <p style={{ color: '#8E9BAE', fontSize: '0.82rem', margin: '0.25rem 0 0' }}>
+                <p style={{ color: '#64748B', fontSize: '0.82rem', margin: '0.25rem 0 0' }}>
                   Manage editorial market intelligence, architectural whitepapers, and wealth reports.
                 </p>
               </div>
 
-              <button onClick={handleOpenBlogCreate} className="admin-btn-gold">
+              <button onClick={handleOpenBlogCreate} className="admin-btn-primary">
                 <Plus size={14} /> New Publication
               </button>
             </div>
 
             {blogs.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-                <FileText size={36} color="#475569" style={{ margin: '0 auto 1rem' }} />
-                <p style={{ color: '#8E9BAE' }}>No articles published yet.</p>
+                <FileText size={36} color="#CBD5E1" style={{ margin: '0 auto 1rem' }} />
+                <p style={{ color: '#64748B' }}>No articles published yet.</p>
               </div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' }}>
@@ -1590,56 +1586,57 @@ export default function AdminDashboard() {
                   <div
                     key={blog.id}
                     style={{
-                      background: 'rgba(255, 255, 255, 0.03)',
-                      border: '1px solid rgba(255, 255, 255, 0.08)',
-                      borderRadius: '6px',
+                      background: '#FFFFFF',
+                      border: '1px solid #E2E8F0',
+                      borderRadius: '4px',
                       overflow: 'hidden',
                       display: 'flex',
-                      flexDirection: 'column'
+                      flexDirection: 'column',
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.03)'
                     }}
                   >
-                    <div style={{ height: '160px', position: 'relative', backgroundColor: '#1E232F' }}>
+                    <div style={{ height: '160px', position: 'relative', backgroundColor: '#F1F5F9' }}>
                       <img
                         src={blog.image || '/areas/creek_harbour.webp'}
                         alt=""
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
-                      <div style={{ position: 'absolute', top: '0.6rem', left: '0.6rem', background: 'rgba(0, 0, 0, 0.75)', color: '#C5A880', fontSize: '0.62rem', fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: '2px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                      <div style={{ position: 'absolute', top: '0.6rem', left: '0.6rem', background: '#000000', color: '#FFFFFF', fontSize: '0.62rem', fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: '2px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                         {blog.category || 'Advisory'}
                       </div>
                       {blog.featured && (
-                        <div style={{ position: 'absolute', top: '0.6rem', right: '0.6rem', background: '#EAB308', color: '#000', fontSize: '0.6rem', fontWeight: 700, padding: '0.2rem 0.5rem', borderRadius: '2px', textTransform: 'uppercase' }}>
+                        <div style={{ position: 'absolute', top: '0.6rem', right: '0.6rem', background: '#FEF9C3', border: '1px solid #FACC15', color: '#854D0E', fontSize: '0.6rem', fontWeight: 700, padding: '0.2rem 0.5rem', borderRadius: '2px', textTransform: 'uppercase' }}>
                           Featured
                         </div>
                       )}
                     </div>
 
                     <div style={{ padding: '1.2rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                      <div style={{ color: '#64748B', fontSize: '0.72rem', marginBottom: '0.4rem' }}>
+                      <div style={{ color: '#94A3B8', fontSize: '0.72rem', marginBottom: '0.4rem' }}>
                         {blog.date} • {blog.readTime || '5 min read'}
                       </div>
-                      <h4 style={{ color: '#FFFFFF', fontSize: '0.98rem', fontWeight: 600, margin: '0 0 0.5rem', lineHeight: 1.4 }}>
+                      <h4 style={{ color: '#000000', fontSize: '0.98rem', fontWeight: 600, margin: '0 0 0.5rem', lineHeight: 1.4 }}>
                         {blog.title}
                       </h4>
-                      <p style={{ color: '#94A3B8', fontSize: '0.8rem', lineHeight: 1.5, margin: '0 0 1rem', flex: 1 }}>
+                      <p style={{ color: '#64748B', fontSize: '0.8rem', lineHeight: 1.5, margin: '0 0 1rem', flex: 1 }}>
                         {blog.excerpt ? `${blog.excerpt.slice(0, 110)}...` : 'Comprehensive real estate insight.'}
                       </p>
 
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '0.8rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #F1F5F9', paddingTop: '0.8rem' }}>
                         <a
                           href={`/blogs`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{ color: '#C5A880', fontSize: '0.75rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
+                          style={{ color: '#000000', fontSize: '0.75rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', fontWeight: 600 }}
                         >
                           View in Blog <ArrowUpRight size={12} />
                         </a>
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
-                          <button onClick={() => handleOpenBlogEdit(blog)} className="admin-btn-dark" style={{ padding: '0.35rem 0.65rem' }}>
+                          <button onClick={() => handleOpenBlogEdit(blog)} className="admin-btn-secondary" style={{ padding: '0.35rem 0.65rem' }}>
                             <Edit3 size={13} /> Edit
                           </button>
-                          <button onClick={() => handleBlogDelete(blog.id, blog.title)} style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', padding: '0.35rem' }}>
-                            <Trash2 size={14} />
+                          <button onClick={() => handleBlogDelete(blog.id, blog.title)} style={{ background: '#FEF2F2', border: '1px solid #FECACA', color: '#DC2626', cursor: 'pointer', padding: '0.35rem 0.55rem', borderRadius: '2px' }}>
+                            <Trash2 size={13} />
                           </button>
                         </div>
                       </div>
@@ -1661,25 +1658,25 @@ export default function AdminDashboard() {
           <div className="admin-modal-container">
             
             {/* Modal Header */}
-            <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#0D0E13' }}>
+            <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#FAFAFA' }}>
               <div>
-                <span style={{ fontSize: '0.68rem', letterSpacing: '2px', textTransform: 'uppercase', color: '#C5A880', fontWeight: 600 }}>
+                <span style={{ fontSize: '0.68rem', letterSpacing: '2px', textTransform: 'uppercase', color: '#64748B', fontWeight: 700 }}>
                   {formType === 'create' ? 'Curate New Listing' : `Editing ID #${editingId}`}
                 </span>
-                <h2 style={{ fontFamily: 'var(--font-serif)', color: '#FFFFFF', fontSize: '1.6rem', margin: '0.2rem 0 0' }}>
+                <h2 style={{ fontFamily: 'var(--font-serif)', color: '#000000', fontSize: '1.6rem', margin: '0.2rem 0 0', textTransform: 'uppercase', fontWeight: 300 }}>
                   {formType === 'create' ? 'Add Residence or Master Catalog' : (propertyForm.title || 'Edit Listing')}
                 </h2>
               </div>
               <button
                 onClick={() => setIsFormOpen(false)}
-                style={{ background: 'rgba(255, 255, 255, 0.08)', border: 'none', color: '#fff', fontSize: '1.2rem', width: '36px', height: '36px', borderRadius: '50%', cursor: 'pointer' }}
+                style={{ background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#0F172A', fontSize: '1.1rem', width: '34px', height: '34px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
                 ✕
               </button>
             </div>
 
             {/* Modal Internal Navigation Tabs */}
-            <div style={{ display: 'flex', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', background: '#14161F', padding: '0 2rem', overflowX: 'auto' }}>
+            <div style={{ display: 'flex', borderBottom: '1px solid #E2E8F0', background: '#F8FAFC', padding: '0 2rem', overflowX: 'auto' }}>
               <button
                 type="button"
                 onClick={() => setModalTab('core')}
@@ -1730,7 +1727,7 @@ export default function AdminDashboard() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                    <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem', fontWeight: 600 }}>
                       Listing Title *
                     </label>
                     <input
@@ -1745,7 +1742,7 @@ export default function AdminDashboard() {
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem', fontWeight: 600 }}>
                         Catalog Type *
                       </label>
                       <select
@@ -1760,7 +1757,7 @@ export default function AdminDashboard() {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem', fontWeight: 600 }}>
                         Category *
                       </label>
                       <select
@@ -1776,7 +1773,7 @@ export default function AdminDashboard() {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem', fontWeight: 600 }}>
                         Asking / Starting Price *
                       </label>
                       <input
@@ -1792,7 +1789,7 @@ export default function AdminDashboard() {
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem', fontWeight: 600 }}>
                         Location / District *
                       </label>
                       <input
@@ -1805,7 +1802,7 @@ export default function AdminDashboard() {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem', fontWeight: 600 }}>
                         Status
                       </label>
                       <select
@@ -1827,18 +1824,18 @@ export default function AdminDashboard() {
                         id="modal-starred"
                         checked={propertyForm.starred}
                         onChange={e => setPropertyForm({ ...propertyForm, starred: e.target.checked })}
-                        style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: '#C5A880' }}
+                        style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: '#000000' }}
                       />
-                      <label htmlFor="modal-starred" style={{ fontSize: '0.82rem', color: '#FFFFFF', cursor: 'pointer' }}>
+                      <label htmlFor="modal-starred" style={{ fontSize: '0.82rem', color: '#0F172A', cursor: 'pointer', fontWeight: 500 }}>
                         Feature as Curated Highlight on Homepage
                       </label>
                     </div>
                   </div>
 
                   {propertyForm.type === 'ready' && (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '1rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', borderTop: '1px solid #E2E8F0', paddingTop: '1rem' }}>
                       <div>
-                        <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem' }}>Bedrooms</label>
+                        <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem' }}>Bedrooms</label>
                         <input
                           type="number"
                           min="0"
@@ -1848,7 +1845,7 @@ export default function AdminDashboard() {
                         />
                       </div>
                       <div>
-                        <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem' }}>Bathrooms</label>
+                        <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem' }}>Bathrooms</label>
                         <input
                           type="number"
                           min="0"
@@ -1858,7 +1855,7 @@ export default function AdminDashboard() {
                         />
                       </div>
                       <div>
-                        <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem' }}>Built-Up Area</label>
+                        <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem' }}>Built-Up Area</label>
                         <input
                           type="text"
                           placeholder="e.g. 6,500 Sq. Ft."
@@ -1877,13 +1874,13 @@ export default function AdminDashboard() {
               {modalTab === 'catalog' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   
-                  <div style={{ background: 'rgba(56, 189, 248, 0.08)', border: '1px solid rgba(56, 189, 248, 0.2)', padding: '1rem', borderRadius: '6px', color: '#BAE6FD', fontSize: '0.82rem' }}>
-                    <strong style={{ color: '#FFFFFF' }}>Master Development Specifications:</strong> Configure handover timeline, developer payment schemes, and marketing pack URLs for master-planned developments.
+                  <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', padding: '1rem', borderRadius: '4px', color: '#0369A1', fontSize: '0.82rem' }}>
+                    <strong style={{ color: '#0C4A6E' }}>Master Development Specifications:</strong> Configure handover timeline, developer payment schemes, and marketing pack URLs for master-planned developments.
                   </div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem', fontWeight: 600 }}>
                         Handover Quarter / Year
                       </label>
                       <input
@@ -1896,7 +1893,7 @@ export default function AdminDashboard() {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem', fontWeight: 600 }}>
                         Payment Plan
                       </label>
                       <input
@@ -1911,7 +1908,7 @@ export default function AdminDashboard() {
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem', fontWeight: 600 }}>
                         Bedrooms Range
                       </label>
                       <input
@@ -1924,7 +1921,7 @@ export default function AdminDashboard() {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem', fontWeight: 600 }}>
                         Property Typology
                       </label>
                       <input
@@ -1938,7 +1935,7 @@ export default function AdminDashboard() {
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                    <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem', fontWeight: 600 }}>
                       Dropbox Agent Marketing Pack / Brochure Link
                     </label>
                     <input
@@ -1964,22 +1961,22 @@ export default function AdminDashboard() {
                   <div
                     onClick={() => multiFileInputRef.current?.click()}
                     style={{
-                      border: '2px dashed rgba(197, 168, 128, 0.4)',
-                      borderRadius: '8px',
+                      border: '2px dashed #CBD5E1',
+                      borderRadius: '4px',
                       padding: '2.5rem 1.5rem',
                       textAlign: 'center',
                       cursor: 'pointer',
-                      background: 'rgba(197, 168, 128, 0.03)',
-                      transition: 'all 0.25s ease'
+                      background: '#F8FAFC',
+                      transition: 'all 0.2s ease'
                     }}
-                    onMouseOver={e => e.currentTarget.style.borderColor = '#C5A880'}
-                    onMouseOut={e => e.currentTarget.style.borderColor = 'rgba(197, 168, 128, 0.4)'}
+                    onMouseOver={e => e.currentTarget.style.borderColor = '#000000'}
+                    onMouseOut={e => e.currentTarget.style.borderColor = '#CBD5E1'}
                   >
-                    <UploadCloud size={36} color="#C5A880" style={{ margin: '0 auto 0.75rem' }} />
-                    <h4 style={{ color: '#FFFFFF', fontSize: '1rem', fontWeight: 600, margin: '0 0 0.3rem' }}>
+                    <UploadCloud size={36} color="#0F172A" style={{ margin: '0 auto 0.75rem' }} />
+                    <h4 style={{ color: '#0F172A', fontSize: '1rem', fontWeight: 600, margin: '0 0 0.3rem' }}>
                       {imageUploadLoading ? 'Uploading Images to Server...' : 'Click to Upload Multiple High-Res Images'}
                     </h4>
-                    <p style={{ color: '#8E9BAE', fontSize: '0.8rem', margin: 0 }}>
+                    <p style={{ color: '#64748B', fontSize: '0.8rem', margin: 0 }}>
                       Upload JPG, PNG, WEBP files simultaneously. Files are processed and served directly to the gallery.
                     </p>
                     <input
@@ -2004,7 +2001,7 @@ export default function AdminDashboard() {
                     <button
                       type="button"
                       onClick={handleAddImageUrl}
-                      className="admin-btn-dark"
+                      className="admin-btn-secondary"
                       style={{ flexShrink: 0 }}
                     >
                       <Plus size={14} /> Add URL
@@ -2014,7 +2011,7 @@ export default function AdminDashboard() {
                   {/* Visual Image Grid */}
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
-                      <span style={{ fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', fontWeight: 600 }}>
+                      <span style={{ fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', fontWeight: 600 }}>
                         Catalog Gallery ({propertyForm.images.length} Image{propertyForm.images.length !== 1 ? 's' : ''})
                       </span>
                       <span style={{ fontSize: '0.7rem', color: '#64748B' }}>
@@ -2023,8 +2020,8 @@ export default function AdminDashboard() {
                     </div>
 
                     {propertyForm.images.length === 0 ? (
-                      <div style={{ padding: '2.5rem', textAlign: 'center', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '6px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                        <ImageIcon size={30} color="#475569" style={{ margin: '0 auto 0.6rem' }} />
+                      <div style={{ padding: '2.5rem', textAlign: 'center', background: '#F8FAFC', borderRadius: '4px', border: '1px solid #E2E8F0' }}>
+                        <ImageIcon size={30} color="#94A3B8" style={{ margin: '0 auto 0.6rem' }} />
                         <p style={{ color: '#64748B', fontSize: '0.82rem', margin: 0 }}>No images added yet. Upload files above or paste a URL.</p>
                       </div>
                     ) : (
@@ -2035,16 +2032,17 @@ export default function AdminDashboard() {
                             <div
                               key={idx}
                               style={{
-                                background: '#1A1D26',
-                                border: `1px solid ${isCover ? '#C5A880' : 'rgba(255, 255, 255, 0.1)'}`,
-                                borderRadius: '6px',
+                                background: '#FFFFFF',
+                                border: `1px solid ${isCover ? '#000000' : '#E2E8F0'}`,
+                                borderRadius: '4px',
                                 overflow: 'hidden',
                                 position: 'relative',
                                 display: 'flex',
-                                flexDirection: 'column'
+                                flexDirection: 'column',
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
                               }}
                             >
-                              <div style={{ height: '110px', position: 'relative' }}>
+                              <div style={{ height: '110px', position: 'relative', background: '#F1F5F9' }}>
                                 <img
                                   src={imgUrl}
                                   alt={`Image ${idx + 1}`}
@@ -2052,7 +2050,7 @@ export default function AdminDashboard() {
                                   onError={e => { e.target.src = '/listing_villa.webp'; }}
                                 />
                                 {isCover && (
-                                  <div style={{ position: 'absolute', top: '6px', left: '6px', background: '#C5A880', color: '#000', fontSize: '0.6rem', fontWeight: 800, padding: '0.15rem 0.45rem', borderRadius: '2px', textTransform: 'uppercase' }}>
+                                  <div style={{ position: 'absolute', top: '6px', left: '6px', background: '#000000', color: '#FFFFFF', fontSize: '0.6rem', fontWeight: 700, padding: '0.15rem 0.45rem', borderRadius: '2px', textTransform: 'uppercase' }}>
                                     ★ Cover
                                   </div>
                                 )}
@@ -2063,8 +2061,8 @@ export default function AdminDashboard() {
                                     position: 'absolute',
                                     top: '6px',
                                     right: '6px',
-                                    background: 'rgba(0, 0, 0, 0.75)',
-                                    color: '#F87171',
+                                    background: 'rgba(0, 0, 0, 0.7)',
+                                    color: '#FFFFFF',
                                     border: 'none',
                                     borderRadius: '50%',
                                     width: '24px',
@@ -2081,8 +2079,8 @@ export default function AdminDashboard() {
                                 </button>
                               </div>
 
-                              <div style={{ padding: '0.5rem 0.6rem', background: '#12141C', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span style={{ fontSize: '0.68rem', color: '#94A3B8' }}>
+                              <div style={{ padding: '0.5rem 0.6rem', background: '#FAFAFA', borderTop: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontSize: '0.68rem', color: '#64748B' }}>
                                   #{idx + 1}
                                 </span>
                                 {!isCover && (
@@ -2092,9 +2090,10 @@ export default function AdminDashboard() {
                                     style={{
                                       background: 'none',
                                       border: 'none',
-                                      color: '#C5A880',
+                                      color: '#0F172A',
                                       fontSize: '0.68rem',
                                       cursor: 'pointer',
+                                      fontWeight: 600,
                                       textDecoration: 'underline'
                                     }}
                                   >
@@ -2118,7 +2117,7 @@ export default function AdminDashboard() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                   
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                    <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem', fontWeight: 600 }}>
                       Architectural & Investment Summary
                     </label>
                     <textarea
@@ -2132,7 +2131,7 @@ export default function AdminDashboard() {
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                    <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem', fontWeight: 600 }}>
                       Features & Bespoke Amenities
                     </label>
 
@@ -2152,13 +2151,14 @@ export default function AdminDashboard() {
                             onClick={() => isAdded ? handleRemoveFeatureTag(feature) : handleAddFeatureTag(feature)}
                             style={{
                               padding: '0.35rem 0.75rem',
-                              borderRadius: '4px',
+                              borderRadius: '2px',
                               fontSize: '0.72rem',
                               cursor: 'pointer',
-                              background: isAdded ? 'rgba(197, 168, 128, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                              border: `1px solid ${isAdded ? '#C5A880' : 'rgba(255, 255, 255, 0.1)'}`,
-                              color: isAdded ? '#FFFFFF' : '#94A3B8',
-                              transition: 'all 0.2s ease'
+                              background: isAdded ? '#000000' : '#F1F5F9',
+                              border: `1px solid ${isAdded ? '#000000' : '#E2E8F0'}`,
+                              color: isAdded ? '#FFFFFF' : '#475569',
+                              transition: 'all 0.15s ease',
+                              fontWeight: isAdded ? 600 : 400
                             }}
                           >
                             {isAdded ? '✓ ' : '+ '} {feature}
@@ -2180,7 +2180,7 @@ export default function AdminDashboard() {
                       <button
                         type="button"
                         onClick={() => handleAddFeatureTag(customFeatureInput)}
-                        className="admin-btn-dark"
+                        className="admin-btn-secondary"
                         style={{ flexShrink: 0 }}
                       >
                         <Plus size={14} /> Add
@@ -2194,11 +2194,11 @@ export default function AdminDashboard() {
                           <span
                             key={f}
                             style={{
-                              background: '#1A1D26',
-                              border: '1px solid rgba(197, 168, 128, 0.3)',
-                              color: '#C5A880',
+                              background: '#0F172A',
+                              border: '1px solid #0F172A',
+                              color: '#FFFFFF',
                               padding: '0.25rem 0.65rem',
-                              borderRadius: '3px',
+                              borderRadius: '2px',
                               fontSize: '0.72rem',
                               display: 'inline-flex',
                               alignItems: 'center',
@@ -2209,7 +2209,7 @@ export default function AdminDashboard() {
                             <button
                               type="button"
                               onClick={() => handleRemoveFeatureTag(f)}
-                              style={{ background: 'none', border: 'none', color: '#F87171', cursor: 'pointer', padding: 0 }}
+                              style={{ background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer', padding: 0 }}
                             >
                               ✕
                             </button>
@@ -2227,8 +2227,8 @@ export default function AdminDashboard() {
               {modalTab === 'floors' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                   
-                  <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)', padding: '1.25rem', borderRadius: '6px' }}>
-                    <h4 style={{ color: '#FFFFFF', fontSize: '0.9rem', marginBottom: '0.8rem' }}>Add Architectural Level / Floor</h4>
+                  <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '1.25rem', borderRadius: '4px' }}>
+                    <h4 style={{ color: '#0F172A', fontSize: '0.9rem', marginBottom: '0.8rem', fontWeight: 600 }}>Add Architectural Level / Floor</h4>
                     <div style={{ display: 'flex', gap: '0.75rem' }}>
                       <input
                         type="text"
@@ -2240,7 +2240,7 @@ export default function AdminDashboard() {
                       <button
                         type="button"
                         onClick={handleAddLevel}
-                        className="admin-btn-gold"
+                        className="admin-btn-primary"
                         style={{ flexShrink: 0 }}
                       >
                         <Plus size={14} /> Add Floor
@@ -2255,13 +2255,13 @@ export default function AdminDashboard() {
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                       {propertyForm.floors.map(lvl => (
-                        <div key={lvl.id} style={{ background: '#12141C', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '6px', padding: '1.2rem' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.06)', paddingBottom: '0.6rem' }}>
-                            <strong style={{ color: '#FFFFFF', fontSize: '0.92rem' }}>{lvl.name}</strong>
+                        <div key={lvl.id} style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '4px', padding: '1.2rem', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid #F1F5F9', paddingBottom: '0.6rem' }}>
+                            <strong style={{ color: '#0F172A', fontSize: '0.92rem' }}>{lvl.name}</strong>
                             <button
                               type="button"
                               onClick={() => handleRemoveLevel(lvl.id)}
-                              style={{ background: 'none', border: 'none', color: '#EF4444', fontSize: '0.75rem', cursor: 'pointer' }}
+                              style={{ background: 'none', border: 'none', color: '#DC2626', fontSize: '0.75rem', cursor: 'pointer' }}
                             >
                               Remove Level
                             </button>
@@ -2271,14 +2271,14 @@ export default function AdminDashboard() {
                           {lvl.flats && lvl.flats.length > 0 && (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
                               {lvl.flats.map((flat, fIdx) => (
-                                <div key={fIdx} style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '0.6rem 0.8rem', borderRadius: '4px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
+                                <div key={fIdx} style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '0.6rem 0.8rem', borderRadius: '2px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
                                   <div>
-                                    <strong style={{ color: '#CBD5E1' }}>{flat.name}</strong> • <span style={{ color: '#C5A880' }}>{flat.price}</span> • {flat.size} • {flat.beds}B/{flat.baths}Ba
+                                    <strong style={{ color: '#0F172A' }}>{flat.name}</strong> • <span style={{ color: '#059669', fontWeight: 600 }}>{flat.price}</span> • {flat.size} • {flat.beds}B/{flat.baths}Ba
                                   </div>
                                   <button
                                     type="button"
                                     onClick={() => handleRemoveFlat(lvl.id, fIdx)}
-                                    style={{ background: 'none', border: 'none', color: '#F87171', cursor: 'pointer' }}
+                                    style={{ background: 'none', border: 'none', color: '#DC2626', cursor: 'pointer' }}
                                   >
                                     ✕
                                   </button>
@@ -2316,7 +2316,7 @@ export default function AdminDashboard() {
                             <button
                               type="button"
                               onClick={() => handleAddFlat(lvl.id)}
-                              className="admin-btn-dark"
+                              className="admin-btn-secondary"
                               style={{ padding: '0.5rem', fontSize: '0.72rem', justifyContent: 'center' }}
                             >
                               + Add Unit
@@ -2332,11 +2332,11 @@ export default function AdminDashboard() {
               )}
 
               {/* Modal Footer Controls */}
-              <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '1.25rem', marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ borderTop: '1px solid #E2E8F0', paddingTop: '1.25rem', marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <button
                   type="button"
                   onClick={() => setIsFormOpen(false)}
-                  className="admin-btn-dark"
+                  className="admin-btn-secondary"
                 >
                   Cancel
                 </button>
@@ -2350,7 +2350,7 @@ export default function AdminDashboard() {
                         const currIdx = tabs.indexOf(modalTab);
                         if (currIdx < tabs.length - 1) setModalTab(tabs[currIdx + 1]);
                       }}
-                      className="admin-btn-dark"
+                      className="admin-btn-secondary"
                     >
                       Next Section →
                     </button>
@@ -2358,7 +2358,7 @@ export default function AdminDashboard() {
 
                   <button
                     type="submit"
-                    className="admin-btn-gold"
+                    className="admin-btn-primary"
                   >
                     <Check size={15} /> Save & Synchronize Listing
                   </button>
@@ -2378,18 +2378,18 @@ export default function AdminDashboard() {
         <div className="admin-modal-backdrop" onClick={e => e.target === e.currentTarget && setIsUploadOptionOpen(false)}>
           <div className="admin-modal-container" style={{ maxWidth: '520px' }}>
             
-            <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ padding: '1.5rem', borderBottom: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#FAFAFA' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <Sparkles size={18} color="#C5A880" />
-                <h3 style={{ color: '#FFFFFF', margin: 0, fontSize: '1.15rem' }}>AI Campaign & Brochure Scan</h3>
+                <Sparkles size={18} color="#059669" />
+                <h3 style={{ color: '#000000', margin: 0, fontSize: '1.15rem', fontFamily: 'var(--font-serif)', textTransform: 'uppercase' }}>AI Campaign & Brochure Scan</h3>
               </div>
-              <button onClick={() => setIsUploadOptionOpen(false)} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}>✕</button>
+              <button onClick={() => setIsUploadOptionOpen(false)} style={{ background: 'none', border: 'none', color: '#64748B', cursor: 'pointer' }}>✕</button>
             </div>
 
             <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               
               <div>
-                <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem', fontWeight: 600 }}>
                   Option A: Scan via Dropbox Agent Link
                 </label>
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -2404,7 +2404,7 @@ export default function AdminDashboard() {
                     type="button"
                     onClick={handleScanDropboxUrl}
                     disabled={scanningDoc}
-                    className="admin-btn-gold"
+                    className="admin-btn-primary"
                     style={{ flexShrink: 0 }}
                   >
                     Scan
@@ -2412,10 +2412,10 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div style={{ textAlign: 'center', color: '#64748B', fontSize: '0.75rem' }}>— OR —</div>
+              <div style={{ textAlign: 'center', color: '#94A3B8', fontSize: '0.75rem' }}>— OR —</div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#475569', marginBottom: '0.4rem', fontWeight: 600 }}>
                   Option B: Upload PDF / Word / Excel Brochure
                 </label>
                 <input
@@ -2428,7 +2428,7 @@ export default function AdminDashboard() {
                 <button
                   type="button"
                   onClick={() => docUploadInputRef.current?.click()}
-                  className="admin-btn-dark"
+                  className="admin-btn-secondary"
                   style={{ width: '100%', justifyContent: 'center', padding: '0.85rem' }}
                 >
                   <UploadCloud size={16} /> Choose Document to Parse
@@ -2448,17 +2448,17 @@ export default function AdminDashboard() {
         <div className="admin-modal-backdrop" onClick={e => e.target === e.currentTarget && setIsBlogFormOpen(false)}>
           <div className="admin-modal-container" style={{ maxWidth: '780px' }}>
             
-            <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ color: '#FFFFFF', margin: 0, fontSize: '1.25rem', fontFamily: 'var(--font-serif)' }}>
+            <div style={{ padding: '1.5rem', borderBottom: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#FAFAFA' }}>
+              <h3 style={{ color: '#000000', margin: 0, fontSize: '1.25rem', fontFamily: 'var(--font-serif)', textTransform: 'uppercase' }}>
                 {blogFormType === 'create' ? 'Create Luxury Insight Publication' : 'Edit Publication'}
               </h3>
-              <button onClick={() => setIsBlogFormOpen(false)} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}>✕</button>
+              <button onClick={() => setIsBlogFormOpen(false)} style={{ background: 'none', border: 'none', color: '#64748B', cursor: 'pointer' }}>✕</button>
             </div>
 
             <form onSubmit={handleBlogSubmit} style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
               
               <div>
-                <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.35rem' }}>Title *</label>
+                <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#475569', marginBottom: '0.35rem', fontWeight: 600 }}>Title *</label>
                 <input
                   type="text"
                   placeholder="e.g. Dubai Super-Prime Real Estate Forecast"
@@ -2471,7 +2471,7 @@ export default function AdminDashboard() {
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.35rem' }}>Category</label>
+                  <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#475569', marginBottom: '0.35rem', fontWeight: 600 }}>Category</label>
                   <input
                     type="text"
                     placeholder="e.g. Market Trends, Advisory"
@@ -2481,7 +2481,7 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.35rem' }}>Read Time</label>
+                  <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#475569', marginBottom: '0.35rem', fontWeight: 600 }}>Read Time</label>
                   <input
                     type="text"
                     placeholder="e.g. 5 min read"
@@ -2496,14 +2496,14 @@ export default function AdminDashboard() {
                     id="blog-featured"
                     checked={blogForm.featured}
                     onChange={e => setBlogForm({ ...blogForm, featured: e.target.checked })}
-                    style={{ width: '18px', height: '18px', accentColor: '#C5A880' }}
+                    style={{ width: '18px', height: '18px', accentColor: '#000000' }}
                   />
-                  <label htmlFor="blog-featured" style={{ color: '#fff', fontSize: '0.8rem' }}>Featured Article</label>
+                  <label htmlFor="blog-featured" style={{ color: '#0F172A', fontSize: '0.8rem', fontWeight: 500 }}>Featured Article</label>
                 </div>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.35rem' }}>Cover Image URL</label>
+                <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#475569', marginBottom: '0.35rem', fontWeight: 600 }}>Cover Image URL</label>
                 <input
                   type="text"
                   placeholder="/areas/emirates_hills.webp or https://..."
@@ -2514,7 +2514,7 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.35rem' }}>Excerpt Summary</label>
+                <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#475569', marginBottom: '0.35rem', fontWeight: 600 }}>Excerpt Summary</label>
                 <textarea
                   rows={2}
                   placeholder="Short introductory summary for card previews..."
@@ -2525,7 +2525,7 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.35rem' }}>Full Article Content</label>
+                <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#475569', marginBottom: '0.35rem', fontWeight: 600 }}>Full Article Content</label>
                 <textarea
                   rows={8}
                   placeholder="Full publication content..."
@@ -2536,9 +2536,9 @@ export default function AdminDashboard() {
                 />
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.8rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '1rem' }}>
-                <button type="button" onClick={() => setIsBlogFormOpen(false)} className="admin-btn-dark">Cancel</button>
-                <button type="submit" className="admin-btn-gold">Save Publication</button>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.8rem', borderTop: '1px solid #E2E8F0', paddingTop: '1rem' }}>
+                <button type="button" onClick={() => setIsBlogFormOpen(false)} className="admin-btn-secondary">Cancel</button>
+                <button type="submit" className="admin-btn-primary">Save Publication</button>
               </div>
 
             </form>

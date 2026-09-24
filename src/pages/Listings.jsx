@@ -147,8 +147,14 @@ export default function Listings() {
                         <div style={{ color: '#fff', fontSize: '0.95rem', fontWeight: 700 }}>{prop.price}</div>
                       </div>
                     )}
+                    {/* Photos count badge */}
+                    {Array.isArray(prop.images) && prop.images.length > 1 && (
+                      <div style={{ position: 'absolute', top: '0.55rem', left: '0.55rem', background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)', color: '#fff', padding: '0.2rem 0.55rem', fontSize: '0.6rem', fontWeight: 600, letterSpacing: '0.5px', borderRadius: '2px', display: 'flex', alignItems: 'center', gap: '0.3rem', zIndex: 2 }}>
+                        <span>📷</span> {prop.images.length}
+                      </div>
+                    )}
                     {/* Status badge */}
-                    <div style={{ position: 'absolute', top: '0.55rem', right: '0.55rem', background: 'var(--primary-dark)', color: '#fff', padding: '0.2rem 0.6rem', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '1.2px', textTransform: 'uppercase', borderRadius: '2px' }}>
+                    <div style={{ position: 'absolute', top: '0.55rem', right: '0.55rem', background: 'var(--primary-dark)', color: '#fff', padding: '0.2rem 0.6rem', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '1.2px', textTransform: 'uppercase', borderRadius: '2px', zIndex: 2 }}>
                       {isOffPlan ? 'Off-Plan' : (prop.status || 'Available')}
                     </div>
                   </div>

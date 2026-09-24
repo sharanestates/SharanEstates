@@ -1,6 +1,11 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 
 export default function WhatsAppButton() {
+  const location = useLocation();
+  if (location.pathname.startsWith('/admin')) {
+    return null;
+  }
   return (
     <a
       href="https://wa.me/971545501096?text=Hello%2C%20I%20would%20like%20to%20inquire%20about%20Sharan%20Private%20Advisory%20services."

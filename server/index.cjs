@@ -27,6 +27,13 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
+// Serve uploaded media statically
+const uploadsDir = path.join(__dirname, '../public/uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use('/uploads', express.static(uploadsDir));
+
 const fallbackProperties = [
   // ═══════════════════════════════════════════
   //  BUY — VILLAS (3)
@@ -1402,6 +1409,32 @@ app.get('/api/auth/verify', authenticateToken, (req, res) => {
 
 // --- PROPERTIES ROUTES ---
 
+const ensureArray = (val) => {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string') {
+    try {
+      const parsed = JSON.parse(val);
+      if (Array.isArray(parsed)) return parsed;
+    } catch (e) {}
+    if (val.trim()) {
+      return val.split('\n').map(s => s.trim()).filter(Boolean);
+    }
+  }
+  return [];
+};
+
+const sanitizePropertyData = (p) => {
+  if (!p) return p;
+  return {
+    ...p,
+    images: ensureArray(p.images),
+    floors: ensureArray(p.floors),
+    features: ensureArray(p.features),
+    starred: p.starred === true || p.starred === 'true'
+  };
+};
+
 // Get All Properties
 app.get('/api/properties', async (req, res) => {
   const { category, type, search, page, limit } = req.query;
@@ -1435,7 +1468,7 @@ app.get('/api/properties', async (req, res) => {
   try {
     const result = await pool.query(sql, params);
     
-    let allData = result.rows;
+    let allData = result.rows.map(sanitizePropertyData);
     const total = allData.length;
     const totalPages = Math.ceil(total / limitNum);
     const startIndex = (pageNum - 1) * limitNum;
@@ -1454,7 +1487,7 @@ app.get('/api/properties', async (req, res) => {
     console.warn('Fetch properties failed (falling back to memory database):', err.message);
     
     // Filter memory fallback data
-    let filtered = [...fallbackProperties];
+    let filtered = [...fallbackProperties].map(sanitizePropertyData);
     if (category) {
       filtered = filtered.filter(p => p.category === category);
     }
@@ -1495,15 +1528,104 @@ app.get('/api/properties/:id', async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Property not found' });
     }
-    res.json(result.rows[0]);
+    res.json(sanitizePropertyData(result.rows[0]));
   } catch (err) {
     console.warn('Fetch property by id failed (falling back to memory database):', err.message);
     const mockProp = fallbackProperties.find(p => p.id.toString() === id);
     if (mockProp) {
-      res.json(mockProp);
+      res.json(sanitizePropertyData(mockProp));
     } else {
       res.status(404).json({ error: 'Property not found in fallback database' });
     }
+  }
+});
+
+// Multi-Image Upload Endpoint (Supports array of base64 images or single image)
+app.post('/api/upload-images', authenticateToken, async (req, res) => {
+  try {
+    const rawImages = req.body.images || (req.body.image ? [req.body.image] : []);
+    if (!Array.isArray(rawImages) || rawImages.length === 0) {
+      return res.status(400).json({ error: 'No images provided for upload.' });
+    }
+
+    const savedUrls = [];
+    const uploadPath = path.join(__dirname, '../public/uploads');
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+
+    for (let i = 0; i < rawImages.length; i++) {
+      const item = rawImages[i];
+      let dataStr = typeof item === 'string' ? item : (item && item.data ? item.data : '');
+      let rawName = (typeof item === 'object' && item && item.name) ? item.name : `img_${Date.now()}_${i}`;
+
+      if (!dataStr || typeof dataStr !== 'string') continue;
+
+      // If it's already an existing local path or remote URL, keep it
+      if (dataStr.startsWith('/uploads/') || dataStr.startsWith('/areas/') || dataStr.startsWith('http://') || dataStr.startsWith('https://')) {
+        savedUrls.push(dataStr);
+        continue;
+      }
+
+      // Check base64 format
+      const matches = dataStr.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+      if (matches && matches.length === 3) {
+        const mime = matches[1];
+        const buffer = Buffer.from(matches[2], 'base64');
+        let ext = 'jpg';
+        if (mime.includes('png')) ext = 'png';
+        else if (mime.includes('webp')) ext = 'webp';
+        else if (mime.includes('svg')) ext = 'svg';
+        else if (mime.includes('gif')) ext = 'gif';
+        else if (mime.includes('jpeg')) ext = 'jpg';
+
+        const safeName = rawName.replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 30);
+        const fileName = `prop_${Date.now()}_${i}_${safeName}.${ext}`;
+        const filePath = path.join(uploadPath, fileName);
+
+        fs.writeFileSync(filePath, buffer);
+        savedUrls.push(`/uploads/${fileName}`);
+      } else {
+        savedUrls.push(dataStr);
+      }
+    }
+
+    res.json({ success: true, urls: savedUrls });
+  } catch (err) {
+    console.error('Error saving uploaded images:', err);
+    res.status(500).json({ error: 'Failed to process images: ' + err.message });
+  }
+});
+
+// Single image upload alias
+app.post('/api/upload', authenticateToken, async (req, res) => {
+  try {
+    const dataStr = req.body.image || req.body.data;
+    const rawName = req.body.name || `img_${Date.now()}`;
+    if (!dataStr) {
+      return res.status(400).json({ error: 'No image data provided' });
+    }
+    if (dataStr.startsWith('/uploads/') || dataStr.startsWith('/areas/') || dataStr.startsWith('http')) {
+      return res.json({ success: true, url: dataStr });
+    }
+    const matches = dataStr.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    if (!matches || matches.length !== 3) {
+      return res.status(400).json({ error: 'Invalid image format' });
+    }
+    const mime = matches[1];
+    const buffer = Buffer.from(matches[2], 'base64');
+    let ext = 'jpg';
+    if (mime.includes('png')) ext = 'png';
+    else if (mime.includes('webp')) ext = 'webp';
+
+    const safeName = rawName.replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 30);
+    const fileName = `prop_${Date.now()}_${safeName}.${ext}`;
+    const filePath = path.join(path.join(__dirname, '../public/uploads'), fileName);
+    fs.writeFileSync(filePath, buffer);
+
+    res.json({ success: true, url: `/uploads/${fileName}` });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to upload image: ' + err.message });
   }
 });
 
@@ -1831,8 +1953,11 @@ app.post('/api/properties/upload-doc', authenticateToken, async (req, res) => {
 app.post('/api/properties', authenticateToken, async (req, res) => {
   const { title, price, image, description, beds, baths, size, category, type, location, status, floors, images, features, handover, payment_plan, property_type, bedrooms_range } = req.body;
   
-  if (!title || !price || !image || !category || !type) {
-    return res.status(400).json({ error: 'Missing required property fields' });
+  const cleanImages = ensureArray(images);
+  const primaryImage = image || (cleanImages.length > 0 ? cleanImages[0] : '/listing_villa.webp');
+
+  if (!title || !price || !category || !type) {
+    return res.status(400).json({ error: 'Missing required property fields (title, price, category, type)' });
   }
 
   try {
@@ -1845,7 +1970,7 @@ app.post('/api/properties', authenticateToken, async (req, res) => {
     const values = [
       title, 
       price, 
-      image, 
+      primaryImage, 
       description || '', 
       parseInt(beds) || 0, 
       parseInt(baths) || 0,
@@ -1855,9 +1980,9 @@ app.post('/api/properties', authenticateToken, async (req, res) => {
       location || 'Prime District', 
       status || 'Available',
       req.body.dropbox_link || '',
-      JSON.stringify(floors || []),
-      JSON.stringify(images || []),
-      JSON.stringify(features || []),
+      JSON.stringify(ensureArray(floors)),
+      JSON.stringify(cleanImages),
+      JSON.stringify(ensureArray(features)),
       handover || '',
       payment_plan || '',
       property_type || '',
@@ -1866,8 +1991,9 @@ app.post('/api/properties', authenticateToken, async (req, res) => {
     ];
 
     const result = await pool.query(sql, values);
-    broadcast({ type: 'PROPERTY_CHANGE', action: 'create', data: result.rows[0] });
-    res.status(201).json(result.rows[0]);
+    const saved = sanitizePropertyData(result.rows[0]);
+    broadcast({ type: 'PROPERTY_CHANGE', action: 'create', data: saved });
+    res.status(201).json(saved);
   } catch (err) {
     console.warn('Create property database insert failed, using memory/JSON fallback:', err.message);
     
@@ -1876,11 +2002,11 @@ app.post('/api/properties', authenticateToken, async (req, res) => {
       ? Math.max(...fallbackProperties.map(p => p.id)) + 1 
       : 1;
 
-    const newProperty = {
+    const newProperty = sanitizePropertyData({
       id: newId,
       title,
       price,
-      image,
+      image: primaryImage,
       description: description || '',
       beds: parseInt(beds) || 0,
       baths: parseInt(baths) || 0,
@@ -1890,16 +2016,16 @@ app.post('/api/properties', authenticateToken, async (req, res) => {
       location: location || 'Prime District',
       status: status || 'Available',
       dropbox_link: req.body.dropbox_link || '',
-      floors: floors || [],
-      images: images || [],
-      features: features || [],
+      floors: ensureArray(floors),
+      images: cleanImages,
+      features: ensureArray(features),
       handover: handover || '',
       payment_plan: payment_plan || '',
       property_type: property_type || '',
       bedrooms_range: bedrooms_range || '',
       starred: req.body.starred === true || req.body.starred === 'true',
       created_at: new Date().toISOString()
-    };
+    });
     
     fallbackProperties.push(newProperty);
     savePropertiesToDisk();
@@ -1913,8 +2039,11 @@ app.put('/api/properties/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;
   const { title, price, image, description, beds, baths, size, category, type, location, status, floors, images, features, handover, payment_plan, property_type, bedrooms_range } = req.body;
 
-  if (!title || !price || !image || !category || !type) {
-    return res.status(400).json({ error: 'Missing required property fields' });
+  const cleanImages = ensureArray(images);
+  const primaryImage = image || (cleanImages.length > 0 ? cleanImages[0] : '/listing_villa.webp');
+
+  if (!title || !price || !category || !type) {
+    return res.status(400).json({ error: 'Missing required property fields (title, price, category, type)' });
   }
 
   try {
@@ -1930,19 +2059,19 @@ app.put('/api/properties/:id', authenticateToken, async (req, res) => {
     const values = [
       title, 
       price, 
-      image, 
-      description, 
+      primaryImage, 
+      description || '', 
       parseInt(beds) || 0, 
       parseInt(baths) || 0,
       size || '', 
       category, 
       type, 
-      location, 
-      status,
+      location || 'Prime District', 
+      status || 'Available',
       req.body.dropbox_link || '',
-      JSON.stringify(floors || []),
-      JSON.stringify(images || []),
-      JSON.stringify(features || []),
+      JSON.stringify(ensureArray(floors)),
+      JSON.stringify(cleanImages),
+      JSON.stringify(ensureArray(features)),
       handover || '',
       payment_plan || '',
       property_type || '',
@@ -1955,8 +2084,9 @@ app.put('/api/properties/:id', authenticateToken, async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Property not found' });
     }
-    broadcast({ type: 'PROPERTY_CHANGE', action: 'update', data: result.rows[0] });
-    res.json(result.rows[0]);
+    const updated = sanitizePropertyData(result.rows[0]);
+    broadcast({ type: 'PROPERTY_CHANGE', action: 'update', data: updated });
+    res.json(updated);
   } catch (err) {
     console.warn('Update property database update failed, using memory/JSON fallback:', err.message);
     const index = fallbackProperties.findIndex(p => p.id.toString() === id.toString());
@@ -1964,11 +2094,11 @@ app.put('/api/properties/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({ error: 'Property not found in memory database' });
     }
 
-    const updatedProperty = {
+    const updatedProperty = sanitizePropertyData({
       ...fallbackProperties[index],
       title,
       price,
-      image,
+      image: primaryImage,
       description: description || '',
       beds: parseInt(beds) || 0,
       baths: parseInt(baths) || 0,
@@ -1978,15 +2108,15 @@ app.put('/api/properties/:id', authenticateToken, async (req, res) => {
       location: location || 'Prime District',
       status: status || 'Available',
       dropbox_link: req.body.dropbox_link || '',
-      floors: floors || [],
-      images: images || [],
-      features: features || [],
+      floors: ensureArray(floors),
+      images: cleanImages,
+      features: ensureArray(features),
       handover: handover || '',
       payment_plan: payment_plan || '',
       property_type: property_type || '',
       bedrooms_range: bedrooms_range || '',
       starred: req.body.starred === true || req.body.starred === 'true'
-    };
+    });
 
     fallbackProperties[index] = updatedProperty;
     savePropertiesToDisk();

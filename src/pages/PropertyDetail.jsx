@@ -145,43 +145,297 @@ function FloorPlanModal({ property, onClose }) {
 // ─── Image Gallery ────────────────────────────────────────────────────────────
 function ImageGallery({ images, fallback }) {
   const [active, setActive] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const allImages = images && images.length > 0 ? images : [fallback || '/listing_villa.webp'];
+
+  // Handle keyboard navigation for gallery & lightbox
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight') {
+        setActive(a => (a + 1) % allImages.length);
+      } else if (e.key === 'ArrowLeft') {
+        setActive(a => (a - 1 + allImages.length) % allImages.length);
+      } else if (e.key === 'Escape' && lightboxOpen) {
+        setLightboxOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [allImages.length, lightboxOpen]);
 
   return (
     <div style={{ marginBottom: '2.5rem' }}>
-      {/* Main image */}
-      <div style={{ height: '420px', borderRadius: '6px', overflow: 'hidden', marginBottom: '0.75rem', position: 'relative' }}>
+      {/* Main Image Stage */}
+      <div 
+        style={{ 
+          height: 'clamp(360px, 50vw, 560px)', 
+          borderRadius: '8px', 
+          overflow: 'hidden', 
+          marginBottom: '1rem', 
+          position: 'relative',
+          backgroundColor: '#0A0A0C',
+          boxShadow: '0 20px 50px rgba(0,0,0,0.12)'
+        }}
+      >
         <img
           src={allImages[active]}
-          alt="Property"
-          style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'opacity 0.3s' }}
+          alt={`Perspective ${active + 1}`}
+          onClick={() => setLightboxOpen(true)}
+          style={{ 
+            width: '100%', 
+            height: '100%', 
+            objectFit: 'cover', 
+            cursor: 'zoom-in',
+            transition: 'opacity 0.35s ease, transform 0.6s ease' 
+          }}
           onError={e => { e.target.src = fallback || '/listing_villa.webp'; }}
         />
+
+        {/* Counter Badge */}
+        <div style={{
+          position: 'absolute',
+          bottom: '1.2rem',
+          right: '1.2rem',
+          background: 'rgba(10, 10, 12, 0.75)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.15)',
+          color: '#FFFFFF',
+          padding: '0.45rem 1rem',
+          borderRadius: '4px',
+          fontSize: '0.65rem',
+          letterSpacing: '2px',
+          textTransform: 'uppercase',
+          fontWeight: 600,
+          pointerEvents: 'none'
+        }}>
+          {active + 1} / {allImages.length} PERSPECTIVES
+        </div>
+
+        {/* Lightbox Trigger Button */}
+        <button
+          onClick={() => setLightboxOpen(true)}
+          style={{
+            position: 'absolute',
+            top: '1.2rem',
+            right: '1.2rem',
+            background: 'rgba(10, 10, 12, 0.65)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.18)',
+            color: '#FFFFFF',
+            padding: '0.5rem 0.9rem',
+            borderRadius: '4px',
+            fontSize: '0.7rem',
+            letterSpacing: '1px',
+            textTransform: 'uppercase',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.4rem',
+            transition: 'all 0.25s ease'
+          }}
+          onMouseOver={e => e.currentTarget.style.background = 'rgba(10, 10, 12, 0.9)'}
+          onMouseOut={e => e.currentTarget.style.background = 'rgba(10, 10, 12, 0.65)'}
+        >
+          <span>⤢</span> Fullscreen
+        </button>
+
+        {/* Navigation Arrows */}
         {allImages.length > 1 && (
           <>
             <button
               onClick={() => setActive(a => (a - 1 + allImages.length) % allImages.length)}
-              style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', color: '#fff', border: 'none', borderRadius: '50%', width: '40px', height: '40px', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              aria-label="Previous image"
+              style={{
+                position: 'absolute',
+                left: '1.2rem',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'rgba(10, 10, 12, 0.65)',
+                backdropFilter: 'blur(8px)',
+                color: '#fff',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                borderRadius: '50%',
+                width: '46px',
+                height: '46px',
+                fontSize: '1.3rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.25s ease'
+              }}
+              onMouseOver={e => { e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.color = '#000000'; }}
+              onMouseOut={e => { e.currentTarget.style.background = 'rgba(10, 10, 12, 0.65)'; e.currentTarget.style.color = '#FFFFFF'; }}
             >‹</button>
             <button
               onClick={() => setActive(a => (a + 1) % allImages.length)}
-              style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', color: '#fff', border: 'none', borderRadius: '50%', width: '40px', height: '40px', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              aria-label="Next image"
+              style={{
+                position: 'absolute',
+                right: '1.2rem',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'rgba(10, 10, 12, 0.65)',
+                backdropFilter: 'blur(8px)',
+                color: '#fff',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                borderRadius: '50%',
+                width: '46px',
+                height: '46px',
+                fontSize: '1.3rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.25s ease'
+              }}
+              onMouseOver={e => { e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.color = '#000000'; }}
+              onMouseOut={e => { e.currentTarget.style.background = 'rgba(10, 10, 12, 0.65)'; e.currentTarget.style.color = '#FFFFFF'; }}
             >›</button>
           </>
         )}
       </div>
-      {/* Thumbnails */}
+
+      {/* Thumbnails Rail (Scrollable Strip) */}
       {allImages.length > 1 && (
-        <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(allImages.length, 4)}, 1fr)`, gap: '0.5rem' }}>
-          {allImages.slice(0, 4).map((img, i) => (
+        <div style={{ 
+          display: 'flex', 
+          gap: '0.75rem', 
+          overflowX: 'auto', 
+          paddingBottom: '0.6rem',
+          scrollbarWidth: 'thin'
+        }}>
+          {allImages.map((img, i) => (
             <div
               key={i}
               onClick={() => setActive(i)}
-              style={{ height: '80px', borderRadius: '4px', overflow: 'hidden', cursor: 'pointer', opacity: active === i ? 1 : 0.65, border: active === i ? '2px solid var(--primary-dark)' : '2px solid transparent', transition: 'all 0.2s' }}
+              style={{ 
+                flexShrink: 0,
+                width: '120px',
+                height: '80px', 
+                borderRadius: '4px', 
+                overflow: 'hidden', 
+                cursor: 'pointer', 
+                opacity: active === i ? 1 : 0.6, 
+                border: active === i ? '2px solid #000000' : '2px solid rgba(0, 0, 0, 0.1)', 
+                transform: active === i ? 'scale(1.02)' : 'scale(1)',
+                transition: 'all 0.25s ease',
+                position: 'relative'
+              }}
             >
-              <img src={img} alt={`View ${i + 1}`} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.src = fallback || '/listing_villa.webp'; }} />
+              <img 
+                src={img} 
+                alt={`Perspective ${i + 1}`} 
+                loading="lazy" 
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                onError={e => { e.target.src = fallback || '/listing_villa.webp'; }} 
+              />
+              {active === i && (
+                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '3px', background: '#000000' }} />
+              )}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Fullscreen Lightbox Modal */}
+      {lightboxOpen && (
+        <div 
+          onClick={(e) => e.target === e.currentTarget && setLightboxOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 10000,
+            backgroundColor: 'rgba(5, 5, 8, 0.96)',
+            backdropFilter: 'blur(16px)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '2rem'
+          }}
+        >
+          {/* Top Bar with Counter and Close */}
+          <div style={{
+            position: 'absolute',
+            top: '1.5rem',
+            left: '2rem',
+            right: '2rem',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            color: '#FFFFFF'
+          }}>
+            <p style={{ fontSize: '0.75rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255, 255, 255, 0.75)' }}>
+              Photograph {active + 1} of {allImages.length}
+            </p>
+            <button
+              onClick={() => setLightboxOpen(false)}
+              style={{
+                background: 'rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                color: '#fff',
+                fontSize: '1.5rem',
+                borderRadius: '50%',
+                width: '44px',
+                height: '44px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >×</button>
+          </div>
+
+          {/* Main Fullscreen Image */}
+          <div style={{ maxWidth: '90vw', maxHeight: '80vh', position: 'relative' }}>
+            <img 
+              src={allImages[active]} 
+              alt="Fullscreen view" 
+              style={{ maxWidth: '90vw', maxHeight: '78vh', objectFit: 'contain', borderRadius: '4px', boxShadow: '0 25px 80px rgba(0,0,0,0.8)' }} 
+            />
+          </div>
+
+          {/* Lightbox Navigation Buttons */}
+          {allImages.length > 1 && (
+            <>
+              <button
+                onClick={() => setActive(a => (a - 1 + allImages.length) % allImages.length)}
+                style={{
+                  position: 'absolute',
+                  left: '2rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  color: '#fff',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '50%',
+                  width: '56px',
+                  height: '56px',
+                  fontSize: '1.6rem',
+                  cursor: 'pointer'
+                }}
+              >‹</button>
+              <button
+                onClick={() => setActive(a => (a + 1) % allImages.length)}
+                style={{
+                  position: 'absolute',
+                  right: '2rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  color: '#fff',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '50%',
+                  width: '56px',
+                  height: '56px',
+                  fontSize: '1.6rem',
+                  cursor: 'pointer'
+                }}
+              >›</button>
+            </>
+          )}
         </div>
       )}
     </div>
@@ -265,9 +519,24 @@ export default function PropertyDetail() {
 
   const getImages = (prop) => {
     if (!prop) return [];
-    if (prop.images && Array.isArray(prop.images) && prop.images.length > 0) return prop.images;
-    if (prop.image) return [prop.image, prop.image, prop.image];
-    return [];
+    let list = [];
+    if (prop.images) {
+      if (Array.isArray(prop.images)) {
+        list = [...prop.images];
+      } else if (typeof prop.images === 'string') {
+        try {
+          const parsed = JSON.parse(prop.images);
+          if (Array.isArray(parsed)) list = [...parsed];
+        } catch (e) {}
+      }
+    }
+    if (prop.image && !list.includes(prop.image)) {
+      list.unshift(prop.image);
+    }
+    const filtered = list.filter(Boolean);
+    if (filtered.length > 0) return filtered;
+    if (prop.image) return [prop.image];
+    return ['/listing_villa.webp'];
   };
 
   const parseFeatures = (f) => {

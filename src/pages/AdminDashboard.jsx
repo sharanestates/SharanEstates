@@ -1,11 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import AdminLogin from './AdminLogin';
 import useRealTimeSync from '../components/useRealTimeSync';
+import {
+  Search, Plus, UploadCloud, Trash2, Edit3, ExternalLink, Star, Eye, Check, X,
+  Image as ImageIcon, FileText, Mail, Phone, MessageSquare, Layers,
+  SlidersHorizontal, Filter, Sparkles, Clock, MapPin, Building2,
+  DollarSign, CheckCircle2, AlertCircle, LogOut, RefreshCw, ChevronRight,
+  Download, ArrowUpRight
+} from 'lucide-react';
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [activeTab, setActiveTab] = useState('ready-listings'); // 'ready-listings', 'offplan-listings', 'inquiries', or 'blogs'
+  const [activeTab, setActiveTab] = useState('ready-listings'); // 'ready-listings', 'offplan-listings', 'inquiries', 'blogs'
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [starredOnlyFilter, setStarredOnlyFilter] = useState(false);
+
   const [properties, setProperties] = useState([]);
   const [inquiries, setInquiries] = useState([]);
   const [blogs, setBlogs] = useState([]);
@@ -13,37 +23,32 @@ export default function AdminDashboard() {
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  // Blog form states
-  const [isBlogFormOpen, setIsBlogFormOpen] = useState(false);
-  const [blogFormType, setBlogFormType] = useState('create');
-  const [editingBlogId, setEditingBlogId] = useState(null);
-  const [blogForm, setBlogForm] = useState({
-    title: '', category: 'Market Trends', readTime: '5 min read',
-    image: '', excerpt: '', content: '', featured: false, attachments: []
-  });
-  const blogFileInputRef = useRef(null);
-  const blogAttachmentInputRef = useRef(null);
-
-  // Form states for Property modal/form
+  // Property Modal State
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [modalTab, setModalTab] = useState('core'); // 'core', 'catalog', 'gallery', 'features', 'floors'
   const [formType, setFormType] = useState('create'); // 'create' or 'edit'
   const [editingId, setEditingId] = useState(null);
+  const [imageUploadLoading, setImageUploadLoading] = useState(false);
+  const [imageUrlInput, setImageUrlInput] = useState('');
+  const [customFeatureInput, setCustomFeatureInput] = useState('');
+  const multiFileInputRef = useRef(null);
+
   const [propertyForm, setPropertyForm] = useState({
     title: '',
     price: '',
     image: '',
+    images: [],
     description: '',
     beds: 0,
     baths: 0,
     size: '',
     category: 'villas',
-    type: 'buy',
+    type: 'ready', // 'ready' or 'off-plan'
     location: 'Prime District',
     status: 'Available',
     dropbox_link: '',
     floors: [],
-    imagesInput: '',
-    featuresInput: '',
+    features: [],
     handover: '',
     payment_plan: '',
     property_type: '',
@@ -51,181 +56,41 @@ export default function AdminDashboard() {
     starred: false
   });
 
-  // State for dragging status & reference to file input
-  const [isDragging, setIsDragging] = useState(false);
-  const fileInputRef = useRef(null);
-
-  // States for dynamic levels and flats manager
+  // Floor manager inputs
   const [newLevel, setNewLevel] = useState({ id: '', name: '' });
-  const [flatForms, setFlatForms] = useState({}); // Stores inputs for adding flats index by Level ID
+  const [flatForms, setFlatForms] = useState({});
 
-  const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
-
-  // AI Document scanning states & refs
+  // AI & Dropbox scanning states
   const [scanningDoc, setScanningDoc] = useState(false);
-  const docUploadInputRef = useRef(null);
-  const isLakshay = localStorage.getItem('adminUser') === 'Lakshay';
-
   const [isUploadOptionOpen, setIsUploadOptionOpen] = useState(false);
   const [dropboxInputUrl, setDropboxInputUrl] = useState('');
+  const docUploadInputRef = useRef(null);
 
-  const handleScanDropboxUrl = async (e) => {
-    if (e) e.preventDefault();
-    if (!dropboxInputUrl.trim()) {
-      alert('Please enter a valid Dropbox link.');
-      return;
+  // Blog modal states
+  const [isBlogFormOpen, setIsBlogFormOpen] = useState(false);
+  const [blogFormType, setBlogFormType] = useState('create');
+  const [editingBlogId, setEditingBlogId] = useState(null);
+  const [blogForm, setBlogForm] = useState({
+    title: '',
+    category: 'Market Trends',
+    readTime: '5 min read',
+    image: '',
+    excerpt: '',
+    content: '',
+    featured: false,
+    attachments: []
+  });
+  const blogFileInputRef = useRef(null);
+
+  const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api';
+  const currentAdminUser = localStorage.getItem('adminUser') || 'Executive Administrator';
+
+  // Real-time synchronization hook
+  useRealTimeSync((message) => {
+    if (message.type === 'PROPERTY_CHANGE' || message.type === 'INQUIRY_CHANGE' || message.type === 'BLOG_CHANGE') {
+      fetchData(null, true);
     }
-
-    setScanningDoc(true);
-    setError('');
-    setIsUploadOptionOpen(false);
-
-    try {
-      const res = await fetch(`${API_BASE}/properties/upload-doc`, {
-        method: 'POST',
-        headers: getHeaders(),
-        body: JSON.stringify({
-          dropboxUrl: dropboxInputUrl.trim()
-        })
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to scan Dropbox campaign');
-
-      // Populate the form with AI extracted details!
-      setPropertyForm({
-        title: data.title || '',
-        price: data.price || '',
-        image: data.image || '',
-        description: data.description || '',
-        beds: data.beds || 0,
-        baths: data.baths || 0,
-        size: data.size || '',
-        category: data.category || 'villas',
-        type: data.type || 'buy',
-        location: data.location || 'Prime District',
-        status: data.status || 'Available',
-        dropbox_link: data.dropbox_link || dropboxInputUrl.trim(),
-        floors: data.floors || [],
-        imagesInput: Array.isArray(data.images) ? data.images.join('\n') : '',
-        featuresInput: Array.isArray(data.features) ? data.features.join('\n') : '',
-        handover: data.handover || '',
-        payment_plan: data.payment_plan || '',
-        property_type: data.property_type || '',
-        bedrooms_range: data.bedrooms_range || '',
-        starred: false
-      });
-
-      setFlatForms({});
-      setNewLevel({ id: '', name: '' });
-      setFormType('create');
-      setEditingId(null);
-      setIsFormOpen(true);
-      setDropboxInputUrl('');
-
-      showSuccess(`AI successfully scanned your Dropbox campaign! Review details below.`);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setScanningDoc(false);
-    }
-  };
-
-  const handleUploadDoc = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    // Reset value so the same file can be scanned again
-    e.target.value = '';
-
-    setScanningDoc(true);
-    setError('');
-
-    try {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        try {
-          const payload = {
-            fileData: reader.result,
-            fileName: file.name,
-            mimeType: file.type
-          };
-
-          const res = await fetch(`${API_BASE}/properties/upload-doc`, {
-            method: 'POST',
-            headers: getHeaders(),
-            body: JSON.stringify(payload)
-          });
-
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || 'Failed to scan document');
-
-          // Populate the form with AI extracted details!
-          setPropertyForm({
-            title: data.title || '',
-            price: data.price || '',
-            image: data.image || '',
-            description: data.description || '',
-            beds: data.beds || 0,
-            baths: data.baths || 0,
-            size: data.size || '',
-            category: data.category || 'villas',
-            type: data.type || 'buy',
-            location: data.location || 'Prime District',
-            status: data.status || 'Available',
-            dropbox_link: data.dropbox_link || '',
-            floors: data.floors || [],
-            imagesInput: Array.isArray(data.images) ? data.images.join('\n') : '',
-            featuresInput: Array.isArray(data.features) ? data.features.join('\n') : '',
-            handover: data.handover || '',
-            payment_plan: data.payment_plan || '',
-            property_type: data.property_type || '',
-            bedrooms_range: data.bedrooms_range || '',
-            starred: false
-          });
-
-          setFlatForms({});
-          setNewLevel({ id: '', name: '' });
-          setFormType('create');
-          setEditingId(null);
-          setIsFormOpen(true);
-
-          showSuccess(`AI successfully scanned "${file.name}"! Review the details below.`);
-        } catch (err) {
-          setError(err.message);
-        } finally {
-          setScanningDoc(false);
-        }
-      };
-
-      reader.onerror = () => {
-        setError('Failed to read file contents.');
-        setScanningDoc(false);
-      };
-
-      reader.readAsDataURL(file);
-    } catch (err) {
-      setError(err.message);
-      setScanningDoc(false);
-    }
-  };
-
-  // Sanitizes levels/floors configuration to guarantee it is always a parsed Array
-  const sanitizeFloorsArray = (data) => {
-    if (!data) return [];
-    if (Array.isArray(data)) return data;
-    if (typeof data === 'string') {
-      try {
-        const parsed = JSON.parse(data);
-        if (Array.isArray(parsed)) return parsed;
-        return [];
-      } catch (e) {
-        console.warn("Failed to parse floors:", e);
-        return [];
-      }
-    }
-    return [];
-  };
+  });
 
   const checkAuth = () => {
     const token = localStorage.getItem('adminToken');
@@ -237,15 +102,6 @@ export default function AdminDashboard() {
       setLoading(false);
     }
   };
-
-  // Real-time synchronization hook integration
-  useRealTimeSync((message) => {
-    console.log('Real-time sync event received:', message);
-    if (message.type === 'PROPERTY_CHANGE' || message.type === 'INQUIRY_CHANGE' || message.type === 'BLOG_CHANGE') {
-      // Perform a silent background refresh to update tables instantly without disruptive spinners
-      fetchData(null, true);
-    }
-  });
 
   useEffect(() => {
     checkAuth();
@@ -259,7 +115,7 @@ export default function AdminDashboard() {
 
   const showSuccess = (msg) => {
     setSuccessMsg(msg);
-    setTimeout(() => setSuccessMsg(''), 4000);
+    setTimeout(() => setSuccessMsg(''), 4500);
   };
 
   const getHeaders = (token) => {
@@ -270,32 +126,45 @@ export default function AdminDashboard() {
     };
   };
 
+  const ensureArray = (val) => {
+    if (!val) return [];
+    if (Array.isArray(val)) return val;
+    if (typeof val === 'string') {
+      try {
+        const parsed = JSON.parse(val);
+        if (Array.isArray(parsed)) return parsed;
+      } catch (e) {}
+      if (val.trim()) {
+        return val.split('\n').map(s => s.trim()).filter(Boolean);
+      }
+    }
+    return [];
+  };
+
   const fetchData = async (token, silent = false) => {
     if (!silent) setLoading(true);
     setError('');
     try {
-      // Fetch Properties with a high limit for Admin
-      const propsRes = await fetch(`${API_BASE}/properties?limit=250`);
-      if (!propsRes.ok) throw new Error('Failed to fetch properties');
+      // 1. Fetch Properties (High limit for admin management)
+      const propsRes = await fetch(`${API_BASE}/properties?limit=500`);
+      if (!propsRes.ok) throw new Error('Failed to fetch properties from server');
       const propsData = await propsRes.json();
       const propsArray = propsData.data || (Array.isArray(propsData) ? propsData : []);
       setProperties(propsArray);
 
-      // Fetch Inquiries
+      // 2. Fetch Inquiries
       const inqRes = await fetch(`${API_BASE}/inquiries`, {
         headers: getHeaders(token)
       });
-      if (!inqRes.ok) {
-        if (inqRes.status === 401 || inqRes.status === 403) {
-          handleLogout();
-          throw new Error('Session expired. Please log in again.');
-        }
-        throw new Error('Failed to fetch inquiries');
+      if (inqRes.ok) {
+        const inqData = await inqRes.json();
+        setInquiries(Array.isArray(inqData) ? inqData : []);
+      } else if (inqRes.status === 401 || inqRes.status === 403) {
+        handleLogout();
+        throw new Error('Session expired. Please log in again.');
       }
-      const inqData = await inqRes.json();
-      setInquiries(inqData);
 
-      // Fetch Blogs
+      // 3. Fetch Blogs
       try {
         const blogsRes = await fetch(`${API_BASE}/blogs`);
         if (blogsRes.ok) {
@@ -303,7 +172,7 @@ export default function AdminDashboard() {
           setBlogs(Array.isArray(blogsData) ? blogsData : []);
         }
       } catch (blogErr) {
-        console.warn('Failed to fetch blogs:', blogErr.message);
+        console.warn('Could not load blogs:', blogErr.message);
       }
     } catch (err) {
       setError(err.message);
@@ -312,141 +181,290 @@ export default function AdminDashboard() {
     }
   };
 
-  // Helper to parse JSON arrays safely in frontend
-  const safeParseArray = (val) => {
-    if (!val) return [];
-    if (Array.isArray(val)) return val;
-    try {
-      const parsed = JSON.parse(val);
-      if (Array.isArray(parsed)) return parsed;
-      return [];
-    } catch (e) {
-      return [];
-    }
-  };
+  // ══════════════════════════════════════════════
+  // PROPERTY ACTIONS & MULTI-IMAGE GALLERY MANAGER
+  // ══════════════════════════════════════════════
 
-  // Property Actions
-  const handleOpenCreateForm = () => {
+  const handleOpenCreateForm = (preferredType = 'ready') => {
     setPropertyForm({
       title: '',
       price: '',
       image: '',
+      images: [],
       description: '',
-      beds: 0,
-      baths: 0,
-      size: '',
+      beds: preferredType === 'ready' ? 3 : 0,
+      baths: preferredType === 'ready' ? 3 : 0,
+      size: preferredType === 'ready' ? '3,500 Sq. Ft.' : '',
       category: 'villas',
-      type: 'buy',
-      location: 'Prime District',
+      type: preferredType,
+      location: 'Dubai, UAE',
       status: 'Available',
       dropbox_link: '',
       floors: [],
-      imagesInput: '',
-      featuresInput: '',
-      handover: '',
-      payment_plan: '',
-      property_type: '',
-      bedrooms_range: '',
+      features: ['Private Pool', 'Lagoon Access', 'Concierge Service'],
+      handover: preferredType === 'off-plan' ? 'Q4 2028' : '',
+      payment_plan: preferredType === 'off-plan' ? '80/20 on Handover' : '',
+      property_type: preferredType === 'off-plan' ? 'Luxury Villas & Mansions' : 'Private Residence',
+      bedrooms_range: preferredType === 'off-plan' ? '3 - 6 Bedrooms' : '',
       starred: false
     });
     setFlatForms({});
     setNewLevel({ id: '', name: '' });
+    setImageUrlInput('');
+    setCustomFeatureInput('');
     setFormType('create');
+    setEditingId(null);
+    setModalTab('core');
     setIsFormOpen(true);
   };
 
   const handleOpenEditForm = (prop) => {
-    const imagesArr = safeParseArray(prop.images);
-    const featuresArr = safeParseArray(prop.features);
+    const cleanImages = ensureArray(prop.images);
+    if (prop.image && !cleanImages.includes(prop.image)) {
+      cleanImages.unshift(prop.image);
+    }
 
     setPropertyForm({
-      title: prop.title,
-      price: prop.price,
-      image: prop.image,
+      title: prop.title || '',
+      price: prop.price || '',
+      image: prop.image || cleanImages[0] || '',
+      images: cleanImages,
       description: prop.description || '',
       beds: prop.beds || 0,
       baths: prop.baths || 0,
       size: prop.size || '',
-      category: prop.category,
-      type: prop.type,
+      category: prop.category || 'villas',
+      type: prop.type || 'ready',
       location: prop.location || 'Prime District',
       status: prop.status || 'Available',
       dropbox_link: prop.dropbox_link || '',
-      floors: sanitizeFloorsArray(prop.floors),
-      imagesInput: imagesArr.join('\n'),
-      featuresInput: featuresArr.join('\n'),
+      floors: ensureArray(prop.floors),
+      features: ensureArray(prop.features),
       handover: prop.handover || '',
       payment_plan: prop.payment_plan || '',
       property_type: prop.property_type || '',
       bedrooms_range: prop.bedrooms_range || '',
       starred: prop.starred === true || prop.starred === 'true'
     });
+
     setFlatForms({});
     setNewLevel({ id: '', name: '' });
+    setImageUrlInput('');
+    setCustomFeatureInput('');
     setEditingId(prop.id);
     setFormType('edit');
+    setModalTab('core');
     setIsFormOpen(true);
   };
 
-  const handlePropertySubmit = async (e) => {
-    e.preventDefault();
+  // Upload Multiple Image Files
+  const handleMultiImageUpload = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    setImageUploadLoading(true);
     setError('');
+
     try {
-      const url = formType === 'create' 
-        ? `${API_BASE}/properties` 
+      const readPromises = files.map(file => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve({ data: reader.result, name: file.name });
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      });
+
+      const base64Images = await Promise.all(readPromises);
+
+      const res = await fetch(`${API_BASE}/upload-images`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ images: base64Images })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to upload images');
+
+      const uploadedUrls = data.urls || [];
+      setPropertyForm(prev => {
+        const combined = [...prev.images, ...uploadedUrls];
+        return {
+          ...prev,
+          images: combined,
+          image: prev.image || combined[0] || ''
+        };
+      });
+
+      showSuccess(`Successfully uploaded ${uploadedUrls.length} high-resolution image(s).`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setImageUploadLoading(false);
+      if (multiFileInputRef.current) multiFileInputRef.current.value = '';
+    }
+  };
+
+  // Add Image via Direct URL
+  const handleAddImageUrl = (e) => {
+    if (e) e.preventDefault();
+    const url = imageUrlInput.trim();
+    if (!url) return;
+    setPropertyForm(prev => {
+      const combined = [...prev.images, url];
+      return {
+        ...prev,
+        images: combined,
+        image: prev.image || url
+      };
+    });
+    setImageUrlInput('');
+  };
+
+  // Remove Image from Gallery
+  const handleRemoveImage = (indexToRemove) => {
+    setPropertyForm(prev => {
+      const updated = prev.images.filter((_, idx) => idx !== indexToRemove);
+      return {
+        ...prev,
+        images: updated,
+        image: updated.length > 0 ? updated[0] : ''
+      };
+    });
+  };
+
+  // Set an Image as Primary Cover Image
+  const handleSetCoverImage = (indexToPromote) => {
+    setPropertyForm(prev => {
+      const selected = prev.images[indexToPromote];
+      if (!selected) return prev;
+      const reordered = [selected, ...prev.images.filter((_, idx) => idx !== indexToPromote)];
+      return {
+        ...prev,
+        images: reordered,
+        image: selected
+      };
+    });
+    showSuccess('Cover image updated.');
+  };
+
+  // Feature Tag Manager
+  const handleAddFeatureTag = (tag) => {
+    const cleaned = tag.trim();
+    if (!cleaned || propertyForm.features.includes(cleaned)) return;
+    setPropertyForm(prev => ({
+      ...prev,
+      features: [...prev.features, cleaned]
+    }));
+    setCustomFeatureInput('');
+  };
+
+  const handleRemoveFeatureTag = (tagToRemove) => {
+    setPropertyForm(prev => ({
+      ...prev,
+      features: prev.features.filter(f => f !== tagToRemove)
+    }));
+  };
+
+  // Floor / Level manager helpers
+  const handleAddLevel = () => {
+    if (!newLevel.name.trim()) return;
+    const newId = newLevel.id ? parseInt(newLevel.id) : (propertyForm.floors.length + 1);
+    const updatedFloors = [
+      ...propertyForm.floors,
+      { id: newId, name: newLevel.name.trim(), flats: [] }
+    ];
+    setPropertyForm(prev => ({ ...prev, floors: updatedFloors }));
+    setNewLevel({ id: '', name: '' });
+  };
+
+  const handleRemoveLevel = (levelId) => {
+    setPropertyForm(prev => ({
+      ...prev,
+      floors: prev.floors.filter(l => l.id !== levelId)
+    }));
+  };
+
+  const handleAddFlat = (levelId) => {
+    const form = flatForms[levelId] || {};
+    if (!form.name || !form.name.trim()) return;
+
+    const newFlat = {
+      name: form.name.trim(),
+      price: form.price ? form.price.trim() : 'AED 0',
+      size: form.size ? form.size.trim() : '',
+      beds: parseInt(form.beds) || 0,
+      baths: parseInt(form.baths) || 0,
+      status: form.status || 'Available'
+    };
+
+    const updatedFloors = propertyForm.floors.map(lvl => {
+      if (lvl.id === levelId) {
+        return { ...lvl, flats: [...(lvl.flats || []), newFlat] };
+      }
+      return lvl;
+    });
+
+    setPropertyForm(prev => ({ ...prev, floors: updatedFloors }));
+    setFlatForms(prev => ({ ...prev, [levelId]: { name: '', price: '', size: '', beds: 0, baths: 0, status: 'Available' } }));
+  };
+
+  const handleRemoveFlat = (levelId, flatIdx) => {
+    const updatedFloors = propertyForm.floors.map(lvl => {
+      if (lvl.id === levelId) {
+        return { ...lvl, flats: (lvl.flats || []).filter((_, i) => i !== flatIdx) };
+      }
+      return lvl;
+    });
+    setPropertyForm(prev => ({ ...prev, floors: updatedFloors }));
+  };
+
+  // Save / Submit Property
+  const handlePropertySubmit = async (e) => {
+    if (e) e.preventDefault();
+    setError('');
+
+    if (!propertyForm.title.trim()) {
+      setError('Please provide a property or catalog title.');
+      return;
+    }
+    if (!propertyForm.price.trim()) {
+      setError('Please enter the price or starting price.');
+      return;
+    }
+
+    try {
+      const url = formType === 'create'
+        ? `${API_BASE}/properties`
         : `${API_BASE}/properties/${editingId}`;
       const method = formType === 'create' ? 'POST' : 'PUT';
 
-      // Parse textareas into actual arrays before sending
-      const imagesArr = propertyForm.imagesInput.split('\n').map(s => s.trim()).filter(Boolean);
-      const featuresArr = propertyForm.featuresInput.split('\n').map(s => s.trim()).filter(Boolean);
-
       const payload = {
         ...propertyForm,
-        images: imagesArr,
-        features: featuresArr
+        image: propertyForm.images[0] || propertyForm.image || '/listing_villa.webp',
+        images: propertyForm.images,
+        features: propertyForm.features,
+        floors: propertyForm.floors
       };
 
-      // Clean up frontend-only input fields
-      delete payload.imagesInput;
-      delete payload.featuresInput;
-
       const res = await fetch(url, {
-        method: method,
+        method,
         headers: getHeaders(),
         body: JSON.stringify(payload)
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to save property');
+      if (!res.ok) throw new Error(data.error || 'Failed to save property listing');
 
-      showSuccess(`Property "${data.title}" saved successfully.`);
+      showSuccess(`"${data.title}" successfully saved and synchronized.`);
       setIsFormOpen(false);
-      fetchData(); // Refresh data
+      fetchData(null, true);
     } catch (err) {
       setError(err.message);
     }
   };
 
-  const handlePropertyDelete = async (id, title) => {
-    if (!window.confirm(`Are you sure you want to delete "${title}"?`)) return;
-    setError('');
-    try {
-      const res = await fetch(`${API_BASE}/properties/${id}`, {
-        method: 'DELETE',
-        headers: getHeaders()
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Failed to delete property');
-      }
-      showSuccess(`Property "${title}" deleted.`);
-      fetchData();
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
+  // Toggle Starred Highlight
   const handleToggleStarred = async (prop) => {
     setError('');
     try {
@@ -455,11 +473,7 @@ export default function AdminDashboard() {
         ...prop,
         starred: updatedStarred
       };
-      
-      // Clean up fields that shouldn't be submitted directly or are managed differently
-      delete payload.imagesInput;
-      delete payload.featuresInput;
-      
+
       const res = await fetch(`${API_BASE}/properties/${prop.id}`, {
         method: 'PUT',
         headers: getHeaders(),
@@ -472,232 +486,206 @@ export default function AdminDashboard() {
       }
 
       showSuccess(`Curated Highlight status updated for "${prop.title}".`);
-      fetchData(); // Refresh list
+      fetchData(null, true);
     } catch (err) {
       setError(err.message);
     }
   };
 
-  // Process files from either click or drop
-  const handleFileProcessing = (file) => {
-    if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      alert('Please upload an image file (jpg, png, webp, etc.)');
-      return;
-    }
-
-    if (file.size > 2 * 1024 * 1024) {
-      alert("Image size must be less than 2MB.");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPropertyForm(prev => ({ ...prev, image: reader.result }));
-    };
-    reader.readAsDataURL(file);
-  };
-
-  // Image upload triggers
-  const handleImageUpload = (e) => {
-    handleFileProcessing(e.target.files[0]);
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFileProcessing(e.dataTransfer.files[0]);
-    }
-  };
-
-  // Floors & Building Structure Manager
-  const handleAddLevel = (e) => {
-    if (e) e.preventDefault();
-    if (!newLevel.id || !newLevel.name) {
-      alert("Please fill in Level ID and Level Name.");
-      return;
-    }
-
-    const lvlId = parseInt(newLevel.id);
-    const currentFloors = sanitizeFloorsArray(propertyForm.floors);
-
-    if (currentFloors.some(lvl => lvl.id === lvlId)) {
-      alert("A level with this numeric ID already exists.");
-      return;
-    }
-
-    const newLvlObj = {
-      id: lvlId,
-      name: newLevel.name,
-      flats: []
-    };
-
-    // Sort levels descending (highest ID at the top)
-    const updatedFloors = [...currentFloors, newLvlObj].sort((a, b) => b.id - a.id);
-
-    setPropertyForm({
-      ...propertyForm,
-      floors: updatedFloors
-    });
-
-    setNewLevel({ id: '', name: '' });
-  };
-
-  const handleRemoveLevel = (levelId, e) => {
-    if (e) e.preventDefault();
-    if (!window.confirm("Are you sure you want to delete this level and all its flats?")) return;
-    const currentFloors = sanitizeFloorsArray(propertyForm.floors);
-    const updatedFloors = currentFloors.filter(lvl => lvl.id !== levelId);
-    setPropertyForm({
-      ...propertyForm,
-      floors: updatedFloors
-    });
-  };
-
-  const updateFlatForm = (levelId, field, value) => {
-    setFlatForms(prev => ({
-      ...prev,
-      [levelId]: {
-        ...prev[levelId],
-        [field]: value
-      }
-    }));
-  };
-
-  const handleAddFlat = (levelId, e) => {
-    if (e) e.preventDefault();
-    const form = flatForms[levelId];
-    if (!form || !form.name || !form.price) {
-      alert("Please fill in at least Flat Name and Price.");
-      return;
-    }
-
-    const newFlatObj = {
-      name: form.name,
-      price: form.price,
-      size: form.size || 'N/A',
-      beds: parseInt(form.beds) || 0,
-      baths: parseInt(form.baths) || 0,
-      status: form.status || 'Available'
-    };
-
-    const currentFloors = sanitizeFloorsArray(propertyForm.floors);
-    const updatedFloors = currentFloors.map(lvl => {
-      if (lvl.id === levelId) {
-        return {
-          ...lvl,
-          flats: [...(lvl.flats || []), newFlatObj]
-        };
-      }
-      return lvl;
-    });
-
-    setPropertyForm({
-      ...propertyForm,
-      floors: updatedFloors
-    });
-
-    // Reset flat form input for this level
-    setFlatForms(prev => ({
-      ...prev,
-      [levelId]: {
-        name: '',
-        price: '',
-        size: '',
-        beds: '',
-        baths: '',
-        status: 'Available'
-      }
-    }));
-  };
-
-  const handleRemoveFlat = (levelId, flatIndex, e) => {
-    if (e) e.preventDefault();
-    const currentFloors = sanitizeFloorsArray(propertyForm.floors);
-    const updatedFloors = currentFloors.map(lvl => {
-      if (lvl.id === levelId) {
-        return {
-          ...lvl,
-          flats: (lvl.flats || []).filter((_, idx) => idx !== flatIndex)
-        };
-      }
-      return lvl;
-    });
-    setPropertyForm({
-      ...propertyForm,
-      floors: updatedFloors
-    });
-  };
-
-  // Pre-populate standard structure to save manual typing
-  const handlePrepopulateFloors = (e) => {
-    if (e) e.preventDefault();
-    const defaultStructure = [
-      { id: 3, name: 'Level 3', flats: [] },
-      { id: 2, name: 'Level 2', flats: [] },
-      { id: 1, name: 'Level 1', flats: [] }
-    ];
-    setPropertyForm({
-      ...propertyForm,
-      floors: defaultStructure
-    });
-  };
-
-  // Inquiry Actions
-  const handleInquiryStatusChange = async (id, newStatus) => {
+  // Delete Property
+  const handlePropertyDelete = async (id, title) => {
+    if (!window.confirm(`Are you sure you want to permanently delete "${title}"? This action will remove it from all website catalogs.`)) return;
     setError('');
     try {
-      const res = await fetch(`${API_BASE}/inquiries/${id}`, {
-        method: 'PUT',
-        headers: getHeaders(),
-        body: JSON.stringify({ status: newStatus })
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Failed to update status');
-      }
-      showSuccess(`Inquiry status updated to ${newStatus}.`);
-      fetchData();
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-  const handleInquiryDelete = async (id, clientName) => {
-    if (!window.confirm(`Are you sure you want to delete inquiry from "${clientName}"?`)) return;
-    setError('');
-    try {
-      const res = await fetch(`${API_BASE}/inquiries/${id}`, {
+      const res = await fetch(`${API_BASE}/properties/${id}`, {
         method: 'DELETE',
         headers: getHeaders()
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || 'Failed to delete inquiry');
+        throw new Error(data.error || 'Failed to delete listing');
       }
-      showSuccess(`Inquiry from "${clientName}" deleted.`);
-      fetchData();
+      showSuccess(`Listing "${title}" removed successfully.`);
+      fetchData(null, true);
     } catch (err) {
       setError(err.message);
     }
   };
 
-  // ═══════════════════════════════════════════
-  //  BLOG CRUD HANDLERS
-  // ═══════════════════════════════════════════
+  // AI & Dropbox scanning
+  const handleScanDropboxUrl = async (e) => {
+    if (e) e.preventDefault();
+    if (!dropboxInputUrl.trim()) return;
+
+    setScanningDoc(true);
+    setError('');
+    setIsUploadOptionOpen(false);
+
+    try {
+      const res = await fetch(`${API_BASE}/properties/upload-doc`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ dropboxUrl: dropboxInputUrl.trim() })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to scan Dropbox campaign');
+
+      const extractedImages = ensureArray(data.images);
+      setPropertyForm({
+        title: data.title || '',
+        price: data.price || '',
+        image: data.image || extractedImages[0] || '',
+        images: extractedImages,
+        description: data.description || '',
+        beds: data.beds || 0,
+        baths: data.baths || 0,
+        size: data.size || '',
+        category: data.category || 'villas',
+        type: data.type || 'off-plan',
+        location: data.location || 'Prime District',
+        status: data.status || 'Available',
+        dropbox_link: data.dropbox_link || dropboxInputUrl.trim(),
+        floors: ensureArray(data.floors),
+        features: ensureArray(data.features),
+        handover: data.handover || '',
+        payment_plan: data.payment_plan || '',
+        property_type: data.property_type || '',
+        bedrooms_range: data.bedrooms_range || '',
+        starred: false
+      });
+
+      setFormType('create');
+      setEditingId(null);
+      setModalTab('core');
+      setIsFormOpen(true);
+      setDropboxInputUrl('');
+
+      showSuccess(`AI successfully extracted details from Dropbox campaign.`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setScanningDoc(false);
+    }
+  };
+
+  const handleUploadDoc = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    e.target.value = '';
+
+    setScanningDoc(true);
+    setError('');
+
+    try {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        try {
+          const res = await fetch(`${API_BASE}/properties/upload-doc`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify({
+              fileData: reader.result,
+              fileName: file.name,
+              mimeType: file.type
+            })
+          });
+
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Failed to scan document');
+
+          const extractedImages = ensureArray(data.images);
+          setPropertyForm({
+            title: data.title || '',
+            price: data.price || '',
+            image: data.image || extractedImages[0] || '',
+            images: extractedImages,
+            description: data.description || '',
+            beds: data.beds || 0,
+            baths: data.baths || 0,
+            size: data.size || '',
+            category: data.category || 'villas',
+            type: data.type || 'off-plan',
+            location: data.location || 'Prime District',
+            status: data.status || 'Available',
+            dropbox_link: data.dropbox_link || '',
+            floors: ensureArray(data.floors),
+            features: ensureArray(data.features),
+            handover: data.handover || '',
+            payment_plan: data.payment_plan || '',
+            property_type: data.property_type || '',
+            bedrooms_range: data.bedrooms_range || '',
+            starred: false
+          });
+
+          setFormType('create');
+          setEditingId(null);
+          setModalTab('core');
+          setIsFormOpen(true);
+
+          showSuccess(`AI parsed "${file.name}". Review the extracted details.`);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setScanningDoc(false);
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      setError(err.message);
+      setScanningDoc(false);
+    }
+  };
+
+  // ══════════════════════════════════════════════
+  // INQUIRIES & LEADS MANAGEMENT
+  // ══════════════════════════════════════════════
+
+  const handleUpdateInquiryStatus = async (inqId, newStatus) => {
+    try {
+      const res = await fetch(`${API_BASE}/inquiries/${inqId}`, {
+        method: 'PUT',
+        headers: getHeaders(),
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (!res.ok) throw new Error('Failed to update status');
+      showSuccess(`Inquiry status updated to ${newStatus}.`);
+      fetchData(null, true);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleDeleteInquiry = async (inqId) => {
+    if (!window.confirm('Delete this client inquiry record?')) return;
+    try {
+      const res = await fetch(`${API_BASE}/inquiries/${inqId}`, {
+        method: 'DELETE',
+        headers: getHeaders()
+      });
+      if (!res.ok) throw new Error('Failed to delete inquiry');
+      showSuccess('Inquiry deleted.');
+      fetchData(null, true);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // ══════════════════════════════════════════════
+  // BLOGS & EDITORIAL MANAGEMENT
+  // ══════════════════════════════════════════════
+
   const handleOpenBlogCreate = () => {
-    setBlogForm({ title: '', category: 'Market Trends', readTime: '5 min read', image: '', excerpt: '', content: '', featured: false, attachments: [] });
+    setBlogForm({
+      title: '',
+      category: 'Market Trends',
+      readTime: '5 min read',
+      image: '',
+      excerpt: '',
+      content: '',
+      featured: false,
+      attachments: []
+    });
     setBlogFormType('create');
     setEditingBlogId(null);
     setIsBlogFormOpen(true);
@@ -705,1667 +693,1860 @@ export default function AdminDashboard() {
 
   const handleOpenBlogEdit = (blog) => {
     setBlogForm({
-      title: blog.title || '', category: blog.category || 'General', readTime: blog.readTime || '5 min read',
-      image: blog.image || '', excerpt: blog.excerpt || '', content: blog.content || '',
-      featured: blog.featured || false, attachments: blog.attachments || []
+      title: blog.title || '',
+      category: blog.category || 'Market Trends',
+      readTime: blog.readTime || '5 min read',
+      image: blog.image || '',
+      excerpt: blog.excerpt || '',
+      content: blog.content || '',
+      featured: blog.featured || false,
+      attachments: blog.attachments || []
     });
-    setEditingBlogId(blog.id);
     setBlogFormType('edit');
+    setEditingBlogId(blog.id);
     setIsBlogFormOpen(true);
   };
 
-  const handleBlogImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (!file.type.startsWith('image/')) { alert('Please upload an image file.'); return; }
-    if (file.size > 2 * 1024 * 1024) { alert('Image must be under 2MB.'); return; }
-    const reader = new FileReader();
-    reader.onloadend = () => setBlogForm(prev => ({ ...prev, image: reader.result }));
-    reader.readAsDataURL(file);
-  };
-
-  const handleBlogAttachments = (e) => {
-    const files = Array.from(e.target.files);
-    const allowed = ['image/', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-    const validFiles = files.filter(f => allowed.some(t => f.type.startsWith(t)));
-    if (validFiles.length === 0) { alert('Please upload images, PDFs, or Word documents.'); return; }
-
-    validFiles.forEach(file => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setBlogForm(prev => ({
-          ...prev,
-          attachments: [...(prev.attachments || []), { name: file.name, type: file.type, size: file.size, data: reader.result }]
-        }));
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-
-  const handleRemoveAttachment = (index) => {
-    setBlogForm(prev => ({ ...prev, attachments: prev.attachments.filter((_, i) => i !== index) }));
-  };
-
   const handleBlogSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
+    if (e) e.preventDefault();
+    if (!blogForm.title.trim()) {
+      setError('Please provide a publication title.');
+      return;
+    }
+
     try {
-      const url = blogFormType === 'create' ? `${API_BASE}/blogs` : `${API_BASE}/blogs/${editingBlogId}`;
+      const url = blogFormType === 'create'
+        ? `${API_BASE}/blogs`
+        : `${API_BASE}/blogs/${editingBlogId}`;
       const method = blogFormType === 'create' ? 'POST' : 'PUT';
-      const res = await fetch(url, { method, headers: getHeaders(), body: JSON.stringify(blogForm) });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to save blog');
-      showSuccess(`Blog "${data.title}" ${blogFormType === 'create' ? 'published' : 'updated'} successfully.`);
-      setIsBlogFormOpen(false);
-      fetchData();
-    } catch (err) {
-      setError(err.message);
-    }
-  };
 
-  const handleBlogDelete = async (id, title) => {
-    if (!window.confirm(`Delete blog "${title}"? This cannot be undone.`)) return;
-    setError('');
-    try {
-      const res = await fetch(`${API_BASE}/blogs/${id}`, { method: 'DELETE', headers: getHeaders() });
-      if (!res.ok) { const data = await res.json(); throw new Error(data.error || 'Failed to delete blog'); }
-      showSuccess(`Blog "${title}" deleted.`);
-      fetchData();
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-  const handleToggleBlogFeatured = async (blog) => {
-    setError('');
-    try {
-      const res = await fetch(`${API_BASE}/blogs/${blog.id}`, {
-        method: 'PUT', headers: getHeaders(),
-        body: JSON.stringify({ ...blog, featured: !blog.featured })
+      const res = await fetch(url, {
+        method,
+        headers: getHeaders(),
+        body: JSON.stringify(blogForm)
       });
-      if (!res.ok) { const data = await res.json(); throw new Error(data.error || 'Failed to update blog'); }
-      showSuccess(`Blog "${blog.title}" ${!blog.featured ? 'featured' : 'unfeatured'}.`);
-      fetchData();
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to save publication');
+
+      showSuccess(`Article "${data.title}" saved.`);
+      setIsBlogFormOpen(false);
+      fetchData(null, true);
     } catch (err) {
       setError(err.message);
     }
   };
 
+  const handleBlogDelete = async (blogId, title) => {
+    if (!window.confirm(`Delete publication "${title}"?`)) return;
+    try {
+      const res = await fetch(`${API_BASE}/blogs/${blogId}`, {
+        method: 'DELETE',
+        headers: getHeaders()
+      });
+      if (!res.ok) throw new Error('Failed to delete article');
+      showSuccess(`Article "${title}" removed.`);
+      fetchData(null, true);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // ══════════════════════════════════════════════
+  // FILTERED PORTFOLIO LISTS & METRICS
+  // ══════════════════════════════════════════════
+
+  const readyProperties = useMemo(() => {
+    return properties.filter(p => p.type !== 'off-plan');
+  }, [properties]);
+
+  const offPlanProperties = useMemo(() => {
+    return properties.filter(p => p.type === 'off-plan');
+  }, [properties]);
+
+  const pendingInquiriesCount = useMemo(() => {
+    return inquiries.filter(i => (i.status || 'Pending').toLowerCase() === 'pending').length;
+  }, [inquiries]);
+
+  const starredPropertiesCount = useMemo(() => {
+    return properties.filter(p => p.starred === true || p.starred === 'true').length;
+  }, [properties]);
+
+  const displayedListings = useMemo(() => {
+    const list = activeTab === 'ready-listings' ? readyProperties : offPlanProperties;
+    return list.filter(item => {
+      // Category filter
+      if (selectedCategory !== 'all' && item.category !== selectedCategory) {
+        return false;
+      }
+      // Starred filter
+      if (starredOnlyFilter && !(item.starred === true || item.starred === 'true')) {
+        return false;
+      }
+      // Search query
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchesTitle = item.title && item.title.toLowerCase().includes(q);
+        const matchesLocation = item.location && item.location.toLowerCase().includes(q);
+        const matchesCategory = item.category && item.category.toLowerCase().includes(q);
+        const matchesPrice = item.price && item.price.toLowerCase().includes(q);
+        return matchesTitle || matchesLocation || matchesCategory || matchesPrice;
+      }
+      return true;
+    });
+  }, [activeTab, readyProperties, offPlanProperties, selectedCategory, starredOnlyFilter, searchQuery]);
+
+  // If unauthenticated, show login screen
   if (!isAuthenticated) {
-    return <AdminLogin onLoginSuccess={checkAuth} />;
+    return <AdminLogin onLoginSuccess={() => { setIsAuthenticated(true); fetchData(); }} />;
   }
 
-  // Count stats
-  const totalProperties = properties.length;
-  const totalInquiries = inquiries.length;
-  const activeProperties = properties.filter(p => p.status === 'Available').length;
-  
-  const propertyInquiries = inquiries.filter(i => i.property_type !== 'consultancy');
-  const consultationInquiries = inquiries.filter(i => i.property_type === 'consultancy');
-
-  const pendingInquiriesCount = propertyInquiries.filter(i => i.status === 'Pending' || i.status === 'New').length;
-  const pendingConsultationsCount = consultationInquiries.filter(i => i.status === 'Pending' || i.status === 'New').length;
-
-  const totalPendingInquiries = pendingInquiriesCount + pendingConsultationsCount;
-
-  // Filter properties into Ready and Off-Plan lists
-  const readyProperties = properties.filter(p => p.type === 'ready' || p.type === 'buy');
-  const offPlanProperties = properties.filter(p => p.type === 'off-plan');
-
-  const readyPropertiesCount = readyProperties.length;
-  const offPlanPropertiesCount = offPlanProperties.length;
-
-  const getFilteredList = (list) => {
-    if (!searchQuery) return list;
-    const q = searchQuery.toLowerCase();
-    return list.filter(p => 
-      (p.title && p.title.toLowerCase().includes(q)) ||
-      (p.location && p.location.toLowerCase().includes(q)) ||
-      (p.category && p.category.toLowerCase().includes(q))
-    );
-  };
-
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-light)', paddingTop: '8rem', paddingBottom: '4rem' }}>
-      <div className="container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem' }}>
-        
-        {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1.5rem' }}>
+    <div className="admin-luxury-suite">
+      <style>{`
+        .admin-luxury-suite {
+          min-height: 100vh;
+          background: #090A0D;
+          color: #E2E8F0;
+          font-family: var(--font-sans);
+          padding-top: 5rem;
+          padding-bottom: 6rem;
+        }
+        .admin-glass-card {
+          background: rgba(18, 20, 26, 0.7);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 8px;
+          transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+        }
+        .admin-glass-card:hover {
+          border-color: rgba(197, 168, 128, 0.3);
+        }
+        .admin-nav-tab {
+          padding: 0.85rem 1.4rem;
+          font-size: 0.82rem;
+          letter-spacing: 1.5px;
+          text-transform: uppercase;
+          font-weight: 600;
+          cursor: pointer;
+          color: #8E9BAE;
+          border-bottom: 2px solid transparent;
+          transition: all 0.25s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.6rem;
+          white-space: nowrap;
+        }
+        .admin-nav-tab.active {
+          color: #FFFFFF;
+          border-bottom-color: #C5A880;
+          background: rgba(197, 168, 128, 0.06);
+        }
+        .admin-btn-gold {
+          background: #C5A880;
+          color: #0A0A0C;
+          border: 1px solid #C5A880;
+          padding: 0.6rem 1.25rem;
+          font-size: 0.72rem;
+          font-weight: 700;
+          letter-spacing: 1.2px;
+          text-transform: uppercase;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: all 0.25s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+        .admin-btn-gold:hover {
+          background: #D8BD97;
+          border-color: #D8BD97;
+          transform: translateY(-1px);
+        }
+        .admin-btn-dark {
+          background: rgba(255, 255, 255, 0.06);
+          color: #FFFFFF;
+          border: 1px solid rgba(255, 255, 255, 0.14);
+          padding: 0.6rem 1.1rem;
+          font-size: 0.72rem;
+          font-weight: 600;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: all 0.25s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+        .admin-btn-dark:hover {
+          background: rgba(255, 255, 255, 0.12);
+          border-color: rgba(255, 255, 255, 0.3);
+        }
+        .admin-pill-filter {
+          padding: 0.35rem 0.85rem;
+          border-radius: 30px;
+          font-size: 0.72rem;
+          letter-spacing: 0.8px;
+          text-transform: uppercase;
+          cursor: pointer;
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          color: #94A3B8;
+          transition: all 0.2s ease;
+        }
+        .admin-pill-filter.active {
+          background: rgba(197, 168, 128, 0.2);
+          border-color: #C5A880;
+          color: #FFFFFF;
+          font-weight: 600;
+        }
+        .admin-input-luxury {
+          background: rgba(10, 11, 15, 0.8);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          color: #FFFFFF;
+          border-radius: 4px;
+          padding: 0.7rem 0.9rem;
+          font-size: 0.88rem;
+          outline: none;
+          transition: border-color 0.2s ease;
+          width: 100%;
+          box-sizing: border-box;
+        }
+        .admin-input-luxury:focus {
+          border-color: #C5A880;
+          box-shadow: 0 0 0 1px #C5A880;
+        }
+        .admin-modal-backdrop {
+          position: fixed;
+          inset: 0;
+          z-index: 9999;
+          background: rgba(5, 6, 8, 0.85);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 1.5rem;
+          overflow-y: auto;
+        }
+        .admin-modal-container {
+          background: #111319;
+          border: 1px solid rgba(255, 255, 255, 0.14);
+          border-radius: 8px;
+          width: 100%;
+          max-width: 920px;
+          max-height: 90vh;
+          overflow-y: auto;
+          box-shadow: 0 35px 80px rgba(0, 0, 0, 0.75);
+          display: flex;
+          flex-direction: column;
+        }
+        .admin-table-row {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          transition: background 0.2s ease;
+        }
+        .admin-table-row:hover {
+          background: rgba(255, 255, 255, 0.02);
+        }
+      `}</style>
+
+      <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 2rem' }}>
+
+        {/* ── TOP EXECUTIVE BANNER ── */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '1.8rem' }}>
           <div>
-            <h1 className="admin-title" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-dark)' }}>Admin Console</h1>
-            <p style={{ color: 'var(--text-muted)' }}>Manage your luxury property listings and respond to client inquiries.</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.4rem' }}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 10px #10B981' }} />
+              <span style={{ fontSize: '0.7rem', letterSpacing: '2px', textTransform: 'uppercase', color: '#10B981', fontWeight: 600 }}>
+                Real-Time Cloud Database Synchronized
+              </span>
+            </div>
+            <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(2rem, 3.5vw, 2.7rem)', color: '#FFFFFF', margin: 0, letterSpacing: '1px' }}>
+              Shārān Advisory Suite
+            </h1>
+            <p style={{ color: '#8E9BAE', fontSize: '0.85rem', marginTop: '0.3rem', margin: 0 }}>
+              Curate, edit and command private luxury real estate portfolios, off-plan developer catalogs, and high-net-worth investor inquiries.
+            </p>
           </div>
-          <button onClick={handleLogout} className="btn-solid" style={{ background: '#737373' }}>
-            LOGOUT
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+            <div style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)', padding: '0.5rem 1rem', borderRadius: '4px', fontSize: '0.75rem', color: '#CBD5E1' }}>
+              <span style={{ color: '#8E9BAE', marginRight: '0.4rem' }}>Identity:</span>
+              <strong style={{ color: '#FFFFFF' }}>{currentAdminUser}</strong>
+            </div>
+
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="admin-btn-dark"
+              style={{ textDecoration: 'none' }}
+            >
+              <ExternalLink size={14} /> View Live Website
+            </a>
+
+            <button onClick={handleLogout} className="admin-btn-dark" style={{ borderColor: 'rgba(239, 68, 68, 0.3)', color: '#F87171' }}>
+              <LogOut size={14} /> Sign Out
+            </button>
+          </div>
+        </div>
+
+        {/* ── NOTIFICATION TOASTS ── */}
+        {error && (
+          <div style={{ background: 'rgba(239, 68, 68, 0.12)', border: '1px solid #EF4444', color: '#FCA5A5', padding: '1rem 1.25rem', borderRadius: '6px', marginBottom: '1.8rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <AlertCircle size={18} />
+              <span style={{ fontSize: '0.88rem' }}>{error}</span>
+            </div>
+            <button onClick={() => setError('')} style={{ background: 'none', border: 'none', color: '#FCA5A5', cursor: 'pointer' }}>✕</button>
+          </div>
+        )}
+
+        {successMsg && (
+          <div style={{ background: 'rgba(16, 185, 129, 0.12)', border: '1px solid #10B981', color: '#6EE7B7', padding: '1rem 1.25rem', borderRadius: '6px', marginBottom: '1.8rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <CheckCircle2 size={18} />
+              <span style={{ fontSize: '0.88rem' }}>{successMsg}</span>
+            </div>
+            <button onClick={() => setSuccessMsg('')} style={{ background: 'none', border: 'none', color: '#6EE7B7', cursor: 'pointer' }}>✕</button>
+          </div>
+        )}
+
+        {/* ── EXECUTIVE KPI METRIC CARDS ── */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.2rem', marginBottom: '2.5rem' }}>
+          
+          <div className="admin-glass-card" style={{ padding: '1.4rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+              <span style={{ fontSize: '0.7rem', letterSpacing: '1.8px', textTransform: 'uppercase', color: '#8E9BAE', fontWeight: 600 }}>Total Portfolio</span>
+              <Building2 size={18} color="#C5A880" />
+            </div>
+            <div style={{ fontSize: '2.2rem', fontWeight: 300, color: '#FFFFFF', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>
+              {properties.length}
+            </div>
+            <p style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '0.5rem', margin: 0 }}>
+              {readyProperties.length} Ready Estates • {offPlanProperties.length} Catalogs
+            </p>
+          </div>
+
+          <div className="admin-glass-card" style={{ padding: '1.4rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+              <span style={{ fontSize: '0.7rem', letterSpacing: '1.8px', textTransform: 'uppercase', color: '#8E9BAE', fontWeight: 600 }}>Ready Estates</span>
+              <Sparkles size={18} color="#10B981" />
+            </div>
+            <div style={{ fontSize: '2.2rem', fontWeight: 300, color: '#FFFFFF', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>
+              {readyProperties.length}
+            </div>
+            <p style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '0.5rem', margin: 0 }}>
+              Primary mansions & duplex penthouses
+            </p>
+          </div>
+
+          <div className="admin-glass-card" style={{ padding: '1.4rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+              <span style={{ fontSize: '0.7rem', letterSpacing: '1.8px', textTransform: 'uppercase', color: '#8E9BAE', fontWeight: 600 }}>Master Catalogs</span>
+              <Layers size={18} color="#38BDF8" />
+            </div>
+            <div style={{ fontSize: '2.2rem', fontWeight: 300, color: '#FFFFFF', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>
+              {offPlanProperties.length}
+            </div>
+            <p style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '0.5rem', margin: 0 }}>
+              Emaar, Nakheel, Wasl, Aldar, Modon
+            </p>
+          </div>
+
+          <div className="admin-glass-card" style={{ padding: '1.4rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+              <span style={{ fontSize: '0.7rem', letterSpacing: '1.8px', textTransform: 'uppercase', color: '#8E9BAE', fontWeight: 600 }}>Client Inquiries</span>
+              <MessageSquare size={18} color="#F59E0B" />
+            </div>
+            <div style={{ fontSize: '2.2rem', fontWeight: 300, color: '#FFFFFF', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>
+              {inquiries.length}
+            </div>
+            <p style={{ fontSize: '0.72rem', color: pendingInquiriesCount > 0 ? '#F59E0B' : '#64748B', marginTop: '0.5rem', margin: 0 }}>
+              {pendingInquiriesCount} Pending Client Follow-up{pendingInquiriesCount !== 1 ? 's' : ''}
+            </p>
+          </div>
+
+          <div className="admin-glass-card" style={{ padding: '1.4rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+              <span style={{ fontSize: '0.7rem', letterSpacing: '1.8px', textTransform: 'uppercase', color: '#8E9BAE', fontWeight: 600 }}>Curated Highlights</span>
+              <Star size={18} color="#EAB308" />
+            </div>
+            <div style={{ fontSize: '2.2rem', fontWeight: 300, color: '#FFFFFF', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>
+              {starredPropertiesCount}
+            </div>
+            <p style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '0.5rem', margin: 0 }}>
+              Featured on Homepage Selection
+            </p>
+          </div>
+
+        </div>
+
+        {/* ── SEGMENTED NAVIGATION BAR ── */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', marginBottom: '1.8rem', overflowX: 'auto' }}>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button
+              onClick={() => { setActiveTab('ready-listings'); setSearchQuery(''); }}
+              className={`admin-nav-tab ${activeTab === 'ready-listings' ? 'active' : ''}`}
+            >
+              <Sparkles size={15} /> Ready Properties ({readyProperties.length})
+            </button>
+            <button
+              onClick={() => { setActiveTab('offplan-listings'); setSearchQuery(''); }}
+              className={`admin-nav-tab ${activeTab === 'offplan-listings' ? 'active' : ''}`}
+            >
+              <Building2 size={15} /> Off-Plan Catalogs ({offPlanProperties.length})
+            </button>
+            <button
+              onClick={() => { setActiveTab('inquiries'); setSearchQuery(''); }}
+              className={`admin-nav-tab ${activeTab === 'inquiries' ? 'active' : ''}`}
+            >
+              <Mail size={15} /> Inquiries ({inquiries.length})
+              {pendingInquiriesCount > 0 && (
+                <span style={{ background: '#F59E0B', color: '#000', borderRadius: '10px', padding: '0.1rem 0.45rem', fontSize: '0.62rem', fontWeight: 700 }}>
+                  {pendingInquiriesCount}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => { setActiveTab('blogs'); setSearchQuery(''); }}
+              className={`admin-nav-tab ${activeTab === 'blogs' ? 'active' : ''}`}
+            >
+              <FileText size={15} /> Publications ({blogs.length})
+            </button>
+          </div>
+
+          <button
+            onClick={() => fetchData(null, false)}
+            className="admin-btn-dark"
+            style={{ padding: '0.45rem 0.8rem', fontSize: '0.68rem', marginBottom: '0.4rem' }}
+            title="Refresh database"
+          >
+            <RefreshCw size={13} /> Refresh
           </button>
         </div>
 
-        {/* Alert Messages */}
-        {error && (
-          <div style={{ background: '#fef2f2', border: '1px solid #fee2e2', color: '#ef4444', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between' }}>
-            <span><strong>Error:</strong> {error}</span>
-            <button onClick={() => setError('')} style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#ef4444', fontWeight: 'bold' }}>&times;</button>
+        {/* ── TOOLBAR: SEARCH, FILTERS & ACTION BUTTONS ── */}
+        {(activeTab === 'ready-listings' || activeTab === 'offplan-listings') && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.8rem', flexWrap: 'wrap', gap: '1rem' }}>
+            
+            {/* Search Input */}
+            <div style={{ position: 'relative', flex: '1', minWidth: '280px', maxWidth: '420px' }}>
+              <Search size={16} color="#8E9BAE" style={{ position: 'absolute', left: '0.9rem', top: '50%', transform: 'translateY(-50%)' }} />
+              <input
+                type="text"
+                placeholder="Search by title, location, developer, price..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="admin-input-luxury"
+                style={{ paddingLeft: '2.5rem' }}
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  style={{ position: 'absolute', right: '0.8rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#8E9BAE', cursor: 'pointer' }}
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {/* Category and Starred Filters */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+              {['all', 'villas', 'penthouses', 'apartments'].map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`admin-pill-filter ${selectedCategory === cat ? 'active' : ''}`}
+                >
+                  {cat}
+                </button>
+              ))}
+              <button
+                onClick={() => setStarredOnlyFilter(!starredOnlyFilter)}
+                className={`admin-pill-filter ${starredOnlyFilter ? 'active' : ''}`}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+              >
+                <Star size={12} fill={starredOnlyFilter ? '#C5A880' : 'none'} color={starredOnlyFilter ? '#C5A880' : 'currentColor'} /> Starred Only
+              </button>
+            </div>
+
+            {/* Quick Actions */}
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <button
+                onClick={() => handleOpenCreateForm(activeTab === 'offplan-listings' ? 'off-plan' : 'ready')}
+                className="admin-btn-gold"
+              >
+                <Plus size={15} /> Add {activeTab === 'offplan-listings' ? 'Catalog' : 'Property'}
+              </button>
+
+              <button
+                onClick={() => setIsUploadOptionOpen(true)}
+                className="admin-btn-dark"
+                disabled={scanningDoc}
+                style={{ borderColor: '#10B981', color: '#10B981' }}
+              >
+                <Sparkles size={14} /> {scanningDoc ? 'Scanning...' : 'AI Scan'}
+              </button>
+            </div>
+
           </div>
         )}
-        {successMsg && (
-          <div style={{ background: '#f0fdf4', border: '1px solid #dcfce7', color: '#15803d', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between' }}>
-            <span>✓ {successMsg}</span>
-            <button onClick={() => setSuccessMsg('')} style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#15803d', fontWeight: 'bold' }}>&times;</button>
-          </div>
-        )}
 
-        {/* Stats Grid */}
-        <div className="admin-stats-grid" style={{ display: 'grid', gap: '1.5rem', marginBottom: '3rem' }}>
-          <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Total Properties</span>
-            <strong style={{ fontSize: '2.2rem', marginTop: '0.5rem', color: 'var(--text-dark)' }}>{totalProperties}</strong>
-          </div>
-          <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Active Listings</span>
-            <strong style={{ fontSize: '2.2rem', marginTop: '0.5rem', color: 'var(--primary-dark)' }}>{activeProperties}</strong>
-          </div>
-          <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Total Inquiries</span>
-            <strong style={{ fontSize: '2.2rem', marginTop: '0.5rem', color: 'var(--text-dark)' }}>{totalInquiries}</strong>
-          </div>
-          <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Pending Follow-ups</span>
-            <strong style={{ fontSize: '2.2rem', marginTop: '0.5rem', color: '#1A1A1A' }}>{totalPendingInquiries}</strong>
-          </div>
-        </div>
-
-        {/* Navigation Tabs */}
-        <div className="admin-tabs">
-          <span 
-            className={`tab ${activeTab === 'ready-listings' ? 'active' : ''}`} 
-            onClick={() => { setActiveTab('ready-listings'); setSearchQuery(''); }}
-            style={{ fontSize: '1rem', paddingBottom: '0.8rem', cursor: 'pointer', borderBottom: activeTab === 'ready-listings' ? '2px solid var(--primary-dark)' : 'none', fontWeight: activeTab === 'ready-listings' ? 600 : 400 }}
-          >
-            Ready Properties ({readyPropertiesCount})
-          </span>
-          <span 
-            className={`tab ${activeTab === 'offplan-listings' ? 'active' : ''}`} 
-            onClick={() => { setActiveTab('offplan-listings'); setSearchQuery(''); }}
-            style={{ fontSize: '1rem', paddingBottom: '0.8rem', cursor: 'pointer', borderBottom: activeTab === 'offplan-listings' ? '2px solid var(--primary-dark)' : 'none', fontWeight: activeTab === 'offplan-listings' ? 600 : 400 }}
-          >
-            Off-Plan Properties ({offPlanPropertiesCount})
-          </span>
-          <span 
-            className={`tab ${activeTab === 'inquiries' ? 'active' : ''}`} 
-            onClick={() => { setActiveTab('inquiries'); setSearchQuery(''); }}
-            style={{ fontSize: '1rem', paddingBottom: '0.8rem', cursor: 'pointer', borderBottom: activeTab === 'inquiries' ? '2px solid var(--primary-dark)' : 'none', fontWeight: activeTab === 'inquiries' ? 600 : 400 }}
-          >
-            Client Inquiries ({totalPendingInquiries})
-          </span>
-          <span 
-            className={`tab ${activeTab === 'blogs' ? 'active' : ''}`} 
-            onClick={() => { setActiveTab('blogs'); setSearchQuery(''); }}
-            style={{ fontSize: '1rem', paddingBottom: '0.8rem', cursor: 'pointer', borderBottom: activeTab === 'blogs' ? '2px solid var(--primary-dark)' : 'none', fontWeight: activeTab === 'blogs' ? 600 : 400 }}
-          >
-            Blog Posts ({blogs.length})
-          </span>
-        </div>
-
-        {/* Content Panels */}
-        {loading ? (
-          <div style={{ textAlign: 'center', padding: '4rem' }}>
-            <p style={{ color: 'var(--text-muted)' }}>Retrieving data from Render Database...</p>
-          </div>
-        ) : (
-          <div>
-            {(activeTab === 'ready-listings' || activeTab === 'offplan-listings') && (
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-                  {/* Local Search input */}
-                  <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
-                    <input 
-                      type="text" 
-                      placeholder="Search by title, location or category..."
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem 1rem 0.75rem 2.5rem',
-                        borderRadius: '8px',
-                        border: '1px solid var(--border-color)',
-                        outline: 'none',
-                        fontSize: '0.9rem',
-                        boxSizing: 'border-box'
-                      }}
-                    />
-                    <span style={{ position: 'absolute', left: '0.9rem', top: '50%', transform: 'translateY(-50%)', fontSize: '1rem', opacity: 0.5 }}>🔍</span>
-                  </div>
-                  {isLakshay && (
-                    <div style={{ display: 'flex', gap: '0.8rem' }}>
-                      <button onClick={handleOpenCreateForm} className="btn-solid">
-                        + ADD PROPERTY
-                      </button>
-                      <button 
-                        onClick={() => setIsUploadOptionOpen(true)} 
-                        className="btn-solid" 
-                        disabled={scanningDoc}
-                        style={{ background: '#059669', borderColor: '#059669', opacity: scanningDoc ? 0.7 : 1 }}
-                      >
-                        {scanningDoc ? 'SCANNING...' : '⚡ UPLOAD PROPERTY'}
-                      </button>
-                      <input 
-                        ref={docUploadInputRef} 
-                        type="file" 
-                        accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*" 
-                        onChange={handleUploadDoc} 
-                        style={{ display: 'none' }} 
-                      />
-                    </div>
-                  )}
-                </div>
-
-                {/* Desktop view: Table */}
-                <div className="admin-desktop-view">
-                  <div className="glass-panel admin-table-container" style={{ padding: '1rem' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                      <thead>
-                        <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
-                          <th style={{ padding: '1rem' }}>Property</th>
-                          <th style={{ padding: '1rem' }}>Category</th>
-                          <th style={{ padding: '1rem' }}>Type</th>
-                          <th style={{ padding: '1rem' }}>Location</th>
-                          <th style={{ padding: '1rem' }}>Price</th>
-                          <th style={{ padding: '1rem' }}>Status</th>
-                          <th style={{ padding: '1rem', textAlign: 'center' }}>Highlight</th>
-                          <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {getFilteredList(activeTab === 'ready-listings' ? readyProperties : offPlanProperties).length === 0 ? (
-                          <tr>
-                            <td colSpan="8" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No properties found. Try a different search query or add a property!</td>
-                          </tr>
-                        ) : (
-                          getFilteredList(activeTab === 'ready-listings' ? readyProperties : offPlanProperties).map((prop) => {
-                            const floorsArray = sanitizeFloorsArray(prop.floors);
-                            let totalFlats = 0;
-                            floorsArray.forEach(lvl => {
-                              if (lvl.flats && Array.isArray(lvl.flats)) {
-                                totalFlats += lvl.flats.length;
-                              }
-                            });
-
-                            return (
-                              <tr key={prop.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
-                                <td style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                  <img src={prop.image} alt={prop.title} style={{ width: '50px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={(e) => { e.target.src = '/listing_villa.webp' }} />
-                                  <div>
-                                    <div style={{ fontWeight: 600, color: 'var(--text-dark)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                                      {prop.title}
-                                      {prop.starred && <span style={{ color: '#000000', fontSize: '1.1rem' }} title="Starred Property">★</span>}
-                                    </div>
-                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                                      🛏️ {prop.beds} Beds | 🚿 {prop.baths} Baths{prop.size ? ` | 📏 ${prop.size}` : ''} | 🏢 {totalFlats} Total Flats
-                                    </div>
-                                  </div>
-                                </td>
-                                <td style={{ padding: '1rem', textTransform: 'capitalize' }}>{prop.category}</td>
-                                <td style={{ padding: '1rem', textTransform: 'capitalize' }}>{prop.type}</td>
-                                <td style={{ padding: '1rem' }}>{prop.location}</td>
-                                <td style={{ padding: '1rem', fontWeight: 600 }}>{prop.price}</td>
-                                <td style={{ padding: '1rem' }}>
-                                  <span style={{
-                                    padding: '0.2rem 0.6rem',
-                                    borderRadius: '20px',
-                                    fontSize: '0.75rem',
-                                    fontWeight: 600,
-                                    background: prop.status === 'Available' ? '#d1fae5' : prop.status === 'Sold' ? '#f3f4f6' : '#fef3c7',
-                                    color: prop.status === 'Available' ? '#065f46' : prop.status === 'Sold' ? '#374151' : '#92400e'
-                                  }}>
-                                    {prop.status}
-                                  </span>
-                                </td>
-                                <td style={{ padding: '1rem', textAlign: 'center' }}>
-                                  <button 
-                                    onClick={() => handleToggleStarred(prop)}
-                                    style={{
-                                      background: (prop.starred === true || prop.starred === 'true') ? '#000000' : 'rgba(0, 0, 0, 0.08)',
-                                      border: 'none',
-                                      borderRadius: '20px',
-                                      width: '44px',
-                                      height: '24px',
-                                      position: 'relative',
-                                      cursor: 'pointer',
-                                      padding: 0,
-                                      display: 'inline-flex',
-                                      alignItems: 'center',
-                                      transition: 'background-color 0.3s ease'
-                                    }}
-                                    title={(prop.starred === true || prop.starred === 'true') ? 'Remove from Curated Highlights' : 'Add to Curated Highlights'}
-                                  >
-                                    <span style={{
-                                      display: 'block',
-                                      width: '18px',
-                                      height: '18px',
-                                      borderRadius: '50%',
-                                      background: '#FFFFFF',
-                                      position: 'absolute',
-                                      left: (prop.starred === true || prop.starred === 'true') ? '22px' : '4px',
-                                      transition: 'left 0.3s ease',
-                                      boxShadow: '0 1px 3px rgba(0,0,0,0.15)'
-                                    }} />
-                                  </button>
-                                </td>
-                                <td style={{ padding: '1rem', textAlign: 'right' }}>
-                                  <button 
-                                    onClick={() => handleOpenEditForm(prop)} 
-                                    style={{ marginRight: '0.5rem', background: 'transparent', border: '1px solid var(--primary-color)', color: 'var(--primary-dark)', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
-                                  >
-                                    Edit
-                                  </button>
-                                  <button 
-                                    onClick={() => handlePropertyDelete(prop.id, prop.title)} 
-                                    style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
-                                  >
-                                    Delete
-                                  </button>
-                                </td>
-                              </tr>
-                            );
-                          })
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Mobile view: Cards */}
-                <div className="admin-mobile-view">
-                  {getFilteredList(activeTab === 'ready-listings' ? readyProperties : offPlanProperties).length === 0 ? (
-                    <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-                      No properties found.
-                    </div>
-                  ) : (
-                    getFilteredList(activeTab === 'ready-listings' ? readyProperties : offPlanProperties).map((prop) => {
-                      const floorsArray = sanitizeFloorsArray(prop.floors);
-                      let totalFlats = 0;
-                      floorsArray.forEach(lvl => {
-                        if (lvl.flats && Array.isArray(lvl.flats)) {
-                          totalFlats += lvl.flats.length;
-                        }
-                      });
+        {/* ── TAB 1 & 2: LISTINGS & CATALOGS TABLE ── */}
+        {(activeTab === 'ready-listings' || activeTab === 'offplan-listings') && (
+          <div className="admin-glass-card" style={{ overflow: 'hidden' }}>
+            {loading ? (
+              <div style={{ textAlign: 'center', padding: '5rem 2rem' }}>
+                <RefreshCw size={28} className="animate-spin" style={{ margin: '0 auto 1rem', color: '#C5A880' }} />
+                <p style={{ color: '#8E9BAE', fontSize: '0.9rem' }}>Loading portfolio from cloud database...</p>
+              </div>
+            ) : displayedListings.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+                <Building2 size={36} color="#475569" style={{ margin: '0 auto 1rem' }} />
+                <h3 style={{ color: '#FFFFFF', fontFamily: 'var(--font-serif)', fontSize: '1.25rem' }}>No listings found</h3>
+                <p style={{ color: '#64748B', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+                  {searchQuery ? `No properties matched "${searchQuery}".` : 'No properties in this category.'}
+                </p>
+                <button onClick={() => handleOpenCreateForm(activeTab === 'offplan-listings' ? 'off-plan' : 'ready')} className="admin-btn-gold">
+                  <Plus size={14} /> Create Listing
+                </button>
+              </div>
+            ) : (
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '950px' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)', color: '#8E9BAE', fontSize: '0.7rem', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
+                      <th style={{ padding: '1rem 1.25rem' }}>Residence / Catalog</th>
+                      <th style={{ padding: '1rem' }}>Category</th>
+                      <th style={{ padding: '1rem' }}>Location</th>
+                      <th style={{ padding: '1rem' }}>Pricing</th>
+                      <th style={{ padding: '1rem' }}>Status</th>
+                      <th style={{ padding: '1rem', textAlign: 'center' }}>Curated</th>
+                      <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {displayedListings.map(prop => {
+                      const propImages = ensureArray(prop.images);
+                      const coverImg = prop.image || propImages[0] || '/listing_villa.webp';
+                      const isStarred = prop.starred === true || prop.starred === 'true';
 
                       return (
-                        <div key={prop.id} className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', background: '#FFFFFF' }}>
-                          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                            <img src={prop.image} alt={prop.title} style={{ width: '60px', height: '50px', objectFit: 'cover', borderRadius: '6px' }} onError={(e) => { e.target.src = '/listing_villa.webp' }} />
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap', wordBreak: 'break-word' }}>
-                                {prop.title}
-                                {prop.starred && <span style={{ color: '#000000', fontSize: '1.1rem' }}>★</span>}
-                              </div>
-                              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                                📍 {prop.location}
-                              </div>
-                            </div>
-                            <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--primary-dark)', whiteSpace: 'nowrap' }}>
-                              {prop.price}
-                            </div>
-                          </div>
-
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)', padding: '0.5rem 0', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                            <div>🛏️ {prop.beds} | 🚿 {prop.baths} | 🏢 {totalFlats} Flats</div>
-                            <span style={{
-                              padding: '0.15rem 0.5rem',
-                              borderRadius: '20px',
-                              fontSize: '0.7rem',
-                              fontWeight: 600,
-                              background: prop.status === 'Available' ? '#d1fae5' : prop.status === 'Sold' ? '#f3f4f6' : '#fef3c7',
-                              color: prop.status === 'Available' ? '#065f46' : prop.status === 'Sold' ? '#374151' : '#92400e'
-                            }}>
-                              {prop.status}
-                            </span>
-                          </div>
-
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                              <span>Highlight:</span>
-                              <button 
-                                onClick={() => handleToggleStarred(prop)}
-                                style={{
-                                  background: (prop.starred === true || prop.starred === 'true') ? '#000000' : 'rgba(0, 0, 0, 0.08)',
-                                  border: 'none',
-                                  borderRadius: '20px',
-                                  width: '36px',
-                                  height: '20px',
-                                  position: 'relative',
-                                  cursor: 'pointer',
-                                  padding: 0
-                                }}
-                              >
-                                <span style={{
-                                  display: 'block',
-                                  width: '12px',
-                                  height: '12px',
-                                  borderRadius: '50%',
-                                  background: '#FFFFFF',
-                                  position: 'absolute',
-                                  left: (prop.starred === true || prop.starred === 'true') ? '20px' : '4px',
-                                  transition: 'left 0.3s ease'
-                                }} />
-                              </button>
-                            </div>
-                            <div style={{ display: 'flex', gap: '0.5rem' }}>
-                              <button 
-                                onClick={() => handleOpenEditForm(prop)} 
-                                style={{ background: 'transparent', border: '1px solid var(--primary-color)', color: 'var(--primary-dark)', padding: '0.35rem 0.7rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600 }}
-                              >
-                                Edit
-                              </button>
-                              <button 
-                                onClick={() => handlePropertyDelete(prop.id, prop.title)} 
-                                style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.35rem 0.7rem', borderRadius: '6px', fontSize: '0.75rem' }}
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'inquiries' && (
-              <div>
-                <h3 style={{ fontSize: '1.5rem', fontFamily: 'var(--font-serif)', marginBottom: '0.5rem' }}>Property Inquiries ({propertyInquiries.length})</h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Inquiries from clients interested in specific property types.</p>
-                
-                {/* Desktop view: Table */}
-                <div className="admin-desktop-view">
-                  <div className="glass-panel admin-table-container" style={{ padding: '1rem', marginBottom: '3rem' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                      <thead>
-                        <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
-                          <th style={{ padding: '1rem' }}>Client</th>
-                          <th style={{ padding: '1rem' }}>Contact Info</th>
-                          <th style={{ padding: '1rem' }}>Interest Type</th>
-                          <th style={{ padding: '1rem' }}>Date Received</th>
-                          <th style={{ padding: '1rem' }}>Status</th>
-                          <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {propertyInquiries.length === 0 ? (
-                          <tr>
-                            <td colSpan="6" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No property inquiries found.</td>
-                          </tr>
-                        ) : (
-                          propertyInquiries.map((inq) => (
-                            <tr key={inq.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
-                              <td style={{ padding: '1rem', fontWeight: 600, color: 'var(--text-dark)' }}>{inq.name}</td>
-                              <td style={{ padding: '1rem' }}>
-                                <div>✉ {inq.email}</div>
-                                {inq.phone && <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>☎ {inq.phone}</div>}
-                                {inq.message && (
-                                  <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: 'var(--text-dark)', background: 'rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)', padding: '0.5rem 0.75rem', borderRadius: '4px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', maxWidth: '320px', lineHeight: 1.4 }}>
-                                    {inq.message}
+                        <tr key={prop.id} className="admin-table-row">
+                          
+                          {/* Property Info & Thumbnail */}
+                          <td style={{ padding: '1rem 1.25rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                              
+                              <div style={{ position: 'relative', width: '70px', height: '52px', borderRadius: '4px', overflow: 'hidden', flexShrink: 0, backgroundColor: '#1E232F' }}>
+                                <img
+                                  src={coverImg}
+                                  alt=""
+                                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                  onError={e => { e.target.src = '/listing_villa.webp'; }}
+                                />
+                                {propImages.length > 1 && (
+                                  <div style={{ position: 'absolute', bottom: '2px', right: '3px', background: 'rgba(0,0,0,0.75)', color: '#fff', fontSize: '0.55rem', padding: '0.1rem 0.35rem', borderRadius: '2px', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                                    <ImageIcon size={9} /> {propImages.length}
                                   </div>
                                 )}
-                              </td>
-                              <td style={{ padding: '1rem', textTransform: 'capitalize' }}>
-                                {inq.property_type === 'villa' ? 'Luxury Villas' : 
-                                 inq.property_type === 'apartment' ? 'Apartments' : 
-                                 inq.property_type === 'offplan' ? 'Off-Plan' : 
-                                 inq.property_type === 'commercial' ? 'Commercial' : inq.property_type}
-                              </td>
-                              <td style={{ padding: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                                {new Date(inq.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
-                              </td>
-                              <td style={{ padding: '1rem' }}>
-                                <select 
-                                  value={inq.status} 
-                                  onChange={(e) => handleInquiryStatusChange(inq.id, e.target.value)}
-                                  style={{
-                                    padding: '0.3rem 0.6rem',
-                                    borderRadius: '6px',
-                                    border: '1px solid var(--border-color)',
-                                    fontSize: '0.85rem',
-                                    background: (inq.status === 'Pending' || inq.status === 'New') ? '#fef3c7' : inq.status === 'Contacted' ? '#dbeafe' : '#d1fae5',
-                                    color: (inq.status === 'Pending' || inq.status === 'New') ? '#92400e' : inq.status === 'Contacted' ? '#1e40af' : '#065f46',
-                                    fontWeight: 600,
-                                    cursor: 'pointer'
-                                  }}
-                                >
-                                  <option value="Pending">Pending</option>
-                                  <option value="Contacted">Contacted</option>
-                                  <option value="Closed">Closed</option>
-                                </select>
-                              </td>
-                              <td style={{ padding: '1rem', textAlign: 'right' }}>
-                                <button 
-                                  onClick={() => handleInquiryDelete(inq.id, inq.name)} 
-                                  style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
-                                >
-                                  Delete
-                                </button>
-                              </td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+                              </div>
 
-                {/* Mobile view: Cards */}
-                <div className="admin-mobile-view" style={{ marginBottom: '3rem' }}>
-                  {propertyInquiries.length === 0 ? (
-                    <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-                      No property inquiries found.
-                    </div>
-                  ) : (
-                    propertyInquiries.map((inq) => (
-                      <div key={inq.id} className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', background: '#FFFFFF' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                          <div>
-                            <div style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.95rem' }}>{inq.name}</div>
-                            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
-                              📅 {new Date(inq.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+                              <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                  <h4 style={{ color: '#FFFFFF', fontSize: '0.88rem', fontWeight: 600, margin: 0, letterSpacing: '0.3px' }}>
+                                    {prop.title}
+                                  </h4>
+                                  {isStarred && (
+                                    <span style={{ color: '#EAB308', fontSize: '0.8rem' }} title="Curated on Homepage">★</span>
+                                  )}
+                                </div>
+                                <div style={{ fontSize: '0.72rem', color: '#8E9BAE', marginTop: '0.2rem' }}>
+                                  {prop.type === 'off-plan' ? (
+                                    <span>{prop.bedrooms_range || 'Multi-bedroom'} • {prop.handover || 'Handover TBA'}</span>
+                                  ) : (
+                                    <span>{prop.beds} Beds • {prop.baths} Baths • {prop.size || 'Private Estate'}</span>
+                                  )}
+                                </div>
+                              </div>
+
                             </div>
-                          </div>
-                          <select 
-                            value={inq.status} 
-                            onChange={(e) => handleInquiryStatusChange(inq.id, e.target.value)}
-                            style={{
-                              padding: '0.25rem 0.5rem',
-                              borderRadius: '6px',
-                              border: '1px solid var(--border-color)',
-                              fontSize: '0.78rem',
-                              background: (inq.status === 'Pending' || inq.status === 'New') ? '#fef3c7' : inq.status === 'Contacted' ? '#dbeafe' : '#d1fae5',
-                              color: (inq.status === 'Pending' || inq.status === 'New') ? '#92400e' : inq.status === 'Contacted' ? '#1e40af' : '#065f46',
+                          </td>
+
+                          {/* Category / Type */}
+                          <td style={{ padding: '1rem' }}>
+                            <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#CBD5E1', background: 'rgba(255, 255, 255, 0.04)', padding: '0.25rem 0.6rem', borderRadius: '3px' }}>
+                              {prop.category}
+                            </span>
+                          </td>
+
+                          {/* Location */}
+                          <td style={{ padding: '1rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#94A3B8', fontSize: '0.8rem' }}>
+                              <MapPin size={13} color="#C5A880" />
+                              <span>{prop.location || 'Dubai, UAE'}</span>
+                            </div>
+                          </td>
+
+                          {/* Price */}
+                          <td style={{ padding: '1rem' }}>
+                            <div style={{ color: '#C5A880', fontWeight: 600, fontSize: '0.9rem', letterSpacing: '0.5px' }}>
+                              {prop.price}
+                            </div>
+                          </td>
+
+                          {/* Status */}
+                          <td style={{ padding: '1rem' }}>
+                            <span style={{
+                              fontSize: '0.7rem',
                               fontWeight: 600,
-                              cursor: 'pointer'
-                            }}
-                          >
-                            <option value="Pending">Pending</option>
-                            <option value="Contacted">Contacted</option>
-                            <option value="Closed">Closed</option>
-                          </select>
+                              letterSpacing: '1px',
+                              textTransform: 'uppercase',
+                              padding: '0.25rem 0.65rem',
+                              borderRadius: '3px',
+                              background: (prop.status || 'Available') === 'Available' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                              color: (prop.status || 'Available') === 'Available' ? '#34D399' : '#FBBF24',
+                              border: `1px solid ${(prop.status || 'Available') === 'Available' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(245, 158, 11, 0.3)'}`
+                            }}>
+                              {prop.status || 'Available'}
+                            </span>
+                          </td>
+
+                          {/* Curated Star Toggle */}
+                          <td style={{ padding: '1rem', textAlign: 'center' }}>
+                            <button
+                              onClick={() => handleToggleStarred(prop)}
+                              style={{
+                                background: isStarred ? 'rgba(234, 179, 8, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                                border: `1px solid ${isStarred ? '#EAB308' : 'rgba(255, 255, 255, 0.12)'}`,
+                                color: isStarred ? '#EAB308' : '#64748B',
+                                padding: '0.35rem 0.75rem',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                                fontSize: '0.72rem',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.3rem',
+                                transition: 'all 0.2s ease'
+                              }}
+                              title={isStarred ? 'Remove from Homepage Highlight' : 'Feature on Homepage Highlight'}
+                            >
+                              <Star size={13} fill={isStarred ? '#EAB308' : 'none'} />
+                              <span>{isStarred ? 'Featured' : 'Standard'}</span>
+                            </button>
+                          </td>
+
+                          {/* Action Buttons */}
+                          <td style={{ padding: '1rem', textAlign: 'right' }}>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                              
+                              <a
+                                href={`/property/${prop.id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                  background: 'rgba(255, 255, 255, 0.05)',
+                                  border: '1px solid rgba(255, 255, 255, 0.12)',
+                                  color: '#CBD5E1',
+                                  padding: '0.35rem 0.65rem',
+                                  borderRadius: '4px',
+                                  textDecoration: 'none',
+                                  fontSize: '0.72rem',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '0.3rem'
+                                }}
+                                title="View on Live Website"
+                              >
+                                <ArrowUpRight size={13} /> View
+                              </a>
+
+                              <button
+                                onClick={() => handleOpenEditForm(prop)}
+                                className="admin-btn-gold"
+                                style={{ padding: '0.35rem 0.75rem', fontSize: '0.72rem' }}
+                              >
+                                <Edit3 size={13} /> Edit
+                              </button>
+
+                              <button
+                                onClick={() => handlePropertyDelete(prop.id, prop.title)}
+                                style={{
+                                  background: 'rgba(239, 68, 68, 0.1)',
+                                  border: '1px solid rgba(239, 68, 68, 0.25)',
+                                  color: '#F87171',
+                                  padding: '0.35rem 0.6rem',
+                                  borderRadius: '4px',
+                                  cursor: 'pointer',
+                                  display: 'inline-flex',
+                                  alignItems: 'center'
+                                }}
+                                title="Delete Listing"
+                              >
+                                <Trash2 size={13} />
+                              </button>
+
+                            </div>
+                          </td>
+
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── TAB 3: CLIENT INQUIRIES & INVESTOR LEADS ── */}
+        {activeTab === 'inquiries' && (
+          <div className="admin-glass-card" style={{ padding: '1.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+              <div>
+                <h3 style={{ color: '#FFFFFF', fontFamily: 'var(--font-serif)', fontSize: '1.4rem', margin: 0 }}>
+                  Client Advisory Enquiries
+                </h3>
+                <p style={{ color: '#8E9BAE', fontSize: '0.82rem', margin: '0.25rem 0 0' }}>
+                  Investor requests received from the private advisory booking modal, floor plan gates, and contact concierge.
+                </p>
+              </div>
+
+              <div style={{ fontSize: '0.8rem', color: '#C5A880', background: 'rgba(197, 168, 128, 0.1)', padding: '0.45rem 1rem', borderRadius: '4px', border: '1px solid rgba(197, 168, 128, 0.2)' }}>
+                {inquiries.length} Total Leads Recorded
+              </div>
+            </div>
+
+            {inquiries.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+                <Mail size={36} color="#475569" style={{ margin: '0 auto 1rem' }} />
+                <p style={{ color: '#8E9BAE' }}>No client enquiries received yet.</p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {inquiries.map(inq => {
+                  const status = inq.status || 'Pending';
+                  const isPending = status.toLowerCase() === 'pending';
+                  const dateStr = inq.created_at ? new Date(inq.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+                  const cleanPhone = (inq.phone || '').replace(/[^0-9+]/g, '');
+
+                  return (
+                    <div
+                      key={inq.id}
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.03)',
+                        border: `1px solid ${isPending ? 'rgba(245, 158, 11, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                        borderRadius: '6px',
+                        padding: '1.25rem 1.5rem',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                        gap: '1.2rem'
+                      }}
+                    >
+                      <div style={{ flex: '1', minWidth: '280px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.4rem' }}>
+                          <h4 style={{ color: '#FFFFFF', fontSize: '1rem', fontWeight: 600, margin: 0 }}>
+                            {inq.name}
+                          </h4>
+                          <span style={{
+                            fontSize: '0.65rem',
+                            padding: '0.15rem 0.5rem',
+                            borderRadius: '3px',
+                            fontWeight: 700,
+                            letterSpacing: '1px',
+                            textTransform: 'uppercase',
+                            background: isPending ? 'rgba(245, 158, 11, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+                            color: isPending ? '#F59E0B' : '#10B981',
+                            border: `1px solid ${isPending ? 'rgba(245, 158, 11, 0.3)' : 'rgba(16, 185, 129, 0.3)'}`
+                          }}>
+                            {status}
+                          </span>
+                          {dateStr && <span style={{ color: '#64748B', fontSize: '0.72rem' }}>{dateStr}</span>}
                         </div>
 
-                        <div style={{ borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)', padding: '0.5rem 0', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                          <div style={{ wordBreak: 'break-all' }}>✉ <a href={`mailto:${inq.email}`} style={{ color: 'var(--primary-dark)', textDecoration: 'none' }}>{inq.email}</a></div>
-                          {inq.phone && <div>☎ <a href={`tel:${inq.phone}`} style={{ color: 'var(--primary-dark)', textDecoration: 'none' }}>{inq.phone}</a></div>}
-                          <div style={{ marginTop: '0.25rem' }}>
-                            <strong>Interest:</strong> <span style={{ textTransform: 'capitalize' }}>
-                              {inq.property_type === 'villa' ? 'Luxury Villas' : 
-                               inq.property_type === 'apartment' ? 'Apartments' : 
-                               inq.property_type === 'offplan' ? 'Off-Plan' : 
-                               inq.property_type === 'commercial' ? 'Commercial' : inq.property_type}
+                        <div style={{ display: 'flex', gap: '1.2rem', color: '#94A3B8', fontSize: '0.82rem', marginBottom: '0.6rem', flexWrap: 'wrap' }}>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                            <Mail size={13} color="#C5A880" /> {inq.email}
+                          </span>
+                          {inq.phone && (
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                              <Phone size={13} color="#C5A880" /> {inq.phone}
                             </span>
-                          </div>
+                          )}
+                          {inq.property_id && (
+                            <span style={{ color: '#C5A880' }}>
+                              Target Property Ref: #{inq.property_id}
+                            </span>
+                          )}
                         </div>
 
                         {inq.message && (
-                          <div style={{ fontSize: '0.8rem', color: 'var(--text-dark)', background: '#fafafa', padding: '0.5rem 0.75rem', borderRadius: '6px', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                            {inq.message}
+                          <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '0.75rem 1rem', borderRadius: '4px', fontSize: '0.82rem', color: '#CBD5E1', fontStyle: 'italic' }}>
+                            "{inq.message}"
                           </div>
                         )}
+                      </div>
 
-                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                          <button 
-                            onClick={() => handleInquiryDelete(inq.id, inq.name)} 
-                            style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.35rem 0.7rem', borderRadius: '6px', fontSize: '0.75rem' }}
+                      {/* Inquiry Quick Actions */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+                        {cleanPhone && (
+                          <a
+                            href={`https://wa.me/${cleanPhone.replace('+', '')}?text=Hello%20${encodeURIComponent(inq.name)}%2C%20thank%20you%20for%20contacting%20Sharan%20Estates%20Private%20Advisory.`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              background: '#059669',
+                              color: '#fff',
+                              padding: '0.45rem 0.85rem',
+                              borderRadius: '4px',
+                              fontSize: '0.72rem',
+                              fontWeight: 600,
+                              textDecoration: 'none',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.4rem'
+                            }}
                           >
-                            Delete
+                            <MessageSquare size={13} /> WhatsApp
+                          </a>
+                        )}
+
+                        <a
+                          href={`mailto:${inq.email}?subject=Sharan%20Estates%20Private%20Advisory%20Enquiry`}
+                          className="admin-btn-dark"
+                          style={{ padding: '0.45rem 0.85rem', textDecoration: 'none' }}
+                        >
+                          <Mail size={13} /> Email
+                        </a>
+
+                        <select
+                          value={status}
+                          onChange={e => handleUpdateInquiryStatus(inq.id, e.target.value)}
+                          style={{
+                            background: '#1A1D24',
+                            border: '1px solid rgba(255, 255, 255, 0.15)',
+                            color: '#FFFFFF',
+                            padding: '0.45rem 0.65rem',
+                            borderRadius: '4px',
+                            fontSize: '0.72rem',
+                            cursor: 'pointer',
+                            outline: 'none'
+                          }}
+                        >
+                          <option value="Pending">Pending</option>
+                          <option value="In Progress">In Progress</option>
+                          <option value="Contacted">Contacted</option>
+                          <option value="Closed">Closed</option>
+                        </select>
+
+                        <button
+                          onClick={() => handleDeleteInquiry(inq.id)}
+                          style={{ background: 'none', border: 'none', color: '#64748B', cursor: 'pointer', padding: '0.4rem' }}
+                          title="Delete inquiry"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── TAB 4: BLOGS & EDITORIAL PUBLICATIONS ── */}
+        {activeTab === 'blogs' && (
+          <div className="admin-glass-card" style={{ padding: '1.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+              <div>
+                <h3 style={{ color: '#FFFFFF', fontFamily: 'var(--font-serif)', fontSize: '1.4rem', margin: 0 }}>
+                  Publications & Research Insights
+                </h3>
+                <p style={{ color: '#8E9BAE', fontSize: '0.82rem', margin: '0.25rem 0 0' }}>
+                  Manage editorial market intelligence, architectural whitepapers, and wealth reports.
+                </p>
+              </div>
+
+              <button onClick={handleOpenBlogCreate} className="admin-btn-gold">
+                <Plus size={14} /> New Publication
+              </button>
+            </div>
+
+            {blogs.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+                <FileText size={36} color="#475569" style={{ margin: '0 auto 1rem' }} />
+                <p style={{ color: '#8E9BAE' }}>No articles published yet.</p>
+              </div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' }}>
+                {blogs.map(blog => (
+                  <div
+                    key={blog.id}
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.03)',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
+                      borderRadius: '6px',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      flexDirection: 'column'
+                    }}
+                  >
+                    <div style={{ height: '160px', position: 'relative', backgroundColor: '#1E232F' }}>
+                      <img
+                        src={blog.image || '/areas/creek_harbour.webp'}
+                        alt=""
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                      <div style={{ position: 'absolute', top: '0.6rem', left: '0.6rem', background: 'rgba(0, 0, 0, 0.75)', color: '#C5A880', fontSize: '0.62rem', fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: '2px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                        {blog.category || 'Advisory'}
+                      </div>
+                      {blog.featured && (
+                        <div style={{ position: 'absolute', top: '0.6rem', right: '0.6rem', background: '#EAB308', color: '#000', fontSize: '0.6rem', fontWeight: 700, padding: '0.2rem 0.5rem', borderRadius: '2px', textTransform: 'uppercase' }}>
+                          Featured
+                        </div>
+                      )}
+                    </div>
+
+                    <div style={{ padding: '1.2rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                      <div style={{ color: '#64748B', fontSize: '0.72rem', marginBottom: '0.4rem' }}>
+                        {blog.date} • {blog.readTime || '5 min read'}
+                      </div>
+                      <h4 style={{ color: '#FFFFFF', fontSize: '0.98rem', fontWeight: 600, margin: '0 0 0.5rem', lineHeight: 1.4 }}>
+                        {blog.title}
+                      </h4>
+                      <p style={{ color: '#94A3B8', fontSize: '0.8rem', lineHeight: 1.5, margin: '0 0 1rem', flex: 1 }}>
+                        {blog.excerpt ? `${blog.excerpt.slice(0, 110)}...` : 'Comprehensive real estate insight.'}
+                      </p>
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '0.8rem' }}>
+                        <a
+                          href={`/blogs`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: '#C5A880', fontSize: '0.75rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
+                        >
+                          View in Blog <ArrowUpRight size={12} />
+                        </a>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <button onClick={() => handleOpenBlogEdit(blog)} className="admin-btn-dark" style={{ padding: '0.35rem 0.65rem' }}>
+                            <Edit3 size={13} /> Edit
+                          </button>
+                          <button onClick={() => handleBlogDelete(blog.id, blog.title)} style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', padding: '0.35rem' }}>
+                            <Trash2 size={14} />
                           </button>
                         </div>
                       </div>
-                    ))
-                  )}
-                </div>
-
-                <h3 style={{ fontSize: '1.5rem', fontFamily: 'var(--font-serif)', marginBottom: '0.5rem' }}>Consultation Requests ({consultationInquiries.length})</h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Private advisor booking requests from the portfolio consultation form.</p>
-                
-                {/* Desktop view: Table */}
-                <div className="admin-desktop-view">
-                  <div className="glass-panel admin-table-container" style={{ padding: '1rem' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                      <thead>
-                        <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
-                          <th style={{ padding: '1rem' }}>Client</th>
-                          <th style={{ padding: '1rem' }}>Contact Info</th>
-                          <th style={{ padding: '1rem' }}>Requested Details</th>
-                          <th style={{ padding: '1rem' }}>Date Received</th>
-                          <th style={{ padding: '1rem' }}>Status</th>
-                          <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {consultationInquiries.length === 0 ? (
-                          <tr>
-                            <td colSpan="6" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No consultation requests found.</td>
-                          </tr>
-                        ) : (
-                          consultationInquiries.map((inq) => {
-                            const details = getConsultationDetails(inq.message);
-                            return (
-                              <tr key={inq.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
-                                <td style={{ padding: '1rem', fontWeight: 600, color: 'var(--text-dark)' }}>{inq.name}</td>
-                                <td style={{ padding: '1rem' }}>
-                                  <div>✉ {inq.email}</div>
-                                  {inq.phone && <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>☎ {inq.phone}</div>}
-                                  {inq.message && (
-                                    <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: 'var(--text-dark)', background: 'rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)', padding: '0.5rem 0.75rem', borderRadius: '4px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', maxWidth: '320px', lineHeight: 1.4 }}>
-                                      {inq.message}
-                                    </div>
-                                  )}
-                                </td>
-                                <td style={{ padding: '1rem' }}>
-                                  {details.rawMessage ? (
-                                    <div style={{ color: 'var(--text-dark)', fontSize: '0.9rem' }}>{details.rawMessage}</div>
-                                  ) : (
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-                                      <div style={{ fontSize: '0.9rem' }}>💰 <strong>Budget:</strong> {details.budget}</div>
-                                      <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{details.mode}</div>
-                                    </div>
-                                  )}
-                                </td>
-                                <td style={{ padding: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                                  {new Date(inq.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
-                                </td>
-                                <td style={{ padding: '1rem' }}>
-                                  <select 
-                                    value={inq.status} 
-                                    onChange={(e) => handleInquiryStatusChange(inq.id, e.target.value)}
-                                    style={{
-                                      padding: '0.3rem 0.6rem',
-                                      borderRadius: '6px',
-                                      border: '1px solid var(--border-color)',
-                                      fontSize: '0.85rem',
-                                      background: (inq.status === 'Pending' || inq.status === 'New') ? '#fef3c7' : inq.status === 'Contacted' ? '#dbeafe' : '#d1fae5',
-                                      color: (inq.status === 'Pending' || inq.status === 'New') ? '#92400e' : inq.status === 'Contacted' ? '#1e40af' : '#065f46',
-                                      fontWeight: 600,
-                                      cursor: 'pointer'
-                                    }}
-                                  >
-                                    <option value="Pending">Pending</option>
-                                    <option value="Contacted">Contacted</option>
-                                    <option value="Closed">Closed</option>
-                                  </select>
-                                </td>
-                                <td style={{ padding: '1rem', textAlign: 'right' }}>
-                                  <button 
-                                    onClick={() => handleInquiryDelete(inq.id, inq.name)} 
-                                    style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
-                                  >
-                                    Delete
-                                  </button>
-                                </td>
-                              </tr>
-                            );
-                          })
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Mobile view: Cards */}
-                <div className="admin-mobile-view">
-                  {consultationInquiries.length === 0 ? (
-                    <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-                      No consultation requests found.
                     </div>
-                  ) : (
-                    consultationInquiries.map((inq) => {
-                      const details = getConsultationDetails(inq.message);
-                      return (
-                        <div key={inq.id} className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', background: '#FFFFFF' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                            <div>
-                              <div style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.95rem' }}>{inq.name}</div>
-                              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
-                                📅 {new Date(inq.created_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
-                              </div>
-                            </div>
-                            <select 
-                              value={inq.status} 
-                              onChange={(e) => handleInquiryStatusChange(inq.id, e.target.value)}
-                              style={{
-                                padding: '0.25rem 0.5rem',
-                                borderRadius: '6px',
-                                border: '1px solid var(--border-color)',
-                                fontSize: '0.78rem',
-                                background: (inq.status === 'Pending' || inq.status === 'New') ? '#fef3c7' : inq.status === 'Contacted' ? '#dbeafe' : '#d1fae5',
-                                color: (inq.status === 'Pending' || inq.status === 'New') ? '#92400e' : inq.status === 'Contacted' ? '#1e40af' : '#065f46',
-                                fontWeight: 600,
-                                cursor: 'pointer'
-                              }}
-                            >
-                              <option value="Pending">Pending</option>
-                              <option value="Contacted">Contacted</option>
-                              <option value="Closed">Closed</option>
-                            </select>
-                          </div>
-
-                          <div style={{ borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)', padding: '0.5rem 0', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                            <div style={{ wordBreak: 'break-all' }}>✉ <a href={`mailto:${inq.email}`} style={{ color: 'var(--primary-dark)', textDecoration: 'none' }}>{inq.email}</a></div>
-                            {inq.phone && <div>☎ <a href={`tel:${inq.phone}`} style={{ color: 'var(--primary-dark)', textDecoration: 'none' }}>{inq.phone}</a></div>}
-                          </div>
-
-                          <div style={{ fontSize: '0.82rem', color: 'var(--text-dark)' }}>
-                            {details.rawMessage ? (
-                              <div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{details.rawMessage}</div>
-                            ) : (
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-                                <div>💰 <strong>Budget:</strong> {details.budget}</div>
-                                <div style={{ color: 'var(--text-muted)' }}>📍 {details.mode}</div>
-                              </div>
-                            )}
-                          </div>
-
-                          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <button 
-                              onClick={() => handleInquiryDelete(inq.id, inq.name)} 
-                              style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.35rem 0.7rem', borderRadius: '6px', fontSize: '0.75rem' }}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
+                  </div>
+                ))}
               </div>
             )}
-
-            {/* ═══════ BLOGS TAB ═══════ */}
-            {activeTab === 'blogs' && (
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-                  <h3 style={{ fontSize: '1.5rem', fontFamily: 'var(--font-serif)' }}>Blog Management</h3>
-                  {isLakshay && (
-                    <button onClick={handleOpenBlogCreate} className="btn-solid" style={{ fontSize: '0.85rem', padding: '0.6rem 1.5rem' }}>+ New Blog Post</button>
-                  )}
-                </div>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Create, edit, and manage blog articles. Upload images, PDFs, and Word documents as attachments.</p>
-
-                {/* Desktop view: Table */}
-                <div className="admin-desktop-view">
-                  <div className="glass-panel admin-table-container" style={{ padding: '1rem' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                      <thead>
-                        <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>
-                          <th style={{ padding: '1rem' }}>Title</th>
-                          <th style={{ padding: '1rem' }}>Category</th>
-                          <th style={{ padding: '1rem' }}>Date</th>
-                          <th style={{ padding: '1rem', textAlign: 'center' }}>Featured</th>
-                          <th style={{ padding: '1rem', textAlign: 'center' }}>Files</th>
-                          <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {blogs.length === 0 ? (
-                          <tr><td colSpan="6" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No blog posts found. Click "+ New Blog Post" to create one.</td></tr>
-                        ) : (
-                          blogs.map((blog) => (
-                            <tr key={blog.id} style={{ borderBottom: '1px solid var(--border-color)', fontSize: '0.95rem' }}>
-                              <td style={{ padding: '1rem', maxWidth: '300px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                  {blog.image && (
-                                    <img src={blog.image} alt="" style={{ width: '45px', height: '45px', objectFit: 'cover', borderRadius: '6px', flexShrink: 0 }} />
-                                  )}
-                                  <div>
-                                    <div style={{ fontWeight: 600, color: 'var(--text-dark)', lineHeight: 1.3 }}>{blog.title}</div>
-                                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '2px' }}>{blog.readTime}</div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td style={{ padding: '1rem' }}>
-                                <span style={{ background: '#f0f0f0', padding: '0.25rem 0.6rem', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 500 }}>{blog.category}</span>
-                              </td>
-                              <td style={{ padding: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>{blog.date}</td>
-                              <td style={{ padding: '1rem', textAlign: 'center' }}>
-                                <div
-                                  onClick={() => handleToggleBlogFeatured(blog)}
-                                  style={{
-                                    width: '42px', height: '22px', borderRadius: '11px', cursor: 'pointer',
-                                    background: blog.featured ? 'var(--primary-dark)' : '#d1d5db',
-                                    position: 'relative', transition: 'background 0.3s', display: 'inline-block'
-                                  }}
-                                >
-                                  <div style={{
-                                    width: '18px', height: '18px', borderRadius: '50%', background: '#fff',
-                                    position: 'absolute', top: '2px', left: blog.featured ? '22px' : '2px',
-                                    transition: 'left 0.3s', boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
-                                  }} />
-                                </div>
-                              </td>
-                              <td style={{ padding: '1rem', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                {(blog.attachments || []).length > 0 ? `${blog.attachments.length} file${blog.attachments.length > 1 ? 's' : ''}` : '—'}
-                              </td>
-                              <td style={{ padding: '1rem', textAlign: 'right' }}>
-                                <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                                  <button onClick={() => handleOpenBlogEdit(blog)} style={{ background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-dark)', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}>Edit</button>
-                                  <button onClick={() => handleBlogDelete(blog.id, blog.title)} style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}>Delete</button>
-                                </div>
-                              </td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Mobile view: Cards */}
-                <div className="admin-mobile-view">
-                  {blogs.length === 0 ? (
-                    <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-                      No blog posts found. Click "+ New Blog Post" to create one.
-                    </div>
-                  ) : (
-                    blogs.map((blog) => (
-                      <div key={blog.id} className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', background: '#FFFFFF' }}>
-                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                          {blog.image && (
-                            <img src={blog.image} alt="" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '6px', flexShrink: 0 }} />
-                          )}
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontWeight: 600, color: 'var(--text-dark)', fontSize: '0.95rem', wordBreak: 'break-word', lineHeight: 1.3 }}>
-                              {blog.title}
-                            </div>
-                            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                              <span>{blog.date}</span> • <span>{blog.readTime}</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)', padding: '0.5rem 0', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                          <span style={{ background: '#f3f4f6', padding: '0.2rem 0.5rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-dark)' }}>
-                            {blog.category}
-                          </span>
-                          <div>
-                            📄 {(blog.attachments || []).length > 0 ? `${blog.attachments.length} attachment${blog.attachments.length > 1 ? 's' : ''}` : 'No attachments'}
-                          </div>
-                        </div>
-
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                            <span>Featured:</span>
-                            <div
-                              onClick={() => handleToggleBlogFeatured(blog)}
-                              style={{
-                                width: '38px', height: '20px', borderRadius: '10px', cursor: 'pointer',
-                                background: blog.featured ? 'var(--primary-dark)' : '#d1d5db',
-                                position: 'relative', transition: 'background 0.3s', display: 'inline-block'
-                              }}
-                            >
-                              <div style={{
-                                width: '16px', height: '16px', borderRadius: '50%', background: '#fff',
-                                position: 'absolute', top: '2px', left: blog.featured ? '20px' : '2px',
-                                transition: 'left 0.3s', boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
-                              }} />
-                            </div>
-                          </div>
-                          <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            <button onClick={() => handleOpenBlogEdit(blog)} style={{ background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-dark)', padding: '0.35rem 0.7rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600 }}>
-                              Edit
-                            </button>
-                            <button onClick={() => handleBlogDelete(blog.id, blog.title)} style={{ background: 'transparent', border: '1px solid #fca5a5', color: '#ef4444', padding: '0.35rem 0.7rem', borderRadius: '6px', fontSize: '0.75rem' }}>
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Modal / Slider for Add/Edit Property */}
-        {isFormOpen && (
-          <div style={{
-            position: 'fixed',
-            top: 0, left: 0, width: '100%', height: '100vh',
-            background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(5px)',
-            zIndex: 1100, display: 'flex', justifyContent: 'center', alignItems: 'center',
-            padding: '1rem'
-          }} onClick={() => setIsFormOpen(false)}>
-            <div 
-              className="glass-panel admin-modal-content" 
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button 
-                onClick={() => setIsFormOpen(false)}
-                style={{ position: 'absolute', top: '1rem', right: '1.5rem', background: 'transparent', border: 'none', fontSize: '2rem', cursor: 'pointer', color: 'var(--text-muted)' }}
-              >
-                &times;
-              </button>
-
-              <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.2rem', marginBottom: '1.5rem' }}>
-                {formType === 'create' ? 'Add New Listing' : 'Edit Listing'}
-              </h2>
-
-              <form onSubmit={handlePropertySubmit}>
-                
-                <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.2rem', flexWrap: 'wrap' }}>
-                  <div style={{ flex: 2, minWidth: '200px' }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Title</label>
-                    <input 
-                      type="text" required placeholder="The Oasis Villa"
-                      value={propertyForm.title} 
-                      onChange={(e) => setPropertyForm({...propertyForm, title: e.target.value})}
-                      style={inputStyle}
-                    />
-                  </div>
-                  <div style={{ flex: 1, minWidth: '150px' }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Dropbox Link (Marketing)</label>
-                    <input 
-                      type="text" placeholder="https://www.dropbox.com/s/..."
-                      value={propertyForm.dropbox_link || ''} 
-                      onChange={(e) => setPropertyForm({...propertyForm, dropbox_link: e.target.value})}
-                      style={inputStyle}
-                    />
-                  </div>
-                  <div style={{ flex: 1, minWidth: '120px' }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Price (e.g. $4.5M)</label>
-                    <input 
-                      type="text" required placeholder="$4,500,000"
-                      value={propertyForm.price} 
-                      onChange={(e) => setPropertyForm({...propertyForm, price: e.target.value})}
-                      style={inputStyle}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: '1.2rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Image Source</label>
-                  
-                  {/* Drag and Drop Zone */}
-                  <div 
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                    onClick={() => fileInputRef.current.click()}
-                    style={{
-                      border: isDragging ? '2px dashed var(--primary-color)' : '2px dashed var(--border-color)',
-                      background: isDragging ? 'rgba(0, 0, 0, 0.08)' : '#fafafa',
-                      padding: '1.5rem',
-                      borderRadius: '12px',
-                      textAlign: 'center',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s ease',
-                      marginBottom: '1rem',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      minHeight: '140px',
-                      position: 'relative',
-                      overflow: 'hidden'
-                    }}
-                  >
-                    <input 
-                      type="file" 
-                      ref={fileInputRef}
-                      accept="image/*" 
-                      onChange={handleImageUpload} 
-                      style={{ display: 'none' }} 
-                    />
-                    
-                    {propertyForm.image ? (
-                      <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-                        <img 
-                          src={propertyForm.image} 
-                          alt="Preview" 
-                          style={{ maxWidth: '100%', maxHeight: '180px', objectFit: 'contain', borderRadius: '8px' }} 
-                          onError={(e) => { e.target.style.display = 'none'; }}
-                        />
-                        <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: 'var(--primary-dark)', fontWeight: 600 }}>
-                          Click or drag to replace image
-                        </div>
-                      </div>
-                    ) : (
-                      <div>
-                        <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem', opacity: 0.3 }}>📸</div>
-                        <div style={{ fontSize: '0.9rem', color: 'var(--text-dark)', fontWeight: 600 }}>Drag & drop image here</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>or click to browse files (Max 2MB)</div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Fallback URL input */}
-                  <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>Or paste direct Image URL:</label>
-                  <input 
-                    type="text" required placeholder="/listing_villa.webp or paste image URL or upload above"
-                    value={propertyForm.image} 
-                    onChange={(e) => setPropertyForm({...propertyForm, image: e.target.value})}
-                    style={inputStyle}
-                  />
-                  {propertyForm.image && (
-                    <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{ color: '#15803d', fontSize: '0.8rem', fontWeight: 600 }}>✓ Image loaded</span>
-                      <button type="button" onClick={() => setPropertyForm({ ...propertyForm, image: '' })} style={{ border: 'none', background: 'transparent', color: '#ef4444', fontSize: '0.8rem', cursor: 'pointer', textDecoration: 'underline' }}>Clear</button>
-                    </div>
-                  )}
-                </div>
-
-                <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.2rem', flexWrap: 'wrap' }}>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Category</label>
-                    <select 
-                      value={propertyForm.category} 
-                      onChange={(e) => setPropertyForm({...propertyForm, category: e.target.value})}
-                      style={inputStyle}
-                    >
-                      <option value="villas">Villas</option>
-                      <option value="apartments">Apartments</option>
-                      <option value="penthouses">Penthouses</option>
-                      <option value="plots">Plots</option>
-                      <option value="commercial">Commercial</option>
-                    </select>
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Type</label>
-                    <select 
-                      value={propertyForm.type} 
-                      onChange={(e) => setPropertyForm({...propertyForm, type: e.target.value})}
-                      style={inputStyle}
-                    >
-                      <option value="ready">Ready Property</option>
-                      <option value="off-plan">Off-Plan</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.2rem', flexWrap: 'wrap' }}>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Overall Beds</label>
-                    <input 
-                      type="number" min="0" required
-                      value={propertyForm.beds} 
-                      onChange={(e) => setPropertyForm({...propertyForm, beds: e.target.value})}
-                      style={inputStyle}
-                    />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Overall Baths</label>
-                    <input 
-                      type="number" min="0" required
-                      value={propertyForm.baths} 
-                      onChange={(e) => setPropertyForm({...propertyForm, baths: e.target.value})}
-                      style={inputStyle}
-                    />
-                  </div>
-                  <div style={{ flex: 1, minWidth: '150px' }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Overall Size</label>
-                    <input 
-                      type="text" placeholder="1,250 Sq. Ft."
-                      value={propertyForm.size || ''} 
-                      onChange={(e) => setPropertyForm({...propertyForm, size: e.target.value})}
-                      style={inputStyle}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.2rem', flexWrap: 'wrap' }}>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Location Area</label>
-                    <input 
-                      type="text" required placeholder="Prime District, Downtown"
-                      value={propertyForm.location} 
-                      onChange={(e) => setPropertyForm({...propertyForm, location: e.target.value})}
-                      style={inputStyle}
-                    />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Status</label>
-                    <select 
-                      value={propertyForm.status} 
-                      onChange={(e) => setPropertyForm({...propertyForm, status: e.target.value})}
-                      style={inputStyle}
-                    >
-                      <option value="Available">Available</option>
-                      <option value="Off-Plan">Under Construction</option>
-                      <option value="Sold">Sold</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: '1.2rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Description</label>
-                  <textarea 
-                    rows="4" required placeholder="A solid architectural masterpiece..."
-                    value={propertyForm.description} 
-                    onChange={(e) => setPropertyForm({...propertyForm, description: e.target.value})}
-                    style={{ ...inputStyle, fontFamily: 'inherit', resize: 'vertical' }}
-                  />
-                </div>
-
-                <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.2rem', flexWrap: 'wrap' }}>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Handover Status (e.g. Q4 2027)</label>
-                    <input 
-                      type="text" placeholder="Q4 2027"
-                      value={propertyForm.handover || ''} 
-                      onChange={(e) => setPropertyForm({...propertyForm, handover: e.target.value})}
-                      style={inputStyle}
-                    />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Payment Plan (e.g. 80/20)</label>
-                    <input 
-                      type="text" placeholder="80/20"
-                      value={propertyForm.payment_plan || ''} 
-                      onChange={(e) => setPropertyForm({...propertyForm, payment_plan: e.target.value})}
-                      style={inputStyle}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.2rem', flexWrap: 'wrap' }}>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Property Type (e.g. Villas)</label>
-                    <input 
-                      type="text" placeholder="Villas"
-                      value={propertyForm.property_type || ''} 
-                      onChange={(e) => setPropertyForm({...propertyForm, property_type: e.target.value})}
-                      style={inputStyle}
-                    />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Bedrooms Range (e.g. 4-6)</label>
-                    <input 
-                      type="text" placeholder="4-6"
-                      value={propertyForm.bedrooms_range || ''} 
-                      onChange={(e) => setPropertyForm({...propertyForm, bedrooms_range: e.target.value})}
-                      style={inputStyle}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <input 
-                    type="checkbox" 
-                    id="starred"
-                    checked={propertyForm.starred || false} 
-                    onChange={(e) => setPropertyForm({...propertyForm, starred: e.target.checked})}
-                    style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-                  />
-                  <label htmlFor="starred" style={{ fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', userSelect: 'none' }}>Star / Feature this Property (Show in Highlights on Home page)</label>
-                </div>
-
-                <div style={{ marginBottom: '1.2rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Gallery Images (Paste one URL per line)</label>
-                  <textarea 
-                    rows="3" placeholder="https://example.com/image1.webp&#10;https://example.com/image2.webp"
-                    value={propertyForm.imagesInput || ''} 
-                    onChange={(e) => setPropertyForm({...propertyForm, imagesInput: e.target.value})}
-                    style={{ ...inputStyle, fontFamily: 'inherit', resize: 'vertical' }}
-                  />
-                </div>
-
-                <div style={{ marginBottom: '1.2rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Features & Amenities (One per line)</label>
-                  <textarea 
-                    rows="3" placeholder="Infinity Edge Pool&#10;Fitness Centre&#10;Beach Access"
-                    value={propertyForm.featuresInput || ''} 
-                    onChange={(e) => setPropertyForm({...propertyForm, featuresInput: e.target.value})}
-                    style={{ ...inputStyle, fontFamily: 'inherit', resize: 'vertical' }}
-                  />
-                </div>
-
-                {/* Floors & Dynamic Flats schematic manager */}
-                <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem', marginBottom: '2rem' }}>
-                  <h4 style={{ fontSize: '1.2rem', fontFamily: 'var(--font-serif)', marginBottom: '0.5rem', color: 'var(--text-dark)' }}>Building Structure Manager</h4>
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1.2rem' }}>
-                    Define the levels of this building and add individual flats/units to each level with their own size, price, rooms, and availability status.
-                  </p>
-
-                  <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
-                    <button type="button" onClick={handlePrepopulateFloors} className="btn-solid" style={{ background: '#737373', fontSize: '0.8rem', padding: '0.5rem 1rem', borderRadius: '6px', width: 'auto' }}>
-                      ⚡ Pre-populate Standard Levels (1 to 3)
-                    </button>
-                  </div>
-
-                  {/* List of current levels and flats */}
-                  {sanitizeFloorsArray(propertyForm.floors).length > 0 ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', marginBottom: '1.5rem' }}>
-                      {sanitizeFloorsArray(propertyForm.floors).map((level) => (
-                        <div key={level.id} style={{ background: '#fafafa', padding: '1.2rem', borderRadius: '12px', border: '1px solid #eaeaea' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>
-                            <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-dark)' }}>
-                              🏢 {level.name} <span style={{ fontWeight: 400, fontSize: '0.8rem', color: 'var(--text-muted)' }}>(ID: {level.id})</span>
-                            </span>
-                            <button type="button" onClick={(e) => handleRemoveLevel(level.id, e)} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem' }}>
-                              Delete Level
-                            </button>
-                          </div>
-
-                          {/* List flats in this level */}
-                          {level.flats && level.flats.length > 0 ? (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
-                              {level.flats.map((flat, fIdx) => (
-                                <div key={fIdx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#FFFFFF', padding: '0.6rem 0.8rem', borderRadius: '8px', border: '1px solid #eee', fontSize: '0.8rem' }}>
-                                  <div>
-                                    <strong>{flat.name}</strong> | <span style={{ color: 'var(--primary-dark)', fontWeight: 600 }}>{flat.price}</span> | {flat.size} | {flat.beds}b/{flat.baths}ba | <span style={{ fontWeight: 600, color: flat.status === 'Available' ? '#16a34a' : flat.status === 'Sold' ? '#dc2626' : '#d97706' }}>{flat.status}</span>
-                                  </div>
-                                  <button type="button" onClick={(e) => handleRemoveFlat(level.id, fIdx, e)} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold', padding: '0 0.2rem' }}>
-                                    &times;
-                                  </button>
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic', marginBottom: '1rem' }}>No flats added to this level yet.</p>
-                          )}
-
-                          {/* Add flat inline form */}
-                          <div style={{ background: '#ffffff', padding: '1.2rem', borderRadius: '10px', border: '1px solid #eaeaea', marginTop: '1rem' }}>
-                            <strong style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.8rem', color: 'var(--text-dark)' }}>+ Add Flat to {level.name}</strong>
-                            
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.8rem', marginBottom: '0.8rem' }}>
-                              <div>
-                                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '0.2rem' }}>Flat Name / No.</label>
-                                <input type="text" placeholder="e.g. 101" value={flatForms[level.id]?.name || ''} onChange={(e) => updateFlatForm(level.id, 'name', e.target.value)} style={smallInputStyle} />
-                              </div>
-                              <div>
-                                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '0.2rem' }}>Price</label>
-                                <input type="text" placeholder="e.g. $450,000" value={flatForms[level.id]?.price || ''} onChange={(e) => updateFlatForm(level.id, 'price', e.target.value)} style={smallInputStyle} />
-                              </div>
-                              <div>
-                                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '0.2rem' }}>Size (Area)</label>
-                                <input type="text" placeholder="e.g. 950 Sq. Ft." value={flatForms[level.id]?.size || ''} onChange={(e) => updateFlatForm(level.id, 'size', e.target.value)} style={smallInputStyle} />
-                              </div>
-                            </div>
-
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.8rem', marginBottom: '1rem' }}>
-                              <div>
-                                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '0.2rem' }}>Bedrooms</label>
-                                <input type="number" placeholder="No. of rooms" min="0" value={flatForms[level.id]?.beds === undefined || flatForms[level.id]?.beds === null ? '' : flatForms[level.id]?.beds} onChange={(e) => updateFlatForm(level.id, 'beds', e.target.value)} style={smallInputStyle} />
-                              </div>
-                              <div>
-                                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '0.2rem' }}>Washrooms</label>
-                                <input type="number" placeholder="No. of baths" min="0" value={flatForms[level.id]?.baths === undefined || flatForms[level.id]?.baths === null ? '' : flatForms[level.id]?.baths} onChange={(e) => updateFlatForm(level.id, 'baths', e.target.value)} style={smallInputStyle} />
-                              </div>
-                              <div>
-                                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '0.2rem' }}>Status</label>
-                                <select value={flatForms[level.id]?.status || 'Available'} onChange={(e) => updateFlatForm(level.id, 'status', e.target.value)} style={smallInputStyle}>
-                                  <option value="Available">Available</option>
-                                  <option value="Sold">Sold</option>
-                                  <option value="Commercial">Commercial</option>
-                                </select>
-                              </div>
-                            </div>
-                            
-                            <button type="button" onClick={(e) => handleAddFlat(level.id, e)} className="btn-solid" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', background: 'var(--primary-dark)', width: 'auto', borderRadius: '6px' }}>
-                              + Add Flat to level
-                            </button>
-                          </div>
-
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontStyle: 'italic', marginBottom: '1.5rem', textAlign: 'center', background: '#fafafa', padding: '1rem', borderRadius: '8px' }}>
-                      No levels configured yet. Add levels below or click Pre-populate to build your building structure.
-                    </p>
-                  )}
-
-                  {/* Add level helper form */}
-                  <div style={{ background: '#f5f5f5', padding: '1.2rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-                    <h5 style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.8rem', color: 'var(--text-dark)' }}>Add Level / Floor</h5>
-                    
-                    <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
-                      <div style={{ flex: 1, minWidth: '100px' }}>
-                        <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Level ID (Numeric Order)</label>
-                        <input type="number" placeholder="3" value={newLevel.id} onChange={e => setNewLevel({...newLevel, id: e.target.value})} style={smallInputStyle} />
-                      </div>
-                      <div style={{ flex: 2, minWidth: '150px' }}>
-                        <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Level Name</label>
-                        <input type="text" placeholder="Level 3 - Bedrooms" value={newLevel.name} onChange={e => setNewLevel({...newLevel, name: e.target.value})} style={smallInputStyle} />
-                      </div>
-                    </div>
-
-                    <button type="button" onClick={(e) => handleAddLevel(e)} className="btn-solid" style={{ padding: '0.6rem 1.2rem', fontSize: '0.8rem', background: 'var(--primary-dark)', width: 'auto', borderRadius: '6px', marginTop: '1rem' }}>
-                      + CREATE LEVEL
-                    </button>
-                  </div>
-                </div>
-
-                <button type="submit" className="btn-solid" style={{ width: '100%', padding: '1rem', borderRadius: '8px', fontSize: '1rem', fontWeight: 600 }}>
-                  {formType === 'create' ? 'PUBLISH LISTING' : 'SAVE CHANGES'}
-                </button>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* ═══════ Blog Create/Edit Modal ═══════ */}
-        {isBlogFormOpen && (
-          <div style={{
-            position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh',
-            background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(5px)',
-            zIndex: 1100, display: 'flex', justifyContent: 'center', alignItems: 'center',
-            padding: '1rem'
-          }} onClick={() => setIsBlogFormOpen(false)}>
-            <div
-              className="glass-panel admin-modal-content"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setIsBlogFormOpen(false)}
-                style={{ position: 'absolute', top: '1rem', right: '1.5rem', background: 'transparent', border: 'none', fontSize: '2rem', cursor: 'pointer', color: 'var(--text-muted)' }}
-              >
-                &times;
-              </button>
-
-              <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', marginBottom: '1.5rem' }}>
-                {blogFormType === 'create' ? 'New Blog Post' : 'Edit Blog Post'}
-              </h2>
-
-              <form onSubmit={handleBlogSubmit}>
-                {/* Title */}
-                <div style={{ marginBottom: '1.2rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Title</label>
-                  <input
-                    type="text" required
-                    value={blogForm.title}
-                    onChange={(e) => setBlogForm(prev => ({ ...prev, title: e.target.value }))}
-                    style={inputStyle}
-                    placeholder="Enter blog title..."
-                  />
-                </div>
-
-                {/* Category + Read Time */}
-                <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.2rem', flexWrap: 'wrap' }}>
-                  <div style={{ flex: 1, minWidth: '150px' }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Category</label>
-                    <select
-                      value={blogForm.category}
-                      onChange={(e) => setBlogForm(prev => ({ ...prev, category: e.target.value }))}
-                      style={inputStyle}
-                    >
-                      <option value="Market Trends">Market Trends</option>
-                      <option value="Investment">Investment</option>
-                      <option value="Guides">Guides</option>
-                      <option value="Architecture">Architecture</option>
-                      <option value="Lifestyle">Lifestyle</option>
-                      <option value="News">News</option>
-                      <option value="General">General</option>
-                    </select>
-                  </div>
-                  <div style={{ flex: 1, minWidth: '150px' }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Read Time</label>
-                    <input
-                      type="text"
-                      value={blogForm.readTime}
-                      onChange={(e) => setBlogForm(prev => ({ ...prev, readTime: e.target.value }))}
-                      style={inputStyle}
-                      placeholder="e.g. 5 min read"
-                    />
-                  </div>
-                </div>
-
-                {/* Cover Image */}
-                <div style={{ marginBottom: '1.2rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Cover Image</label>
-                  <div
-                    onClick={() => blogFileInputRef.current?.click()}
-                    style={{
-                      border: '2px dashed var(--border-color)', borderRadius: '12px', padding: '1.5rem',
-                      textAlign: 'center', cursor: 'pointer', background: '#fafafa',
-                      transition: 'border-color 0.3s'
-                    }}
-                  >
-                    {blogForm.image ? (
-                      <img src={blogForm.image} alt="Cover" style={{ maxHeight: '150px', maxWidth: '100%', objectFit: 'cover', borderRadius: '8px' }} />
-                    ) : (
-                      <div>
-                        <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📷</div>
-                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Click to upload cover image</p>
-                      </div>
-                    )}
-                  </div>
-                  <input ref={blogFileInputRef} type="file" accept="image/*" onChange={handleBlogImageUpload} style={{ display: 'none' }} />
-                  {blogForm.image && (
-                    <button type="button" onClick={() => setBlogForm(prev => ({ ...prev, image: '' }))} style={{ background: 'transparent', border: 'none', color: '#ef4444', fontSize: '0.8rem', cursor: 'pointer', marginTop: '0.5rem' }}>
-                      Remove image
-                    </button>
-                  )}
-                </div>
-
-                {/* Excerpt */}
-                <div style={{ marginBottom: '1.2rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Excerpt / Summary</label>
-                  <textarea
-                    value={blogForm.excerpt}
-                    onChange={(e) => setBlogForm(prev => ({ ...prev, excerpt: e.target.value }))}
-                    style={{ ...inputStyle, minHeight: '80px', resize: 'vertical' }}
-                    placeholder="Brief summary shown in blog cards..."
-                  />
-                </div>
-
-                {/* Content */}
-                <div style={{ marginBottom: '1.2rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Full Content</label>
-                  <textarea
-                    value={blogForm.content}
-                    onChange={(e) => setBlogForm(prev => ({ ...prev, content: e.target.value }))}
-                    style={{ ...inputStyle, minHeight: '160px', resize: 'vertical' }}
-                    placeholder="Write your full blog article here..."
-                  />
-                </div>
-
-                {/* Featured Toggle */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.5rem' }}>
-                  <div
-                    onClick={() => setBlogForm(prev => ({ ...prev, featured: !prev.featured }))}
-                    style={{
-                      width: '42px', height: '22px', borderRadius: '11px', cursor: 'pointer',
-                      background: blogForm.featured ? 'var(--primary-dark)' : '#d1d5db',
-                      position: 'relative', transition: 'background 0.3s', flexShrink: 0
-                    }}
-                  >
-                    <div style={{
-                      width: '18px', height: '18px', borderRadius: '50%', background: '#fff',
-                      position: 'absolute', top: '2px', left: blogForm.featured ? '22px' : '2px',
-                      transition: 'left 0.3s', boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
-                    }} />
-                  </div>
-                  <label style={{ fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }} onClick={() => setBlogForm(prev => ({ ...prev, featured: !prev.featured }))}>
-                    Mark as Featured
-                  </label>
-                </div>
-
-                {/* Attachments */}
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem' }}>Attachments (Images, PDFs, Word Docs)</label>
-                  <button
-                    type="button"
-                    onClick={() => blogAttachmentInputRef.current?.click()}
-                    style={{
-                      background: '#f5f5f5', border: '1px dashed var(--border-color)',
-                      padding: '0.6rem 1.2rem', borderRadius: '8px', cursor: 'pointer',
-                      fontSize: '0.85rem', color: 'var(--text-dark)', marginBottom: '0.8rem'
-                    }}
-                  >
-                    📎 Add Files
-                  </button>
-                  <input ref={blogAttachmentInputRef} type="file" multiple accept="image/*,.pdf,.doc,.docx" onChange={handleBlogAttachments} style={{ display: 'none' }} />
-
-                  {(blogForm.attachments || []).length > 0 && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                      {blogForm.attachments.map((att, i) => (
-                        <div key={i} style={{
-                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                          background: '#f9f9f9', padding: '0.5rem 0.8rem', borderRadius: '8px',
-                          border: '1px solid var(--border-color)'
-                        }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, minWidth: 0 }}>
-                            <span style={{ fontSize: '1.1rem' }}>
-                              {att.type?.includes('pdf') ? '📄' : att.type?.includes('word') || att.type?.includes('document') ? '📝' : '🖼️'}
-                            </span>
-                            <span style={{ fontSize: '0.82rem', color: 'var(--text-dark)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{att.name}</span>
-                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', flexShrink: 0 }}>({(att.size / 1024).toFixed(0)} KB)</span>
-                          </div>
-                          <button type="button" onClick={() => handleRemoveAttachment(i)} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '1.1rem', padding: '0 0.3rem' }}>✕</button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <button type="submit" className="btn-solid" style={{ width: '100%', padding: '1rem', borderRadius: '8px', fontSize: '1rem', fontWeight: 600 }}>
-                  {blogFormType === 'create' ? 'PUBLISH BLOG' : 'SAVE CHANGES'}
-                </button>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* ═══════ AI UPLOAD PROPERTY OPTION MODAL ═══════ */}
-        {isUploadOptionOpen && (
-          <div style={{
-            position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh',
-            background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(5px)',
-            zIndex: 1100, display: 'flex', justifyContent: 'center', alignItems: 'center',
-            padding: '1rem'
-          }} onClick={() => setIsUploadOptionOpen(false)}>
-            <div
-              className="glass-panel admin-modal-content"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setIsUploadOptionOpen(false)}
-                style={{ position: 'absolute', top: '1rem', right: '1.5rem', background: 'transparent', border: 'none', fontSize: '2rem', cursor: 'pointer', color: 'var(--text-muted)' }}
-              >
-                &times;
-              </button>
-
-              <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.6rem', marginBottom: '1.5rem', color: 'var(--text-dark)' }}>
-                AI Property Scanner
-              </h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginBottom: '2rem', lineHeight: 1.5 }}>
-                Choose whether you want to scan a local brochure/document from your device, or paste a Dropbox link to a shared folder or PDF.
-              </p>
-
-              {/* Option 1: Local File */}
-              <div style={{ marginBottom: '2rem' }}>
-                <h4 style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.75rem', color: 'var(--text-dark)' }}>Option 1: Upload Local Document</h4>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsUploadOptionOpen(false);
-                    docUploadInputRef.current?.click();
-                  }}
-                  style={{
-                    width: '100%', padding: '1rem', background: 'var(--bg-light)',
-                    border: '1px dashed var(--border-color)', borderRadius: '8px',
-                    fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-dark)',
-                    cursor: 'pointer', transition: 'all 0.2s', textAlign: 'center'
-                  }}
-                  onMouseOver={(e) => e.currentTarget.style.background = '#f0f0f0'}
-                  onMouseOut={(e) => e.currentTarget.style.background = 'var(--bg-light)'}
-                >
-                  📁 Select PDF, Word Document, or Image
-                </button>
-              </div>
-
-              {/* Divider */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
-                <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>or</span>
-                <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
-              </div>
-
-              {/* Option 2: Dropbox Link */}
-              <form onSubmit={handleScanDropboxUrl}>
-                <h4 style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.75rem', color: 'var(--text-dark)' }}>Option 2: Paste Dropbox Link</h4>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem', marginBottom: '0.5rem' }}>
-                  Provide a link to a folder or file. Folders will be scanned for PDFs, DOCX documents, and images.
-                </p>
-                <input
-                  type="url"
-                  required
-                  placeholder="https://www.dropbox.com/sh/... or https://www.dropbox.com/scl/fo/..."
-                  value={dropboxInputUrl}
-                  onChange={(e) => setDropboxInputUrl(e.target.value)}
-                  style={{ ...inputStyle, marginBottom: '1.2rem' }}
-                />
-                <button
-                  type="submit"
-                  className="btn-solid"
-                  style={{ width: '100%', padding: '0.85rem', borderRadius: '8px', fontSize: '0.9rem', fontWeight: 600, background: '#059669', borderColor: '#059669' }}
-                >
-                  ⚡ Start AI Scan from Dropbox
-                </button>
-              </form>
-            </div>
           </div>
         )}
 
       </div>
+
+      {/* ══════════════════════════════════════════════
+          PROPERTY & CATALOG REDESIGNED MODAL
+      ══════════════════════════════════════════════ */}
+      {isFormOpen && (
+        <div className="admin-modal-backdrop" onClick={e => e.target === e.currentTarget && setIsFormOpen(false)}>
+          <div className="admin-modal-container">
+            
+            {/* Modal Header */}
+            <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#0D0E13' }}>
+              <div>
+                <span style={{ fontSize: '0.68rem', letterSpacing: '2px', textTransform: 'uppercase', color: '#C5A880', fontWeight: 600 }}>
+                  {formType === 'create' ? 'Curate New Listing' : `Editing ID #${editingId}`}
+                </span>
+                <h2 style={{ fontFamily: 'var(--font-serif)', color: '#FFFFFF', fontSize: '1.6rem', margin: '0.2rem 0 0' }}>
+                  {formType === 'create' ? 'Add Residence or Master Catalog' : (propertyForm.title || 'Edit Listing')}
+                </h2>
+              </div>
+              <button
+                onClick={() => setIsFormOpen(false)}
+                style={{ background: 'rgba(255, 255, 255, 0.08)', border: 'none', color: '#fff', fontSize: '1.2rem', width: '36px', height: '36px', borderRadius: '50%', cursor: 'pointer' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Internal Navigation Tabs */}
+            <div style={{ display: 'flex', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', background: '#14161F', padding: '0 2rem', overflowX: 'auto' }}>
+              <button
+                type="button"
+                onClick={() => setModalTab('core')}
+                className={`admin-nav-tab ${modalTab === 'core' ? 'active' : ''}`}
+                style={{ padding: '0.8rem 1.1rem', fontSize: '0.75rem' }}
+              >
+                1. Core Specs
+              </button>
+              <button
+                type="button"
+                onClick={() => setModalTab('catalog')}
+                className={`admin-nav-tab ${modalTab === 'catalog' ? 'active' : ''}`}
+                style={{ padding: '0.8rem 1.1rem', fontSize: '0.75rem' }}
+              >
+                2. Master Development / Off-Plan
+              </button>
+              <button
+                type="button"
+                onClick={() => setModalTab('gallery')}
+                className={`admin-nav-tab ${modalTab === 'gallery' ? 'active' : ''}`}
+                style={{ padding: '0.8rem 1.1rem', fontSize: '0.75rem' }}
+              >
+                3. Multi-Image Gallery ({propertyForm.images.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setModalTab('features')}
+                className={`admin-nav-tab ${modalTab === 'features' ? 'active' : ''}`}
+                style={{ padding: '0.8rem 1.1rem', fontSize: '0.75rem' }}
+              >
+                4. Features & Description
+              </button>
+              <button
+                type="button"
+                onClick={() => setModalTab('floors')}
+                className={`admin-nav-tab ${modalTab === 'floors' ? 'active' : ''}`}
+                style={{ padding: '0.8rem 1.1rem', fontSize: '0.75rem' }}
+              >
+                5. Floor Plans ({propertyForm.floors.length})
+              </button>
+            </div>
+
+            {/* Modal Form Body */}
+            <form onSubmit={handlePropertySubmit} style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1, overflowY: 'auto' }}>
+
+              {/* ── TAB 1: CORE SPECIFICATIONS ── */}
+              {modalTab === 'core' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                      Listing Title *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. The Concrete Oasis Villa, Peninsula by H&H, Palm Crescent Estate"
+                      value={propertyForm.title}
+                      onChange={e => setPropertyForm({ ...propertyForm, title: e.target.value })}
+                      className="admin-input-luxury"
+                      required
+                    />
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                        Catalog Type *
+                      </label>
+                      <select
+                        value={propertyForm.type}
+                        onChange={e => setPropertyForm({ ...propertyForm, type: e.target.value })}
+                        className="admin-input-luxury"
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <option value="ready">Ready Property (Immediate Acquisition / Buy)</option>
+                        <option value="off-plan">Off-Plan Master Catalog (New Development)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                        Category *
+                      </label>
+                      <select
+                        value={propertyForm.category}
+                        onChange={e => setPropertyForm({ ...propertyForm, category: e.target.value })}
+                        className="admin-input-luxury"
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <option value="villas">Villas & Mansions</option>
+                        <option value="penthouses">Penthouses & Sky Duplexes</option>
+                        <option value="apartments">Luxury Apartments & Residences</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                        Asking / Starting Price *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. AED 18,500,000"
+                        value={propertyForm.price}
+                        onChange={e => setPropertyForm({ ...propertyForm, price: e.target.value })}
+                        className="admin-input-luxury"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                        Location / District *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Emirates Hills, Palm Jumeirah, Downtown Dubai"
+                        value={propertyForm.location}
+                        onChange={e => setPropertyForm({ ...propertyForm, location: e.target.value })}
+                        className="admin-input-luxury"
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                        Status
+                      </label>
+                      <select
+                        value={propertyForm.status}
+                        onChange={e => setPropertyForm({ ...propertyForm, status: e.target.value })}
+                        className="admin-input-luxury"
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <option value="Available">Available</option>
+                        <option value="Presale">Presale / EOI Active</option>
+                        <option value="Reserved">Reserved</option>
+                        <option value="Sold">Sold / Off Market</option>
+                      </select>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', marginTop: '1.5rem', gap: '0.6rem' }}>
+                      <input
+                        type="checkbox"
+                        id="modal-starred"
+                        checked={propertyForm.starred}
+                        onChange={e => setPropertyForm({ ...propertyForm, starred: e.target.checked })}
+                        style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: '#C5A880' }}
+                      />
+                      <label htmlFor="modal-starred" style={{ fontSize: '0.82rem', color: '#FFFFFF', cursor: 'pointer' }}>
+                        Feature as Curated Highlight on Homepage
+                      </label>
+                    </div>
+                  </div>
+
+                  {propertyForm.type === 'ready' && (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '1rem' }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem' }}>Bedrooms</label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={propertyForm.beds}
+                          onChange={e => setPropertyForm({ ...propertyForm, beds: parseInt(e.target.value) || 0 })}
+                          className="admin-input-luxury"
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem' }}>Bathrooms</label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={propertyForm.baths}
+                          onChange={e => setPropertyForm({ ...propertyForm, baths: parseInt(e.target.value) || 0 })}
+                          className="admin-input-luxury"
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem' }}>Built-Up Area</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. 6,500 Sq. Ft."
+                          value={propertyForm.size}
+                          onChange={e => setPropertyForm({ ...propertyForm, size: e.target.value })}
+                          className="admin-input-luxury"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                </div>
+              )}
+
+              {/* ── TAB 2: DEVELOPMENT & OFF-PLAN CATALOG ── */}
+              {modalTab === 'catalog' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  
+                  <div style={{ background: 'rgba(56, 189, 248, 0.08)', border: '1px solid rgba(56, 189, 248, 0.2)', padding: '1rem', borderRadius: '6px', color: '#BAE6FD', fontSize: '0.82rem' }}>
+                    <strong style={{ color: '#FFFFFF' }}>Master Development Specifications:</strong> Configure handover timeline, developer payment schemes, and marketing pack URLs for master-planned developments.
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                        Handover Quarter / Year
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Q4 2028 or Ready"
+                        value={propertyForm.handover}
+                        onChange={e => setPropertyForm({ ...propertyForm, handover: e.target.value })}
+                        className="admin-input-luxury"
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                        Payment Plan
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. 80/20 on Handover, 60/40, 70/30"
+                        value={propertyForm.payment_plan}
+                        onChange={e => setPropertyForm({ ...propertyForm, payment_plan: e.target.value })}
+                        className="admin-input-luxury"
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                        Bedrooms Range
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. 3, 4 & 5 Bedrooms, 4 - 6 Bedroom Mansions"
+                        value={propertyForm.bedrooms_range}
+                        onChange={e => setPropertyForm({ ...propertyForm, bedrooms_range: e.target.value })}
+                        className="admin-input-luxury"
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                        Property Typology
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Waterfront Villas, Golf Mansions, Branded Residences"
+                        value={propertyForm.property_type}
+                        onChange={e => setPropertyForm({ ...propertyForm, property_type: e.target.value })}
+                        className="admin-input-luxury"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                      Dropbox Agent Marketing Pack / Brochure Link
+                    </label>
+                    <input
+                      type="url"
+                      placeholder="https://www.dropbox.com/scl/fo/... or direct download URL"
+                      value={propertyForm.dropbox_link}
+                      onChange={e => setPropertyForm({ ...propertyForm, dropbox_link: e.target.value })}
+                      className="admin-input-luxury"
+                    />
+                    <span style={{ fontSize: '0.7rem', color: '#64748B', marginTop: '0.3rem', display: 'block' }}>
+                      Allows prospective clients to download official masterplan brochures and unit layout packs.
+                    </span>
+                  </div>
+
+                </div>
+              )}
+
+              {/* ── TAB 3: MULTI-IMAGE GALLERY MANAGER ── */}
+              {modalTab === 'gallery' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  
+                  {/* Upload Box */}
+                  <div
+                    onClick={() => multiFileInputRef.current?.click()}
+                    style={{
+                      border: '2px dashed rgba(197, 168, 128, 0.4)',
+                      borderRadius: '8px',
+                      padding: '2.5rem 1.5rem',
+                      textAlign: 'center',
+                      cursor: 'pointer',
+                      background: 'rgba(197, 168, 128, 0.03)',
+                      transition: 'all 0.25s ease'
+                    }}
+                    onMouseOver={e => e.currentTarget.style.borderColor = '#C5A880'}
+                    onMouseOut={e => e.currentTarget.style.borderColor = 'rgba(197, 168, 128, 0.4)'}
+                  >
+                    <UploadCloud size={36} color="#C5A880" style={{ margin: '0 auto 0.75rem' }} />
+                    <h4 style={{ color: '#FFFFFF', fontSize: '1rem', fontWeight: 600, margin: '0 0 0.3rem' }}>
+                      {imageUploadLoading ? 'Uploading Images to Server...' : 'Click to Upload Multiple High-Res Images'}
+                    </h4>
+                    <p style={{ color: '#8E9BAE', fontSize: '0.8rem', margin: 0 }}>
+                      Upload JPG, PNG, WEBP files simultaneously. Files are processed and served directly to the gallery.
+                    </p>
+                    <input
+                      type="file"
+                      ref={multiFileInputRef}
+                      onChange={handleMultiImageUpload}
+                      multiple
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                    />
+                  </div>
+
+                  {/* Add URL Form */}
+                  <div style={{ display: 'flex', gap: '0.6rem' }}>
+                    <input
+                      type="text"
+                      placeholder="Or paste an image URL (/areas/emirates_hills.webp, https://...)"
+                      value={imageUrlInput}
+                      onChange={e => setImageUrlInput(e.target.value)}
+                      className="admin-input-luxury"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddImageUrl}
+                      className="admin-btn-dark"
+                      style={{ flexShrink: 0 }}
+                    >
+                      <Plus size={14} /> Add URL
+                    </button>
+                  </div>
+
+                  {/* Visual Image Grid */}
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+                      <span style={{ fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', fontWeight: 600 }}>
+                        Catalog Gallery ({propertyForm.images.length} Image{propertyForm.images.length !== 1 ? 's' : ''})
+                      </span>
+                      <span style={{ fontSize: '0.7rem', color: '#64748B' }}>
+                        Image #1 is automatically used as the primary cover picture across website cards.
+                      </span>
+                    </div>
+
+                    {propertyForm.images.length === 0 ? (
+                      <div style={{ padding: '2.5rem', textAlign: 'center', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '6px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                        <ImageIcon size={30} color="#475569" style={{ margin: '0 auto 0.6rem' }} />
+                        <p style={{ color: '#64748B', fontSize: '0.82rem', margin: 0 }}>No images added yet. Upload files above or paste a URL.</p>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '1rem' }}>
+                        {propertyForm.images.map((imgUrl, idx) => {
+                          const isCover = idx === 0;
+                          return (
+                            <div
+                              key={idx}
+                              style={{
+                                background: '#1A1D26',
+                                border: `1px solid ${isCover ? '#C5A880' : 'rgba(255, 255, 255, 0.1)'}`,
+                                borderRadius: '6px',
+                                overflow: 'hidden',
+                                position: 'relative',
+                                display: 'flex',
+                                flexDirection: 'column'
+                              }}
+                            >
+                              <div style={{ height: '110px', position: 'relative' }}>
+                                <img
+                                  src={imgUrl}
+                                  alt={`Image ${idx + 1}`}
+                                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                  onError={e => { e.target.src = '/listing_villa.webp'; }}
+                                />
+                                {isCover && (
+                                  <div style={{ position: 'absolute', top: '6px', left: '6px', background: '#C5A880', color: '#000', fontSize: '0.6rem', fontWeight: 800, padding: '0.15rem 0.45rem', borderRadius: '2px', textTransform: 'uppercase' }}>
+                                    ★ Cover
+                                  </div>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveImage(idx)}
+                                  style={{
+                                    position: 'absolute',
+                                    top: '6px',
+                                    right: '6px',
+                                    background: 'rgba(0, 0, 0, 0.75)',
+                                    color: '#F87171',
+                                    border: 'none',
+                                    borderRadius: '50%',
+                                    width: '24px',
+                                    height: '24px',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '0.8rem'
+                                  }}
+                                  title="Remove image"
+                                >
+                                  ✕
+                                </button>
+                              </div>
+
+                              <div style={{ padding: '0.5rem 0.6rem', background: '#12141C', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontSize: '0.68rem', color: '#94A3B8' }}>
+                                  #{idx + 1}
+                                </span>
+                                {!isCover && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleSetCoverImage(idx)}
+                                    style={{
+                                      background: 'none',
+                                      border: 'none',
+                                      color: '#C5A880',
+                                      fontSize: '0.68rem',
+                                      cursor: 'pointer',
+                                      textDecoration: 'underline'
+                                    }}
+                                  >
+                                    Set as Cover
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                  </div>
+
+                </div>
+              )}
+
+              {/* ── TAB 4: FEATURES & DESCRIPTION ── */}
+              {modalTab === 'features' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                      Architectural & Investment Summary
+                    </label>
+                    <textarea
+                      rows={5}
+                      placeholder="Elaborate on the architectural style, bespoke interior finishes, private grounds, views, and investor potential..."
+                      value={propertyForm.description}
+                      onChange={e => setPropertyForm({ ...propertyForm, description: e.target.value })}
+                      className="admin-input-luxury"
+                      style={{ resize: 'vertical', lineHeight: 1.6 }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                      Features & Bespoke Amenities
+                    </label>
+
+                    {/* Pre-made tag pills */}
+                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+                      {[
+                        'Private Infinity Pool', 'Direct Beach Access', 'Crystal Lagoon',
+                        'Golf Course View', 'Burj Khalifa View', 'Marina Skyline View',
+                        'Smart Home Automation', 'Valet Parking', 'Concierge 24/7',
+                        'Private Cinema', 'Spa & Wellness Suite', 'Rooftop Lounge'
+                      ].map(feature => {
+                        const isAdded = propertyForm.features.includes(feature);
+                        return (
+                          <button
+                            key={feature}
+                            type="button"
+                            onClick={() => isAdded ? handleRemoveFeatureTag(feature) : handleAddFeatureTag(feature)}
+                            style={{
+                              padding: '0.35rem 0.75rem',
+                              borderRadius: '4px',
+                              fontSize: '0.72rem',
+                              cursor: 'pointer',
+                              background: isAdded ? 'rgba(197, 168, 128, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                              border: `1px solid ${isAdded ? '#C5A880' : 'rgba(255, 255, 255, 0.1)'}`,
+                              color: isAdded ? '#FFFFFF' : '#94A3B8',
+                              transition: 'all 0.2s ease'
+                            }}
+                          >
+                            {isAdded ? '✓ ' : '+ '} {feature}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Custom Feature Add Input */}
+                    <div style={{ display: 'flex', gap: '0.6rem' }}>
+                      <input
+                        type="text"
+                        placeholder="Add custom amenity or feature tag (e.g. Private Marina Berth)..."
+                        value={customFeatureInput}
+                        onChange={e => setCustomFeatureInput(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddFeatureTag(customFeatureInput); } }}
+                        className="admin-input-luxury"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleAddFeatureTag(customFeatureInput)}
+                        className="admin-btn-dark"
+                        style={{ flexShrink: 0 }}
+                      >
+                        <Plus size={14} /> Add
+                      </button>
+                    </div>
+
+                    {/* Active tags display */}
+                    {propertyForm.features.length > 0 && (
+                      <div style={{ marginTop: '0.8rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        {propertyForm.features.map(f => (
+                          <span
+                            key={f}
+                            style={{
+                              background: '#1A1D26',
+                              border: '1px solid rgba(197, 168, 128, 0.3)',
+                              color: '#C5A880',
+                              padding: '0.25rem 0.65rem',
+                              borderRadius: '3px',
+                              fontSize: '0.72rem',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.4rem'
+                            }}
+                          >
+                            {f}
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveFeatureTag(f)}
+                              style={{ background: 'none', border: 'none', color: '#F87171', cursor: 'pointer', padding: 0 }}
+                            >
+                              ✕
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                  </div>
+
+                </div>
+              )}
+
+              {/* ── TAB 5: FLOOR PLANS & ARCHITECTURAL UNITS ── */}
+              {modalTab === 'floors' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  
+                  <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)', padding: '1.25rem', borderRadius: '6px' }}>
+                    <h4 style={{ color: '#FFFFFF', fontSize: '0.9rem', marginBottom: '0.8rem' }}>Add Architectural Level / Floor</h4>
+                    <div style={{ display: 'flex', gap: '0.75rem' }}>
+                      <input
+                        type="text"
+                        placeholder="Floor / Level Name (e.g. Level 1 - Living & Garden, Sky Penthouse)"
+                        value={newLevel.name}
+                        onChange={e => setNewLevel({ ...newLevel, name: e.target.value })}
+                        className="admin-input-luxury"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddLevel}
+                        className="admin-btn-gold"
+                        style={{ flexShrink: 0 }}
+                      >
+                        <Plus size={14} /> Add Floor
+                      </button>
+                    </div>
+                  </div>
+
+                  {propertyForm.floors.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '2rem', color: '#64748B', fontSize: '0.82rem' }}>
+                      No floors configured. Add a level above if you wish to configure interactive unit layouts.
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                      {propertyForm.floors.map(lvl => (
+                        <div key={lvl.id} style={{ background: '#12141C', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '6px', padding: '1.2rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.06)', paddingBottom: '0.6rem' }}>
+                            <strong style={{ color: '#FFFFFF', fontSize: '0.92rem' }}>{lvl.name}</strong>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveLevel(lvl.id)}
+                              style={{ background: 'none', border: 'none', color: '#EF4444', fontSize: '0.75rem', cursor: 'pointer' }}
+                            >
+                              Remove Level
+                            </button>
+                          </div>
+
+                          {/* Existing Flats / Units */}
+                          {lvl.flats && lvl.flats.length > 0 && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
+                              {lvl.flats.map((flat, fIdx) => (
+                                <div key={fIdx} style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '0.6rem 0.8rem', borderRadius: '4px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
+                                  <div>
+                                    <strong style={{ color: '#CBD5E1' }}>{flat.name}</strong> • <span style={{ color: '#C5A880' }}>{flat.price}</span> • {flat.size} • {flat.beds}B/{flat.baths}Ba
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveFlat(lvl.id, fIdx)}
+                                    style={{ background: 'none', border: 'none', color: '#F87171', cursor: 'pointer' }}
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Add Flat Inputs */}
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.5rem', alignItems: 'center' }}>
+                            <input
+                              type="text"
+                              placeholder="Suite / Unit Name"
+                              value={flatForms[lvl.id]?.name || ''}
+                              onChange={e => setFlatForms({ ...flatForms, [lvl.id]: { ...(flatForms[lvl.id] || {}), name: e.target.value } })}
+                              className="admin-input-luxury"
+                              style={{ padding: '0.5rem', fontSize: '0.78rem' }}
+                            />
+                            <input
+                              type="text"
+                              placeholder="Price (e.g. AED 4.5M)"
+                              value={flatForms[lvl.id]?.price || ''}
+                              onChange={e => setFlatForms({ ...flatForms, [lvl.id]: { ...(flatForms[lvl.id] || {}), price: e.target.value } })}
+                              className="admin-input-luxury"
+                              style={{ padding: '0.5rem', fontSize: '0.78rem' }}
+                            />
+                            <input
+                              type="text"
+                              placeholder="Size (e.g. 1,800 Sq. Ft.)"
+                              value={flatForms[lvl.id]?.size || ''}
+                              onChange={e => setFlatForms({ ...flatForms, [lvl.id]: { ...(flatForms[lvl.id] || {}), size: e.target.value } })}
+                              className="admin-input-luxury"
+                              style={{ padding: '0.5rem', fontSize: '0.78rem' }}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleAddFlat(lvl.id)}
+                              className="admin-btn-dark"
+                              style={{ padding: '0.5rem', fontSize: '0.72rem', justifyContent: 'center' }}
+                            >
+                              + Add Unit
+                            </button>
+                          </div>
+
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                </div>
+              )}
+
+              {/* Modal Footer Controls */}
+              <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '1.25rem', marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <button
+                  type="button"
+                  onClick={() => setIsFormOpen(false)}
+                  className="admin-btn-dark"
+                >
+                  Cancel
+                </button>
+
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                  {modalTab !== 'floors' ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const tabs = ['core', 'catalog', 'gallery', 'features', 'floors'];
+                        const currIdx = tabs.indexOf(modalTab);
+                        if (currIdx < tabs.length - 1) setModalTab(tabs[currIdx + 1]);
+                      }}
+                      className="admin-btn-dark"
+                    >
+                      Next Section →
+                    </button>
+                  ) : null}
+
+                  <button
+                    type="submit"
+                    className="admin-btn-gold"
+                  >
+                    <Check size={15} /> Save & Synchronize Listing
+                  </button>
+                </div>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════
+          AI CAMPAIGN SCAN MODAL
+      ══════════════════════════════════════════════ */}
+      {isUploadOptionOpen && (
+        <div className="admin-modal-backdrop" onClick={e => e.target === e.currentTarget && setIsUploadOptionOpen(false)}>
+          <div className="admin-modal-container" style={{ maxWidth: '520px' }}>
+            
+            <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <Sparkles size={18} color="#C5A880" />
+                <h3 style={{ color: '#FFFFFF', margin: 0, fontSize: '1.15rem' }}>AI Campaign & Brochure Scan</h3>
+              </div>
+              <button onClick={() => setIsUploadOptionOpen(false)} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}>✕</button>
+            </div>
+
+            <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              
+              <div>
+                <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                  Option A: Scan via Dropbox Agent Link
+                </label>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <input
+                    type="url"
+                    placeholder="https://www.dropbox.com/scl/fo/..."
+                    value={dropboxInputUrl}
+                    onChange={e => setDropboxInputUrl(e.target.value)}
+                    className="admin-input-luxury"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleScanDropboxUrl}
+                    disabled={scanningDoc}
+                    className="admin-btn-gold"
+                    style={{ flexShrink: 0 }}
+                  >
+                    Scan
+                  </button>
+                </div>
+              </div>
+
+              <div style={{ textAlign: 'center', color: '#64748B', fontSize: '0.75rem' }}>— OR —</div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.4rem', fontWeight: 600 }}>
+                  Option B: Upload PDF / Word / Excel Brochure
+                </label>
+                <input
+                  type="file"
+                  ref={docUploadInputRef}
+                  onChange={handleUploadDoc}
+                  accept=".pdf,.docx,.xlsx,.xls,.zip,image/*"
+                  style={{ display: 'none' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => docUploadInputRef.current?.click()}
+                  className="admin-btn-dark"
+                  style={{ width: '100%', justifyContent: 'center', padding: '0.85rem' }}
+                >
+                  <UploadCloud size={16} /> Choose Document to Parse
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════
+          BLOG & PUBLICATION MODAL
+      ══════════════════════════════════════════════ */}
+      {isBlogFormOpen && (
+        <div className="admin-modal-backdrop" onClick={e => e.target === e.currentTarget && setIsBlogFormOpen(false)}>
+          <div className="admin-modal-container" style={{ maxWidth: '780px' }}>
+            
+            <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ color: '#FFFFFF', margin: 0, fontSize: '1.25rem', fontFamily: 'var(--font-serif)' }}>
+                {blogFormType === 'create' ? 'Create Luxury Insight Publication' : 'Edit Publication'}
+              </h3>
+              <button onClick={() => setIsBlogFormOpen(false)} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}>✕</button>
+            </div>
+
+            <form onSubmit={handleBlogSubmit} style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+              
+              <div>
+                <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.35rem' }}>Title *</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Dubai Super-Prime Real Estate Forecast"
+                  value={blogForm.title}
+                  onChange={e => setBlogForm({ ...blogForm, title: e.target.value })}
+                  className="admin-input-luxury"
+                  required
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.35rem' }}>Category</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Market Trends, Advisory"
+                    value={blogForm.category}
+                    onChange={e => setBlogForm({ ...blogForm, category: e.target.value })}
+                    className="admin-input-luxury"
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.35rem' }}>Read Time</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 5 min read"
+                    value={blogForm.readTime}
+                    onChange={e => setBlogForm({ ...blogForm, readTime: e.target.value })}
+                    className="admin-input-luxury"
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', marginTop: '1.5rem', gap: '0.5rem' }}>
+                  <input
+                    type="checkbox"
+                    id="blog-featured"
+                    checked={blogForm.featured}
+                    onChange={e => setBlogForm({ ...blogForm, featured: e.target.checked })}
+                    style={{ width: '18px', height: '18px', accentColor: '#C5A880' }}
+                  />
+                  <label htmlFor="blog-featured" style={{ color: '#fff', fontSize: '0.8rem' }}>Featured Article</label>
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.35rem' }}>Cover Image URL</label>
+                <input
+                  type="text"
+                  placeholder="/areas/emirates_hills.webp or https://..."
+                  value={blogForm.image}
+                  onChange={e => setBlogForm({ ...blogForm, image: e.target.value })}
+                  className="admin-input-luxury"
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.35rem' }}>Excerpt Summary</label>
+                <textarea
+                  rows={2}
+                  placeholder="Short introductory summary for card previews..."
+                  value={blogForm.excerpt}
+                  onChange={e => setBlogForm({ ...blogForm, excerpt: e.target.value })}
+                  className="admin-input-luxury"
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '0.35rem' }}>Full Article Content</label>
+                <textarea
+                  rows={8}
+                  placeholder="Full publication content..."
+                  value={blogForm.content}
+                  onChange={e => setBlogForm({ ...blogForm, content: e.target.value })}
+                  className="admin-input-luxury"
+                  style={{ lineHeight: 1.6 }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.8rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '1rem' }}>
+                <button type="button" onClick={() => setIsBlogFormOpen(false)} className="admin-btn-dark">Cancel</button>
+                <button type="submit" className="admin-btn-gold">Save Publication</button>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
-
-// Input styling helper
-const inputStyle = {
-  width: '100%',
-  boxSizing: 'border-box',
-  padding: '0.8rem 1rem',
-  borderRadius: '8px',
-  border: '1px solid var(--border-color)',
-  background: '#fafafa',
-  fontSize: '0.95rem',
-  outline: 'none',
-  marginTop: '0.2rem'
-};
-
-// Small input styling helper for Floors manager
-const smallInputStyle = {
-  width: '100%',
-  boxSizing: 'border-box',
-  padding: '0.5rem 0.8rem',
-  borderRadius: '6px',
-  border: '1px solid var(--border-color)',
-  background: '#ffffff',
-  fontSize: '0.85rem',
-  outline: 'none',
-  marginTop: '0.2rem'
-};
-
-// Helper to parse consultation details from the message
-const getConsultationDetails = (message) => {
-  if (!message) return { budget: 'N/A', mode: 'N/A' };
-  // Expected format: "Consultancy Request - Budget: 10m-20m, Mode: virtual"
-  const budgetMatch = message.match(/Budget:\s*([^,]+)/i);
-  const modeMatch = message.match(/Mode:\s*(.+)$/i);
-  
-  const budget = budgetMatch ? budgetMatch[1].trim() : null;
-  const mode = modeMatch ? modeMatch[1].trim() : null;
-  
-  if (budget || mode) {
-    return {
-      budget: budget ? formatBudget(budget) : 'N/A',
-      mode: mode === 'virtual' ? '💻 Virtual Video Briefing' : mode === 'in-person' ? '💼 Private Office Session (Dubai)' : mode || 'N/A'
-    };
-  }
-  return { budget: 'N/A', mode: 'N/A', rawMessage: message };
-};
-
-const formatBudget = (budget) => {
-  switch (budget.toLowerCase()) {
-    case 'below-5m': return 'Below AED 5,000,000';
-    case '5m-10m': return 'AED 5,000,000 - 10,000,000';
-    case '10m-20m': return 'AED 10,000,000 - 20,000,000';
-    case 'above-20m': return 'AED 20,000,000+';
-    default: return budget;
-  }
-};
